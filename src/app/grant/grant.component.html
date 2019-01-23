@@ -1,0 +1,16 @@
+<div class="push4slideMenu  pageMinHeight">
+    <div class="container-fluid pushFixedHeaderFooter">
+        <div class="headerPush"></div>
+        <section class="row">
+            <!-- edit mode -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode != 'view' && (result.grantCall!=null && result.grantCall!=undefined)">
+                <app-grant-edit [result]="result" [showDataFlagObj]="showDataFlagObj"></app-grant-edit>
+            </div>
+            <!--view mode-->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode == 'view' && (result.grantCall!=null && result.grantCall!=undefined)" >
+                <app-grant-view [result]="result" [showDataFlagObj]="showDataFlagObj"></app-grant-view>
+            </div>
+        </section>
+        <div class="footerPush"></div>
+    </div>
+</div>

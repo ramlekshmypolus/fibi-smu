@@ -1,0 +1,3 @@
+<header-tpl *ngIf="isLoggedIn$ | async as isLoggedIn"></header-tpl>
+<router-outlet></router-outlet>
+<footer-tpl id="footer" *ngIf="isLoggedIn$ | async as isLoggedIn"></footer-tpl>

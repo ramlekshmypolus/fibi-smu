@@ -1,0 +1,167 @@
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-left">
+    <span class="linkButtonGroup">
+      <a id="create-award-btn" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FawardHome.do%3FmethodToCall%3DdocHandler%26command%3Dinitiate%26docTypeName%3DAwardDocument%26returnLocation%3D'+_commonService.outputPath+'%252Fkc-krad%252FlandingPage%253FviewId%253DKc-LandingPage-RedirectView&methodToCall=start&__login_user='+awardRequestObject.userName+'&kcComp=true'">
+        <i class="fa fa-plus"></i> Create New Award
+      </a>
+    </span>
+    <span class="linkButtonGroup">
+      <a id="view-variation-btn" [href]="_commonService.outputPathOST+'/dashboard?username='+awardRequestObject.userName+'&isSMU=true#/dashboard' ">
+        <i class="fa fa-eye"></i> View Variation Request
+      </a>
+    </span>
+    <span class="linkButtonGroup">
+      <a id="create-variation-btn" [href]="_commonService.outputPathOST+'/dashboard?username='+awardRequestObject.userName+'&isSMU=true#/createform' ">
+        <i class="fa fa-plus"></i> Create Award Variation Request
+      </a>
+    </span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <!-- elastic search components -->
+    <div class="row">
+      <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+        <app-elastic [options]="elasticSearchOptions" [placeHolder]="'Search: Award #, Account#, Title, PI Name, Lead Unit, Sponsor'"
+          (selectedResult)="selectAwardElasticResult($event)"></app-elastic>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 paddingAdvSearch">
+        <a id="show-advcance-search-award" href="#" class="linkButton" (click)="showAdvanceSearch($event)"> <i class="fa fa-cog"></i>
+          Advanced Search
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div *ngIf="isShowAdvanceSearchOptions" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 advancedTools">
+    <!-- advance search options -->
+    <div class="row">
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-award-account-no" placeholder="Account" maxlength="60" [(ngModel)]="awardRequestObject.property1" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-award-lead-unit" placeholder="Lead Unit" maxlength="60" [(ngModel)]="awardRequestObject.property2" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-award-sponsor" placeholder="Sponsor" maxlength="60" [(ngModel)]="awardRequestObject.property3" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-award-PI" placeholder="PI" maxlength="60" [(ngModel)]="awardRequestObject.property4" />
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div class="row">
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-award" class="btnSkin btnSkinPrimary" (click)="searchUsingAdvanceOptions()">Search</button>
+          </div>
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-clear-award" class="btnSkin btnSkinSecondary" (click)="clear();loadDashboard();">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 viewMode resultCard" *ngIf="(isShowResultCard == true)">
+    <button class="closeResultCard" id="close-elastic-result-award" (click)="isShowResultCard = false;">
+      <i class="fa fa-times"></i>
+    </button>
+    <!-- award elastic search  results-->
+    <div class="row">
+      <div class="col-xl-1 col-lg-2 col-md-8 col-sm-8 col-8">
+        <label> Account# </label>
+        <span>
+          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.account_number}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+        <label> Award# </label>
+        <span>
+          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.award_number}}</a>
+        </span>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-8 col-sm-8 col-8">
+        <label> Title </label>
+        <span>
+          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.title}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-1 col-md-4 col-sm-4 col-4">
+        <label> Sponsor </label>
+        <span>
+          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.sponsor}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-8 col-sm-8 col-8">
+        <label> PI </label>
+        <span>
+          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.pi_name}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+        <label> Lead Unit </label>
+        <span>
+          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.lead_unit_name}}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Award Details -->
+<div class="borderBox table-responsive" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+  <table class="table tableSkin mb-0">
+    <thead>
+      <tr>
+        <th style="width: 10%" id="sortby-award-no" (click)="sortResult('awardNumber')" class="hand-cursor" title="Click to sort by Award #">Award
+          # <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (awardRequestObject.sortBy == 'awardNumber')}"></span>
+        </th>
+        <th style="width: 10%" id="sortby-award-accno" (click)="sortResult('accountNumber')" class="hand-cursor" title="Click to sort by Account #">Account
+          #<span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (awardRequestObject.sortBy == 'accountNumber')}"></span>
+        </th>
+        <th id="sortby-award-title" (click)="sortResult('title')" class="hand-cursor" title="Click to sort by Title">Title
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (awardRequestObject.sortBy == 'title')}"></span>
+        </th>
+        <th id="sortby-award-lead-unit" (click)="sortResult('unitName')" class="hand-cursor" title="Click to sort by Lead Unit">Lead
+          Unit <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (awardRequestObject.sortBy == 'unitName')}"></span>
+        </th>
+        <th id="sortby-award-sponsor" (click)="sortResult('sponsor')" class="hand-cursor" title="Click to sort by Sponsor">Sponsor
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (awardRequestObject.sortBy == 'sponsor')}"></span>
+        </th>
+        <th id="sortby-award-PI" (click)="sortResult('fullName')" class="hand-cursor" title="Click to sort by PI">PI
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (awardRequestObject.sortBy == 'fullName')}"></span>
+        </th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let awardDetails of serviceRequestList">
+        <td style="width: 10%">{{awardDetails.awardNumber}}</td>
+        <td>{{awardDetails.accountNumber}}</td>
+        <td>{{awardDetails.title}}</td>
+        <td>{{awardDetails.unitName}}</td>
+        <td>{{awardDetails.sponsor}}</td>
+        <td>{{awardDetails.fullName}}</td>
+        <td>
+          <ul class="actionButtonGroup">
+            <li><a title="Open {{awardDetails.awardNumber}}" id="open-award-btn" routerLink='fibi/award' [queryParams]={awardId:awardDetails.awardId}><i
+                  class="fa fa-eye pointer"></i> </a></li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="serviceRequestList?.length == 0" class="borderBox noDataOnChart noDataExists">There are no awards for your
+  request</div>
+<!-- Pagination -->
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+  <div class="text-right pagiSkin">
+    <nav class="paginationSkin text-right">
+      <ngb-pagination id="pagination-award" [boundaryLinks]="true" [collectionSize]="result.totalServiceRequest"
+        [(page)]="awardRequestObject.currentPage" currentPage=page [pageSize]="awardRequestObject.pageNumber" [maxSize]="3"
+        [rotate]="true" (pageChange)="loadDashboard();_commonService.pageScroll('pageScrollToTop')">
+      </ngb-pagination>
+    </nav>
+  </div>
+</div>

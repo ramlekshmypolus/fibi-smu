@@ -1,0 +1,159 @@
+<div class="text-left">
+  <span class="linkButtonGroup">
+    <a id="create-irb-btn" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26command%3Dinitiate%26docTypeName%3DProtocolDocument%26returnLocation%3D'+_commonService.outputPath+'%252Fkc-krad%252FlandingPage%253FviewId%253DKc-LandingPage-RedirectView&methodToCall=start&__login_user='+ irbRequestObject.userName+'&kcComp=true'">
+      <i class="fa fa-plus"></i> Create New IRB Protocol
+    </a>
+  </span>
+</div>
+
+<div class="row">
+  <!--Elastic Search-->
+  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+    <app-elastic [options]="elasticSearchOptions" [placeHolder]="'Search: Protocol#, Type, Title, PI Name, Lead Unit, Status'"
+      (selectedResult)="selectIrbElasticResult($event)"></app-elastic>
+  </div>
+  <!--Advance Search-->
+  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 paddingAdvSearch">
+    <a id="advcance-search-irb" href="#" class="linkButton" (click)="showAdvanceSearch($event)"> <i class="fa fa-cog"></i>
+      Advanced Search
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div *ngIf="isShowAdvanceSearchOptions" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 advancedTools">
+    <!-- advance search options -->
+    <div class="row">
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-irb-protocolno" placeholder="Protocol Number" maxlength="60" [(ngModel)]="irbRequestObject.property1" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-irb-title" placeholder="Title" maxlength="60" [(ngModel)]="irbRequestObject.property2" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-irb-leadunit" placeholder="Lead Unit" maxlength="60" [(ngModel)]="irbRequestObject.property3" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-irb-protocoltyp" placeholder="Protocol type" maxlength="60" [(ngModel)]="irbRequestObject.property4" />
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div class="row">
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-irb" class="btnSkin btnSkinPrimary" (click)="searchUsingAdvanceOptions()">Search</button>
+          </div>
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-clear-irb" class="btnSkin btnSkinSecondary" (click)="clear(); loadDashboard();">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--ElasticSearch Results-->
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class=" viewMode resultCard" *ngIf="(isShowResultCard == true)">
+      <button class="closeResultCard" (click)="isShowResultCard = false">
+        <i class="fa fa-times"></i>
+      </button>
+      <div class="row">
+        <div class="col-xl-1 col-lg-2 col-md-8 col-sm-8 col-8">
+          <label> Protocol# </label>
+          <span>
+            <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+elasticResultObject.document_number+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+irbRequestObject.userName+'&kcComp=true'">{{elasticResultObject?.protocol_number
+              }}</a>
+          </span>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+          <label> Protocol Type </label>
+          <span>
+            <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+elasticResultObject.document_number+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+irbRequestObject.userName+'&kcComp=true'">{{elasticResultObject?.protocol_type
+              }}</a>
+          </span>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-8 col-sm-8 col-8">
+          <label> Title </label>
+          <span>
+            <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+elasticResultObject.document_number+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+irbRequestObject.userName+'&kcComp=true'">{{elasticResultObject?.title
+              }}</a>
+          </span>
+        </div>
+        <div class="col-xl-2 col-lg-1 col-md-4 col-sm-4 col-4">
+          <label> Lead Unit </label>
+          <span>
+            <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+elasticResultObject.document_number+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+irbRequestObject.userName+'&kcComp=true'">{{elasticResultObject?.lead_unit_name
+              }}</a>
+          </span>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-8 col-sm-8 col-8">
+          <label> Status </label>
+          <span>
+            <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+elasticResultObject.document_number+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+irbRequestObject.userName+'&kcComp=true'">{{elasticResultObject?.status
+              }}</a>
+          </span>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+          <label> PI Name </label>
+          <span>
+            <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+elasticResultObject.document_number+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+irbRequestObject.userName+'&kcComp=true'">{{elasticResultObject?.person_name
+              }}</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--IRB Details-->
+<div class="borderBox table-responsive" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+  <table class="table tableSkin mb-0">
+    <thead>
+      <tr>
+        <th id="sortby-irb-protocolno" (click)="sortResult('protocolNumber')" class="hand-cursor" title="Click to sort by Protocol">Protocol
+          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'protocolNumber')}"></span>
+        </th>
+        <th id="sortby-irb-title" (click)="sortResult('title')" class="hand-cursor" title="Click to sort by Title"
+          width="40%">Title
+          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'title')}"></span>
+        </th>
+        <th id="sortby-irb-leadunit" (click)="sortResult('leadUnit')" class="hand-cursor" title="Click to sort by Lead Unit">Lead
+          Unit <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'leadUnit')}"></span>
+        </th>
+        <th id="sortby-irb-protocoltyp" (click)="sortResult('protocolType')" class="hand-cursor" title="Click to sort by Protocol Type">Protocol
+          Type <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'protocolType')}"></span>
+        </th>
+        <th id="sortby-irb-status" (click)="sortResult('status')" class="hand-cursor" title="Click to sort by Status">Status
+          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'status')}"></span>
+        </th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let IRBDetails of serviceRequestList">
+        <td>{{IRBDetails?.protocolNumber}}</td>
+        <td>{{IRBDetails?.title}}</td>
+        <td>{{IRBDetails?.leadUnit}}</td>
+        <td>{{IRBDetails?.protocolType}}</td>
+        <td>{{IRBDetails?.status}}</td>
+        <td>
+          <ul class="actionButtonGroup">
+            <li><a title="Open {{IRBDetails.protocolNumber}}" id="open-irb-btn" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+IRBDetails.documentNumber+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+irbRequestObject.userName+'&kcComp=true'"><i
+                  class="fa fa-eye"></i> </a></li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="result?.protocolViews?.length == 0" class="borderBox noDataOnChart noDataExists">There are no IRB protocols
+  for your request</div>
+
+<!--Pagination-->
+<div class="text-right pagiSkin" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+  <nav class="paginationSkin text-right">
+    <ngb-pagination id="pagination-irb" [boundaryLinks]="true" [collectionSize]="result.totalServiceRequest" [(page)]="irbRequestObject.currentPage"
+      currentPage=page [pageSize]="irbRequestObject.pageNumber" [maxSize]="3" [rotate]="true" (pageChange)="loadDashboard();_commonService.pageScroll('pageScrollToTop')">
+    </ngb-pagination>
+  </nav>
+</div>

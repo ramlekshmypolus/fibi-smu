@@ -1,0 +1,25 @@
+@import '~angular-tree-component/dist/angular-tree-component.css';
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+.tree {
+  width: 300px;
+}
+
+.node-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.node-content-wrapper {
+  flex-grow: 1;
+  position: relative;
+}
+
+.pull-right {
+  position: absolute;
+  right: 10px;
+}
+
+.owl-dt-calendar-control {
+	margin-top: 10px !important;
+}

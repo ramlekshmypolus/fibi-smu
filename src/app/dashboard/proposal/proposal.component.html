@@ -1,0 +1,329 @@
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-left">
+    <span class="linkButtonGroup" id="create-proposal-btn" (click)="gotoProposal()">
+      <a title="Create New Proposal" data-toggle="modal" data-target="#denyPermissionModal"><i class="fa fa-plus"></i>
+        Create New Proposal
+      </a>
+    </span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <!-- elastic search components -->
+    <div class="row">
+      <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7">
+        <app-elastic [options]="elasticSearchOptions" [placeHolder]="'Search: Proposal#, Title, PI Name, Category, Type, Status,Sponsor'"
+          (selectedResult)="selectProposalElasticResult($event)"></app-elastic>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 paddingAdvSearch">
+        <a id="show-advcance-search-proposal" href="#" class="linkButton" (click)="showAdvanceSearch($event)"> <i class="fa fa-cog"></i>
+          Advanced Search
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div *ngIf="isShowAdvanceSearchOptions" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 advancedTools">
+    <!-- advance search options -->
+    <div class="row">
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-proposal-no" placeholder="Proposal #" maxlength="60" [(ngModel)]="proposalRequestObject.property1" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-proposal-title" placeholder="Title" maxlength="60" [(ngModel)]="proposalRequestObject.property2" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-proposal-status" placeholder="Status" maxlength="60" [(ngModel)]="proposalRequestObject.property3" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-proposal-category" placeholder="Category" maxlength="60" [(ngModel)]="proposalRequestObject.property4" />
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div class="row">
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button class="btnSkin btnSkinPrimary" id="adv-search-proposal" (click)="searchUsingAdvanceOptions()">Search</button>
+          </div>
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-clear-proposal" class="btnSkin btnSkinSecondary" (click)="clear();loadDashboard();">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 viewMode resultCard" *ngIf="(isShowResultCard == true)">
+    <button class="closeResultCard" id="close-elastic-result-proposal" (click)="isShowResultCard = false;">
+      <i class="fa fa-times"></i>
+    </button>
+    <!-- proposal elastic search results-->
+    <div class="row">
+      <div class="col-xl-1 col-lg-2 col-md-8 col-sm-8 col-8">
+        <label> Proposal# </label> <span>
+          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+            elasticResultObject?.proposal_id }}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+        <label>Title</label> <span>
+          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+            elasticResultObject?.title }}</a>
+        </span>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-8 col-sm-8 col-8">
+        <label> PI</label> <span>
+          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+            elasticResultObject?.full_name}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-1 col-md-4 col-sm-4 col-4">
+        <label>Category </label> <span>
+          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+            elasticResultObject?.category}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-8 col-sm-8 col-8">
+        <label> Type </label> <span>
+          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+            elasticResultObject?.type}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+        <label> Status </label> <span>
+          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+            elasticResultObject?.status}}</a>
+        </span>
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+        <label> Sponsor </label> <span>
+          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+            elasticResultObject?.sponsor}}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- PROPOSAL/ APPLICATIONS -->
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <div class="row">
+      <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-9">
+        <ul class="tabs">
+          <li role="presentation" [ngClass]="{'active': proposalRequestObject.proposalTabName == 'MY_PROPOSAL'}">
+            <a title="View my proposals" id="my-prop-tab" (click)="proposalRequestObject.proposalTabName ='MY_PROPOSAL'; loadDashboard()">
+              My Proposals</a>
+          </li>
+          <li role="presentation" [ngClass]="{'active': proposalRequestObject.proposalTabName  == 'PROPOSAL'}" *ngIf="this.proposalRequestObject.isUnitAdmin">
+            <a title="View all proposals" id="all-prop-tab" (click)="proposalRequestObject.proposalTabName ='PROPOSAL'; loadDashboard()">
+              All Proposals</a>
+          </li>
+          <li role="presentation" [ngClass]="{'active': proposalRequestObject.proposalTabName  == 'REVIEW_PENDING_PROPOSAL'}">
+            <a title="View pending review proposals" id="pending-review-prop-tab" (click)="proposalRequestObject.proposalTabName ='REVIEW_PENDING_PROPOSAL'; loadDashboard()">
+              Pending Review</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3 exportButton export-btn-padding" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+        <div class="rate-float">
+          <span class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6"><span class="exportIcon-margin">Export as:</span>
+            <a title="Export data to Excel sheet" class="exportIcon-margin  hand-cursor" id="export-prop-excel-btn"
+              (click)="exportAsTypeDoc('excel')"><i class="fa fa-file-excel-o"></i></a>
+            <a class="exportIcon-margin">|</a>
+            <a title="Export data to PDF document" class="hand-cursor" id="export-prop-pdf-btn" (click)="exportAsTypeDoc('pdf')"><i
+                class="fa fa-file-pdf-o"></i></a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="borderBox table-responsive" *ngIf="(serviceRequestList != null && serviceRequestList?.length != 0)">
+  <table class="table tableSkin mb-0">
+    <thead>
+      <tr>
+        <th id="sortby-proposal-id" (click)="sortResult('proposalId')" class="hand-cursor" title="Click to sort by Proposal Id">Id<span
+            [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'proposalId')}"></span>
+        </th>
+        <th style="width: 24%">Title
+        </th>
+        <th>PI
+        </th>
+        <th id="sortby-proposal-category" (click)="sortResult('activityType')" class="hand-cursor" title="Click to sort by category">Category<span
+            [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'activityType')}"></span></th>
+        <th id="sortby-proposal-type" (click)="sortResult('proposalType.description')" class="hand-cursor" title="Click to sort by type">Type<span
+            [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'proposalType.description')}"></span></th>
+        <th id="sortby-proposal-status" (click)="sortResult('proposalStatus.description')" class="hand-cursor" title="Click to sort by status">Status<span
+            [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'proposalStatus.description')}"></span></th>
+        <th id="sortby-proposal-sponsor" (click)="sortResult('sponsorName')" class="hand-cursor" title="Click to sort by sponsor name">Sponsor
+          <span [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'sponsorName')}"></span></th>
+        <th id="sortby-proposal-sponsor-deadline" (click)="sortResult('submissionDate')" class="hand-cursor" title="Click to sort by Deadline Date">Sponsor
+          Deadline <span [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'submissionDate')}"></span>
+        </th>
+        <th style="width: 9%">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let proposal of serviceRequestList; let i =index">
+        <td>{{proposal?.proposalId}}</td>
+        <td [title]="(proposal?.title).length>40 ? proposal?.title: ''">{{ (proposal?.title).length>40 ?
+          (proposal?.title | slice:0:60)+'...' : proposal?.title}}</td>
+        <td>{{proposal?.principalInvestigator}}</td>
+        <td>{{proposal?.applicationActivityType}}</td>
+        <td>{{proposal?.applicationType}}</td>
+        <td>{{proposal?.applicationStatus}}</td>
+        <td>{{proposal?.sponsorName}}</td>
+        <td>{{proposal.submissionDate | date: 'MM/dd/yyyy'}}</td>
+        <td style="padding: 0px !important;">
+          <ul class="actionButtonGroup">
+            <li><a title="Open proposal {{proposal?.proposalId}}" class="pointer" id="open-proposal-btn" (click)="viewProposalById($event,proposal.proposalId)"><i
+                  class="fa fa-eye pointer action-btn-padding"></i></a></li>
+            <li style="font-size: 16px"><a title="Copy proposal {{proposal?.proposalId}}" class="pointer" id="copy-proposal-dashboard-btn"
+                (click)="copyProposal(proposal.proposalId)"><i class="fa fa-copy action-btn-padding"></i></a></li>
+            <li><a title="View route log" class="pointer" data-toggle="modal" data-target="#routeLogModal-dashboard" id="routelog-dashboard-btn"
+                (click)="fetchRouteLog(proposal, i)" *ngIf="proposal?.applicationStatus == 'Approval In Progress' || proposal?.applicationStatus == 'Returned'"><i
+                  class="fa fa-history action-btn-padding"></i></a></li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="serviceRequestList?.length == 0" class="borderBox noDataOnChart noDataExists">There are no proposals for
+  your
+  request
+</div>
+<!-- Pagination -->
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+  <div class="text-right pagiSkin">
+    <nav class="paginationSkin text-right">
+      <ngb-pagination id="pagination-proposal" [boundaryLinks]="true" [collectionSize]="result.totalServiceRequest"
+        [(page)]="proposalRequestObject.currentPage" currentPage=page [pageSize]="proposalRequestObject.pageNumber"
+        [maxSize]="3" [rotate]="true" (pageChange)="loadDashboard(); _commonService.pageScroll('pageScrollToTop')">
+      </ngb-pagination>
+    </nav>
+  </div>
+</div>
+<!-- NO CREATE PERMISSION MODAL -->
+<div class="modal fade show mySkinDialog modal-opacity" *ngIf="isShowNoCreateProposalModal" tabindex="-1" id="denyPermissionModal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Warning...!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>You don't have rights to create new proposal.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" id="no-create-permsn-btn"
+          (click)="isShowNoCreateProposalModal = false">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Route log modal-->
+<div class="modal fade show mySkinDialog" tabindex="-1" id="routeLogModal-dashboard" *ngIf="isRoutelogOpened" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Route Log</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="isRoutelogOpened = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 viewMode resultCard">
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Proposal #</label> <span>{{result?.proposal[proposalIndex]?.proposalId}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Status</label> <span>{{result?.proposal[proposalIndex]?.applicationStatus}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>PI</label> <span>{{result?.proposal[proposalIndex]?.principalInvestigator}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Lead Unit</label> <span>{{result?.proposal[proposalIndex]?.homeUnitName}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Title</label> <span>{{result?.proposal[proposalIndex]?.title}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Submitted By</label> <span>{{result?.proposal[proposalIndex]?.submitUser}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Version</label>
+              <select class="committeeBox font" id="routelog-version-dashboard" [(ngModel)]="versionHistorySelected"
+                (change)="routeLogVersionChange()">
+                <option *ngFor="let version of workFlowList" (value)="version.workflowSequence">{{version.workflowSequence}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="borderBox col-12" id="routeLogBody">
+          <div class="pullSide">
+            <table class="table table-responsive tableSkin tableSection" id="routeLogTable">
+              <thead>
+                <tr id="routelogHeader">
+                  <th style="width: 15%">Name</th>
+                  <th style="width: 20%">Review Status</th>
+                  <th style="width: 15%">Action Date</th>
+                  <th>Comments</th>
+                  <th style="width: 15%">Attachments</th>
+                  <th style="width: 10%">Action</th>
+                </tr>
+              </thead>
+              <tbody id="routelog-table">
+                <ng-container *ngFor="let detailMapIndex of workflowDetailsMap; let index =index">
+                  <tr>
+                    <td colspan="6" class="borderBoxHeading"><label>Stop {{index +1 }}</label></td>
+                  </tr>
+                  <tr *ngFor="let workflow of detailMapIndex; let i = index">
+                    <td>{{workflow?.approverPersonName}}</td>
+                    <td>{{workflow?.workflowStatus?.approveStatus}}</td>
+                    <td>{{workflow?.approvalDate | date:'MM/dd/yyyy'}}</td>
+                    <td><span *ngIf="!commentsGrantManagerExpand[i] && workflow?.approvalComment?.length>30;else showFullGrantManagerComments"
+                        (click)="commentsGrantManagerExpand[i] = !commentsGrantManagerExpand[i]">{{workflow?.approvalComment
+                        | slice:0:20}}
+                        <span class="hand-cursor fibiDefaultColor italian">...Read more<i [ngClass]="commentsGrantManagerExpand[i]?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                        </span>
+                      </span>
+                      <ng-template #showFullGrantManagerComments>{{workflow?.approvalComment}}
+                        <i *ngIf="workflow?.approvalComment?.length>30" (click)="commentsGrantManagerExpand[i] = !commentsGrantManagerExpand[i]"
+                          class="hand-cursor fibiDefaultColor italian"> Show Less
+                          <i [ngClass]="commentsGrantManagerExpand[i]?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></i>
+                      </ng-template>
+                    </td>
+                    <td><span *ngIf="workflow?.workflowAttachments?.length == 0 && workflow?.workflowStatus?.approveStatusCode != 'T' && workflow?.workflowStatus?.approveStatusCode != 'W'"
+                        class="noDataExists">No attachments</span>
+                      <select class="committeeBoxNotEditable" id="routelog-attachment-dashboard" *ngIf="workflow?.workflowAttachments?.length > 0"
+                        [(ngModel)]="selectedAttachmentStop[index][i]">
+                        <option *ngFor="let attachment of workflow.workflowAttachments">{{attachment.fileName}}</option>
+                      </select>
+                    </td>
+                    <td *ngIf="workflow.approvalStopNumber">
+                      <ul class="actionButtonGroup" *ngIf="workflow?.workflowAttachments?.length > 0">
+                        <li><a href="#" id="dwnlod-routelog-attchmnt-dashboard" (click)="downloadRouteAttachment($event, selectedAttachmentStop[index][i], workflow.workflowAttachments)"><i
+                              title="download this document" class="fa fa-download" aria-hidden="true"></i></a></li>
+                      </ul>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" id="close-routelog-dashboard"
+          (click)="isRoutelogOpened = false">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

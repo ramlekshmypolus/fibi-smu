@@ -1,0 +1,97 @@
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-left">
+    <span class="linkButtonGroup noPadd" *ngIf="grantCallRequestObject.isUnitAdmin">
+      <a class="noMarginTop" [href]="" id="create-grant-btn" (click)="createGrant($event,'create')">
+        <i class="fa fa-plus pointer"></i> Create New Grant Call
+      </a>
+    </span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 advancedTools">
+    <!-- advance search options -->
+    <div class="row">
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-grant-id" placeholder="Id" maxlength="60" [(ngModel)]="grantCallRequestObject.property1" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-grant-title" placeholder="Title" maxlength="60" [(ngModel)]="grantCallRequestObject.property2" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-grant-type" placeholder="Type" maxlength="60" [(ngModel)]="grantCallRequestObject.property3" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-grant-sponsor" placeholder="Sponsor Name" maxlength="60" [(ngModel)]="grantCallRequestObject.property4" />
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div class="row">
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-grant" class="btnSkin btnSkinPrimary" (click)="loadDashboard()">Search</button>
+          </div>
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-clear-grant" class="btnSkin btnSkinSecondary" (click)="clear()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Grant Call Details-->
+<div class="borderBox table-responsive">
+  <table class="table tableSkin mb-0" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+    <thead>
+      <tr>
+        <th id="sortby-grant-id" (click)="sortResult('grantCallId')" class="hand-cursor" title="Click to sort by Grant Id">Id<span
+            [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'grantCallId')}"></span>
+        </th>
+        <th id="sortby-grant-title">Title</th>
+        <th id="sortby-grant-sponsor">Sponsor</th>
+        <th id="sortby-grant-type" (click)="sortResult('grantCallType.description')" class="hand-cursor" title="Click to sort by Type">Type<span
+            [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'grantCallType.description')}"></span>
+        </th>
+        <th id="sortby-grant-open-date" (click)="sortResult('openingDate')" class="hand-cursor" title="Click to sort by Opening Date">Opening
+          Date <span [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'openingDate')}"></span>
+        </th>
+        <th id="sortby-grant-close-date" (click)="sortResult('closingDate')" class="hand-cursor" title="Click to sort by Closing Date">Closing
+          Date <span [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'closingDate')}"></span></th>
+        <th id="sortby-grant-status" (click)="sortResult('grantCallStatusDesc')" class="hand-cursor" title="Click to sort by Status">Status
+          <span [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'grantCallStatusDesc')}"></span></th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let grant of serviceRequestList">
+        <td>{{grant?.grantCallId}}</td>
+        <td [title]="(grant?.grantCallName).length>60 ? grant?.grantCallName: ''">{{ (grant?.grantCallName).length>60 ?
+          (grant?.grantCallName | slice:0:60)+'...' : grant?.grantCallName}}</td>
+        <td>{{grant?.sponsorName}}</td>
+        <td>{{grant?.grantCallTypeDesc}}</td>
+        <td>{{grant?.openingDate | date: 'MM/dd/yyyy'}}</td>
+        <td>{{grant?.closingDate | date: 'MM/dd/yyyy'}}</td>
+        <td>{{grant?.grantCallStatusDesc}}</td>
+        <td>
+          <ul class="actionButtonGroup">
+            <li>
+              <a title="Open grant call {{grant?.grantCallId}}" id="open-grant-btn" (click)="viewGrantById($event,grant.grantCallId)"
+                class="pointer"><i class="fa fa-eye pointer"></i>
+              </a>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="serviceRequestList?.length == 0" class="noDataOnChart noDataExists">There are no grant call for your
+    request</div>
+</div>
+<!-- Pagination -->
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="(serviceRequestList != null && serviceRequestList?.length != 0)">
+  <div class="text-right pagiSkin">
+    <nav class="paginationSkin text-right">
+      <ngb-pagination id="pagination-grant" [boundaryLinks]="true" [collectionSize]="result.totalServiceRequest"
+        [(page)]="grantCallRequestObject.currentPage" currentPage=page [pageSize]="grantCallRequestObject.pageNumber"
+        [maxSize]="3" [rotate]="true" (pageChange)="loadDashboard();_commonService.pageScroll('pageScrollToTop')">
+      </ngb-pagination>
+    </nav>
+  </div>
+</div>

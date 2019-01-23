@@ -1,0 +1,57 @@
+<div class="push4slideMenu pageMinHeight">
+	<div class="container-fluid pushFixedHeaderFooter">
+		<div class="headerPush"></div>
+		<section class="row">
+		<!-- tabs of fibi 3.0 dashboard-->
+			<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-8 department-tabs" id="pageScrollToTop">
+			<ul class="tabs">
+				<li [routerLink]="['researchSummary']" routerLinkActive="active">
+					<a>Research Summary </a>
+				</li>
+				<li [routerLink]="['grantCall']" routerLinkActive="active">
+					<a> Grant Call</a>
+				</li>
+				<li [routerLink]="['proposalList']" routerLinkActive="active">
+					<a> Proposal</a>
+				</li>
+				<li [routerLink]="['awardList']" routerLinkActive="active">
+					<a> Award </a>
+				</li>
+				<li [routerLink]="['irb']" routerLinkActive="active">
+					<a> IRB </a>
+				</li>
+				<li [routerLink]="['iacuc']" routerLinkActive="active">
+					<a> IACUC </a>
+				</li>
+				<li [routerLink]="['disclosure']" routerLinkActive="active">
+					<a> Disclosures </a>
+				</li>
+				<li [routerLink]="['committee']" routerLinkActive="active">
+					<a> Committee </a>
+				</li>
+				<li [routerLink]="['schedule']" routerLinkActive="active">
+					<a> Schedules </a>
+				</li>
+				<li *ngIf="isAdmin" [routerLink]="['reports']"  routerLinkActive="active">
+					<a> Reports </a>
+				</li>
+			</ul>
+			</div>
+			<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4 tabs" >
+			<ng-container *ngIf ="isAdmin && unitAdministrators.length> 0">
+				<select class="committeeBox department-select" [(ngModel)]="unitselected" 
+					(ngModelChange)="upadateUnitChange();">
+					<option [value]="null">--Please Choose a Department--</option>
+					<option *ngFor="let unitAdministrator of unitAdministrators"
+							 [value]="unitAdministrator.unit.unitNumber">
+							 {{unitAdministrator.unit.unitDetail}}</option>
+				</select>
+			</ng-container>	
+			</div>
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<router-outlet></router-outlet>
+			</div>
+		</section>
+		<div class="footerPush"></div>
+	</div>
+</div>

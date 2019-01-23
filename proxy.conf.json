@@ -1,0 +1,482 @@
+{
+	"/login": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/fibiDashBoard": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getResearchSummaryData": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/logout": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getUserNotification": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getPieChartDataByType": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getDetailedResearchSummary": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getDonutChartDataBySponsor": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getAwardSummary": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getAwardHierarchy": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getAwardReportsAndTerms": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getAwardCommitments": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/createCommittee": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveCommittee": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/loadCommitteeById": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveAreaOfResearch": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteAreaOfResearch": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addSchedule": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteSchedule": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/updateSchedule": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/filterCommitteeScheduleDates": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/resetCommitteeScheduleDates": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/updateCommitteeSchedule": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addCommitteeMembership": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveCommitteeMembers": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteMemberRoles": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteMemberExpertise": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteCommitteeMembers": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveCommitteeMembersRole": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveCommitteeMembersExpertise": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/updateMemberRoles": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/loadScheduleById": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addOtherActions": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteOtherActions": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addScheduleAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteScheduleAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addCommitteeScheduleMinute": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/updateCommitteeScheduleMinute": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addOthersPresent": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/updateScheduleAttendance": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteScheduleAttendance": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/downloadScheduleAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/updateScheduleAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/createGrantCall": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveOrUpdateGrantCall": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/fetchSponsorsBySponsorType": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/loadGrantCallById": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteGrantCallKeyword": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteGrantCallContact": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteGrantCallAreaOfResearch": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteGrantCallEligibility": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addGrantCallAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveUpdateGrantCall": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteGrantCallAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/downloadGrantCallAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/publishGrantCall": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/createProposal": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addProposalAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposalAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/saveOrUpdateProposal": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/downloadProposalAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposalResearchArea": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteIrbProtocol": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposalSponsor": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposalPerson": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposalBudget": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposalKeyword": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/loadProposalById": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/submitProposal": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/approveOrRejectProposal": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/downloadWorkflowAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/assignReviewer": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/reviewCompleted": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/fetchReportData": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/applicationReport": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/fetchReviewers": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteReviewer": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/submitForEndorsement": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/approveProvost": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/createProjectVariationRequest": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/viewTemplate": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getContractAdmin": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/submitOSTDetails": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/generatePdfReport": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/createProposalBudget": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getBudgetRates": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/autoCalculate": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/resetBudgetRates": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getSyncBudgetRates": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteBudgetLineItem": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteBudgetPeriod": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addBudgetPeriod": {
+		"target":  "http://192.168.1.139:8080/fibi4",											
+		"secure": false
+	},
+	"/generateBudgetPeriods": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/printProposalPdfReport": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/printBudgetPdfReport": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/fetchCostElementByBudgetCategory" : {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/copyBudgetPeriod" : {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposalSpecialReview": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findSponsors": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/copyProposal": {
+		"target":  "http://192.168.1.139:8080/fibi4",											
+		"secure": false		 
+	},
+	"/exportResearchSummaryDatas": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+    },
+    "/exportDashboardDatas": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/sendAttachmentNotification": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+    },
+    "/sendAttachApproverNotification": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/createProposalPreReview": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/addPreReviewComment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/approveOrDisapprovePreReview": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/downloadPreReviewAttachment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findGrantCall": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findDepartment": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findAreaOfExcellence": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findAreaOfResearch": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findProtocol": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findCostElement": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findKeyWords": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findLeadUnits": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/findBudgetCategory": {
+		"target":  "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
+	"/getApplicableQuestionnaire": {
+		"target": "http://192.168.1.139:8080/questionnaire",
+		"secure": false
+	},
+	"/getQuestionnaire": {
+		"target": "http://192.168.1.139:8080/questionnaire",
+		"secure": false
+	},
+	"/saveQuestionnaire": {
+		"target": "http://192.168.1.139:8080/questionnaire",
+		"secure": false
+	}
+}

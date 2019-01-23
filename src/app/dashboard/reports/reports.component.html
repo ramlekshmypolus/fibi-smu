@@ -1,0 +1,255 @@
+<!-- GRANT REPORTS -->
+<div class="row">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">Proposals by Grant Call Type</h4>
+      <app-proposals-by-grantcall *ngIf="reportData.applicationsByGrantCallType != undefined" [pieChartData]="reportData" (pieChartReportList)="changePiechartReport($event)"></app-proposals-by-grantcall>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">IRB Protocols by Type</h4>
+      <app-protocols-by-grantcall *ngIf="reportData.protocolsByType != undefined" [pieChartData]="reportData" (pieChartReportProtocolList)="changePiechartReport($event)"></app-protocols-by-grantcall>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">Awards by Grant Call Type</h4>
+      <app-awards-by-grantcall *ngIf="reportData.awardByGrantType != undefined" [pieChartData]="reportData" (pieChartReportProjectList)="changePiechartReport($event)"></app-awards-by-grantcall>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="borderBox" *ngIf="reportData.grantIds != null || reportData.awardNumbers != null">
+      <h4 class="borderBoxHeading">
+        <span *ngIf="reportObject?.selectedReportName != '--Select--';else showreportLabel">{{reportObject?.selectedReportName}}</span>
+        <ng-template #showreportLabel>Report</ng-template>
+      </h4>
+      <table class="table tableSkin">
+        <tr id="reportFilterRow">
+          <td class="text-right"><b>Report Name :</b></td>
+          <td>
+            <select id="report-type" [(ngModel)]="reportObject.selectedReportName" class="committeeBox" (change)="reportTypeChange(reportObject.selectedReportName)">
+              <option>--Select--</option>
+              <option>Submitted Proposals by Grant Call</option>
+              <option>Awards by Grant Call</option>
+              <option>Expenditure by Award</option>
+            </select>
+          </td>
+          <td class="text-right" *ngIf="reportObject?.selectedReportName != '--Select--'">
+            <span *ngIf="reportObject?.selectedReportName != 'Expenditure by Award'">Grant Call:</span>
+            <span *ngIf="reportObject?.selectedReportName == 'Expenditure by Award'">Award:</span>
+          </td>
+          <td style="width:35%">
+            <div *ngIf="reportObject?.selectedReportName != '--Select--'">
+              <ng2-completer id="report-type-id" [inputClass]="completerID" [(ngModel)]="reportObject.selectedReportItemId" [placeholder]="(reportObject?.selectedReportName == 'Expenditure by Award')? 'Search by award number': 'Search by id'"
+              [clearUnselected]="true" [fillHighlighted]="false" [datasource]="dataList" [minSearchLength]="1" (selected)="reportTypeIdChange(reportObject.selectedReportItemId, reportObject?.selectedReportName)"></ng2-completer>
+            </div>
+          </td>
+          <td colspan="3">
+            <span *ngIf="reportObject?.selectedReportName != '--Select--' && reportObject?.selectedReportName != 'Expenditure by Award'">{{reportObject?.selectedReportName}}
+              #{{reportObject?.grantCallId}} : &nbsp;{{reportObject?.proposalCount}}{{reportObject?.awardCount}}
+            </span>
+          </td>
+        </tr>
+        <tbody *ngIf="reportObject?.proposals?.length > 0">
+          <tr>
+            <th>Id </th>
+            <th>Name </th>
+            <th>Opening Date</th>
+            <th>Closing Date</th>
+            <th>Lead Unit</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          <tr *ngFor="let proposal of reportObject?.proposals">
+            <td>{{proposal?.proposalId}}</td>
+            <td title="{{proposal.title}}">{{(proposal.title.length>60? (proposal.title | slice : 0 : 59)+'...':
+              (proposal.title)) }}</td>
+            <td>{{proposal?.startDate | date: 'MM/dd/yyyy'}}</td>
+            <td>{{proposal?.endDate | date: 'MM/dd/yyyy'}}</td>
+            <td>{{proposal?.grantCall?.homeUnitName}}</td>
+            <td>{{proposal?.proposalStatus?.description}}</td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a title="Open" class="pointer" id="open-proposal-report" (click)="viewProposalById($event,proposal.proposalId)"><i
+                      class="fa fa-eye pointer"></i></a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+        <tr *ngIf="reportObject?.selectedReportName == 'Submitted Proposals by Grant Call' && reportObject?.personId!=null && reportObject?.proposals == null">
+          <td>
+            <div class="noDataExists">
+              No report data found
+            </div>
+          </td>
+        </tr>
+        <tbody *ngIf="reportObject?.awards?.length > 0">
+          <tr>
+            <th>Award #</th>
+            <th>Account #</th>
+            <th>Title</th>
+            <th>Lead Unit</th>
+            <th>Sponsor</th>
+            <th>PI</th>
+            <th>Action</th>
+          </tr>
+          <tr *ngFor="let award of reportObject?.awards">
+            <td>{{award?.awardNumber}}</td>
+            <td>{{award?.accountNumber}}</td>
+            <td title="award.title">{{((award.title.length>60)?(award.title | slice:0:60)+'...' : (award.title))}}</td>
+            <td>{{award?.unitName}}</td>
+            <td>{{award?.sponsor}}</td>
+            <td>{{award?.fullName}}</td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a title="Open {{award?.awardNumber}}" id="open-award-report" routerLink='fibi/award' [queryParams]={awardId:award.awardId}><i
+                      class="fa fa-eye pointer"></i> </a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+        <tr *ngIf="reportObject?.selectedReportName == 'Awards by Grant Call' && reportObject?.personId!=null && reportObject?.awards == null">
+          <td>
+            <div class="noDataExists">
+              No report data found
+            </div>
+          </td>
+        </tr>
+        <tbody *ngIf="reportObject?.expenditureList?.length > 0">
+          <tr>
+            <th>Sl No.</th>
+            <th>Cost Element</th>
+            <th>Description</th>
+            <th>Line Item Cost</th>
+          </tr>
+          <tr *ngFor="let expenditure of reportObject?.expenditureList; let i=index">
+            <td>{{i+1}}</td>
+            <td>{{expenditure[1]}}</td>
+            <td>{{expenditure[2]}}</td>
+            <td>{{expenditure[0] | currency:'USD':true}}</td>
+          </tr>
+        </tbody>
+        <tr *ngIf="reportObject?.selectedReportName == 'Expenditure by Award' &&   reportObject?.awardNumber  && reportObject?.expenditureList?.length == 0">
+          <td>
+            <div class="noDataExists">
+              No expenditure data found
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="row" *ngIf="pieChartReportObject.chartType == 'PROPOSAL_CHART'">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="borderBox table-responsive ">
+      <h4 class="borderBoxHeading">Proposals by Grant Call Type ({{pieChartReportObject?.reportType}})</h4>
+      <table class="table tableSkin mb-0">
+        <tbody *ngIf="reportData?.applicationsByGrantCallType[pieChartReportObject?.reportType]?.length > 0">
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>PI</th>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Sponsor</th>
+            <th>Sponsor Deadline</th>
+            <th>Action</th>
+          </tr>
+          <tr *ngFor="let proposal of reportData?.applicationsByGrantCallType[pieChartReportObject?.reportType]">
+            <td>{{proposal.proposalId}}</td>
+            <td title="{{proposal.title}}">{{((proposal.title.length>60)?(proposal.title | slice:0:60)+'...' :
+              (proposal.title))}}</td>
+            <td>{{proposal?.principalInvestigator}}</td>
+            <td>{{proposal?.applicationActivityType}}</td>
+            <td>{{proposal.applicationType}}</td>
+            <td>{{proposal.applicationStatus}}</td>
+            <td>{{proposal?.sponsorName}}</td>
+            <td>{{proposal.submissionDate | date: 'MM/dd/yyyy'}}</td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a title="Open proposal {{proposal?.proposalId}}" class="pointer" id="open-piechart-proposal-report" (click)="viewProposalById($event,proposal.proposalId)"><i
+                      class="fa fa-eye pointer"></i></a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="pieChartReportObject.chartType == 'PROTOCOL_CHART'">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="borderBox table-responsive">
+      <h4 class="borderBoxHeading">IRB Protocols By Type ({{pieChartReportObject?.reportType}})</h4>
+      <table class="table tableSkin mb-0">
+        <tbody *ngIf="reportData?.protocolsByType[pieChartReportObject?.reportType]?.length > 0">
+          <tr>
+            <th>Protocol</th>
+            <th width="40%">Title</th>
+            <th>Lead Unit</th>
+            <th>Protocol Type</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          <tr *ngFor="let IRBDetails of reportData?.protocolsByType[pieChartReportObject?.reportType]">
+            <td>{{IRBDetails.protocolNumber}}</td>
+            <td title="IRBDetails.title">{{((IRBDetails.title.length>60)?(IRBDetails.title | slice:0:60)+'...' :
+              (IRBDetails.title))}}</td>
+            <td>{{IRBDetails.leadUnit}}</td>
+            <td>{{IRBDetails.protocolType}}</td>
+            <td>{{IRBDetails.status}}</td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a title="Open {{IRBDetails.protocolNumber}}" id="open-piechart-protocol-report" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FprotocolProtocol.do%3FmethodToCall%3DdocHandler%26docId%3D'+IRBDetails.documentNumber+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.irb.Protocol%26docFormKey%3D88888888&__login_user='+userName+'&kcComp=true'"><i
+                      class="fa fa-eye"></i> </a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="row" *ngIf="pieChartReportObject.chartType == 'AWARD_CHART'">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="borderBox table-responsive">
+      <h4 class="borderBoxHeading">Awards by Grant Call Type ({{pieChartReportObject?.reportType}})</h4>
+      <table class="table tableSkin mb-0" *ngIf="reportData?.awardByGrantType?.length !== 0">
+        <thead>
+          <tr>
+            <th>Award</th>
+            <th>Account</th>
+            <th>Title</th>
+            <th>Lead Unit</th>
+            <th>Sponsor</th>
+            <th>PI </th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let awardDetails of reportData?.awardByGrantType[pieChartReportObject?.reportType]">
+            <td width="10%">{{awardDetails.awardNumber}}</td>
+            <td>{{awardDetails.accountNumber}}</td>
+            <td title="awardDetails.title">{{((awardDetails.title.length>60)?(awardDetails.title | slice:0:60)+'...' :
+              (awardDetails.title))}}</td>
+            <td>{{awardDetails.unitName}}</td>
+            <td>{{awardDetails.sponsor}}</td>
+            <td>{{awardDetails.fullName}}</td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a title="Open {{awardDetails.awardNumber}}" id="open-piechart-award-report" routerLink='fibi/award' [queryParams]={awardId:awardDetails.awardId}><i
+                      class="fa fa-eye pointer"></i> </a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

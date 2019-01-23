@@ -1,0 +1,310 @@
+<div class="row padding-tbx">
+  <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 text-left">
+      <span *ngIf="result?.grantCall?.grantCallId != null" class="topHeading">#{{result.grantCall.grantCallId}} :
+          {{result?.grantCall?.grantCallName}}</span></div>
+  <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 text-right ">
+      <span class="grantCall_create_proposal_link">
+          <a [routerLink]="['/fibi/proposal/proposalHome']" [queryParams]="{ 'grantId': result.grantCall.grantCallId }"><button
+                  class="btnSkin btnSkinPrimary">Create Proposal</button></a>
+      </span>
+      <button class="btnSkin btnSkinPrimary" id="back-to-grant-btn" (click)="openGoBackModal()">Back to Grant Call</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+      <div class="borderBox">
+          <h4 class="borderBoxHeading">
+              <div class="row">
+                  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">Overview</div>
+                  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 text-right colorBlack">
+                      <span style="margin-right: 10px">
+                          <label style="margin-right: 10px">Status:</label>{{result?.grantCall?.grantCallStatus?.description}}
+                      </span>
+                  </div>
+              </div>
+          </h4>
+          <div class="pullSide">
+              <div class="topGrid gridSkin">
+                  <div class="row">
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                          <label class="block-display">Title:</label>
+                          <span>{{result?.grantCall?.grantCallName}}</span>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
+                          <label class="block-display">Type:</label>
+                          <span>{{result?.grantCall?.grantCallType?.description}}</span>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
+                          <label class="block-display">Opening Date:</label>
+                          <span>{{result?.grantCall?.openingDate | date: 'MM/dd/yyyy'}}</span>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
+                          <label class="block-display">Closing Date:</label>
+                          <span>{{result?.grantCall?.closingDate | date: 'MM/dd/yyyy'}}</span>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                          <label class="block-display">Description:</label>
+                          <p *ngIf="!readMoreOrNotObj.isDescReadMore">{{(result?.grantCall?.description).length>240
+                              ? (result?.grantCall?.description | slice:0:240)+'...' :
+                              result?.grantCall?.description}}
+                              <span *ngIf="(result?.grantCall?.description.length>240)" class="hand-cursor fibiDefaultColor italian"
+                                  (click)="readMoreOrNotObj.isDescReadMore = !readMoreOrNotObj.isDescReadMore">Read
+                                  more<i [ngClass]="readMoreOrNotObj.isDescReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                          </p>
+                          <p *ngIf="readMoreOrNotObj.isDescReadMore">{{result?.grantCall?.description}}
+                              <span *ngIf="(result?.grantCall?.description.length>240)" class="hand-cursor fibiDefaultColor italian"
+                                  (click)="readMoreOrNotObj.isDescReadMore = !readMoreOrNotObj.isDescReadMore">Show
+                                  less<i [ngClass]="readMoreOrNotObj.isDescReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                          </p>
+                      </div>
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                          <label>Grant Theme</label>
+                          <p *ngIf="!readMoreOrNotObj.isThemeReadMore">{{(result?.grantCall?.grantTheme).length>240
+                              ? (result?.grantCall?.grantTheme | slice:0:240)+'...' :
+                              result?.grantCall?.grantTheme}}
+                              <span *ngIf="(result?.grantCall?.grantTheme.length>300)" class="hand-cursor fibiDefaultColor italian"
+                                  (click)="readMoreOrNotObj.isThemeReadMore = !readMoreOrNotObj.isThemeReadMore">Read
+                                  more<i [ngClass]="readMoreOrNotObj.isThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                          </p>
+                          <p *ngIf="readMoreOrNotObj.isThemeReadMore">{{result?.grantCall?.grantTheme}}
+                              <span *ngIf="(result?.grantCall?.grantTheme.length>300)" class="hand-cursor fibiDefaultColor italian"
+                                  (click)="readMoreOrNotObj.isThemeReadMore = !readMoreOrNotObj.isThemeReadMore">Show
+                                  less<i [ngClass]="readMoreOrNotObj.isThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                          </p>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
+                          <label class="block-display">Max Budget (SGD):</label>
+                          <span id="budgetAmount">{{result?.grantCall?.maximumBudget | currency:'USD':true}}</span>
+                      </div>
+                      <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
+                          <label class="block-display">Quantum:</label>
+                          <span>{{result?.grantCall?.quantum}}</span>
+                          <span *ngIf="result.grantCall.quantum == null" class="noDataExists">No
+                              quantum specified</span>
+                      </div>
+                      <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
+                          <label class="block-display">Lead Unit:</label>
+                          <span>{{result?.grantCall?.homeUnitName}}</span>
+                          <span *ngIf="result.grantCall.homeUnitName == null" class="noDataExists">No
+                              lead unit specified</span>
+                      </div>
+                      <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3" *ngIf="result.grantCall.grantTypeCode === 2">
+                          <label class="block-display">External Weblink:</label>
+                          <span>{{result?.grantCall?.externalUrl}}</span>
+                          <span *ngIf="result.grantCall.externalUrl == null" class="noDataExists">No external link provided</span>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-4">
+                          <label class="block-display">Proposal Procedure:</label>
+                          <span *ngIf="result?.grantCall?.applicationProcedure != null">
+                              <p *ngIf="!readMoreOrNotObj.isApplProcReadMore">{{(result?.grantCall?.applicationProcedure).length>240
+                                  ? (result?.grantCall?.applicationProcedure | slice:0:240)+'...' :
+                                  result?.grantCall?.applicationProcedure}}
+                                  <span *ngIf="(result?.grantCall?.applicationProcedure.length>240)"
+                                      class="hand-cursor fibiDefaultColor italian" (click)="readMoreOrNotObj.isApplProcReadMore = !readMoreOrNotObj.isApplProcReadMore">Read
+                                      more<i [ngClass]="readMoreOrNotObj.isApplProcReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                              </p>
+                              <p *ngIf="readMoreOrNotObj.isApplProcReadMore">{{result?.grantCall?.applicationProcedure}}
+                                  <span *ngIf="(result?.grantCall?.applicationProcedure.length>240)"
+                                      class="hand-cursor fibiDefaultColor italian" (click)="readMoreOrNotObj.isApplProcReadMore = !readMoreOrNotObj.isApplProcReadMore">Show
+                                      less<i [ngClass]="readMoreOrNotObj.isApplProcReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                              </p>
+                          </span>
+                          <span *ngIf="result?.grantCall?.applicationProcedure == null" class="noDataExists">No procedure details provided</span>
+                      </div>
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                          <label class="block-display">Other Information:</label>
+                          <span *ngIf="result?.grantCall?.otherInformation != null">
+                              <p *ngIf="!readMoreOrNotObj.isOtherInfoReadMore">{{(result?.grantCall?.otherInformation).length>240
+                                  ? (result?.grantCall?.otherInformation | slice:0:240)+'...' :
+                                  result?.grantCall?.otherInformation}}
+                                  <span *ngIf="(result?.grantCall?.otherInformation.length>240)"
+                                      class="hand-cursor fibiDefaultColor italian" (click)="readMoreOrNotObj.isOtherInfoReadMore = !readMoreOrNotObj.isOtherInfoReadMore">Read
+                                      more<i [ngClass]="readMoreOrNotObj.isOtherInfoReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                              </p>
+                              <p *ngIf="readMoreOrNotObj.isOtherInfoReadMore">{{result?.grantCall?.otherInformation}}
+                                  <span *ngIf="(result?.grantCall?.otherInformation.length>240)"
+                                      class="hand-cursor fibiDefaultColor italian" (click)="readMoreOrNotObj.isOtherInfoReadMore = !readMoreOrNotObj.isOtherInfoReadMore">Show
+                                      less<i [ngClass]="readMoreOrNotObj.isOtherInfoReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></span>
+                              </p>
+                          </span>
+                          <span *ngIf="result?.grantCall?.otherInformation == null" class="noDataExists">No other information provided</span>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                          <label class="block-display">Keywords:</label>
+                          <div class="row">
+                              <div>
+                                  <span *ngIf="result?.grantCall?.grantCallKeywords?.length == 0" class="noDataExists">No keywords specified</span>
+                              </div>
+                              <div>
+                                  <div *ngIf="result?.grantCall?.grantCallKeywords?.length != 0"
+                                      class="fileChips" style="word-break: break-all;">
+                                      <span *ngFor="let keyword of result?.grantCall?.grantCallKeywords;let i = index">{{keyword.scienceKeyword.description}}&nbsp;</span>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="borderBox">
+    <h4 class="borderBoxHeading">Funding Agency Information</h4>
+    <div class="pullSide">
+        <div class="topGrid gridSkin">
+            <div class="row" *ngIf="!(result?.grantCall?.sponsor == null)">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-4">
+                    <label class="block-display">Type:</label>
+                    <span>{{result?.grantCall?.sponsorType?.description}}</span>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-4"><label class="block-display">Name:</label>
+                    <span>{{result?.grantCall?.sponsor?.sponsorName}}</span>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"><label class="block-display">Research Type:</label>
+                    <span>{{result?.grantCall?.activityType?.description}}</span>
+                    <span *ngIf="result?.grantCall?.activityType == null" class="noDataExists">No reasearch type specified</span>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"><label class="block-display">Funding Type:</label>
+                    <span>{{result?.grantCall?.fundingSourceType?.description}}</span>
+                    <span *ngIf="result?.grantCall?.fundingSourceType == null" class="noDataExists">No funding type specified</span>
+                </div>
+            </div>
+            <div class="row" style="padding-left: 25px" *ngIf="result?.grantCall?.sponsor == null">
+                <div class="col-12">
+                    <span class="noDataExists">No funding agency specified</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Point of Contact</h4>
+    <button id="pointOfContactAddBtn" class="addBtn font hoverColor btnPositionFullWidget" (click)="showDataFlagObj.isShowAddPointOfContact = !showDataFlagObj.isShowAddPointOfContact"
+        *ngIf="result?.grantCall?.grantCallContacts?.length > 0"><i
+            class="fa-large" [ngClass]="showDataFlagObj.isShowAddPointOfContact?'fa fa-angle-double-up':'fa fa-angle-double-down'"></i>
+    </button>
+    <table class="table tableSkin grid2">
+        <tbody *ngIf="showDataFlagObj.isShowAddPointOfContact && result?.grantCall?.grantCallContacts?.length > 0">
+            <tr>
+                <th>Sl no</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+            <tr *ngFor="let pointOfContact of result?.grantCall?.grantCallContacts; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{pointOfContact.fullName}}</td>
+                <td>{{pointOfContact.designation}}</td>
+                <td>{{pointOfContact.email}}</td>
+                <td>{{pointOfContact.mobile}}</td>
+            </tr>
+        </tbody>
+        <tr *ngIf="result?.grantCall?.grantCallContacts?.length == 0">
+            <td colspan="6">
+                <div class="noDataExists">There are no point of contact specified</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="row">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+      <div class="borderBox">
+          <h4 class="borderBoxHeading">Area of Research</h4>
+          <button id="areaOfResearchAddBtn" class="addBtn font hoverColor" (click)="showDataFlagObj.isShowAreaOfResearch = !showDataFlagObj.isShowAreaOfResearch;"
+              *ngIf="result?.grantCall?.grantCallResearchAreas?.length > 0">
+              <i [ngClass]="showDataFlagObj.isShowAreaOfResearch?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+                  class="fa-large"></i>
+          </button>
+          <table class="table tableSkin grid2">
+              <tbody *ngIf="showDataFlagObj.isShowAreaOfResearch && result?.grantCall?.grantCallResearchAreas?.length > 0">
+                  <tr>
+                      <th style="width:10%">Sl no</th>
+                      <th style="width:10%">Code</th>
+                      <th>Research Area</th>
+                  </tr>
+                  <tr *ngFor="let researchArea of result?.grantCall?.grantCallResearchAreas;let i = index">
+                      <td>{{i+1}}</td>
+                      <td>{{researchArea.researchAreaCode}}</td>
+                      <td>{{researchArea.researchArea.description}}</td>
+                  </tr>
+              </tbody>
+              <tr *ngIf="result?.grantCall?.grantCallResearchAreas?.length == 0">
+                  <td colspan="4">
+                      <div class="noDataExists">No areas of research included in this grant call</div>
+                  </td>
+              </tr>
+          </table>
+      </div>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">Eligibility</h4>
+      <button id="areaOfResearchAddBtn" class="addBtn font hoverColor" (click)="showDataFlagObj.isShowEligibility = !showDataFlagObj.isShowEligibility"
+          *ngIf="result?.grantCall?.grantCallEligibilities?.length > 0">
+          <i [ngClass]="showDataFlagObj.isShowEligibility?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+              class="fa-large"></i>
+      </button>
+      <table class="table tableSkin grid2">
+        <tbody *ngIf="result?.grantCall?.grantCallEligibilities?.length > 0 && showDataFlagObj.isShowEligibility">
+            <tr>
+                <th>Sl no</th>
+                <th>Criteria</th>
+                <th colspan="2">Type</th>
+            </tr>
+            <tr *ngFor="let eligibility of  result?.grantCall?.grantCallEligibilities;let i = index">
+                <td>{{i+1}}</td>
+                <td>{{eligibility?.grantCallCriteria?.description}}</td>
+                <td colspan="2">{{eligibility?.grantCallEligibilityType?.description}}</td>
+            </tr>
+        </tbody>
+        <tr *ngIf="result?.grantCall?.grantCallEligibilities?.length == 0">
+            <td colspan="5">
+                <div class="noDataExists">There are no eligibility criteria specified</div>
+            </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Supporting Documents</h4>
+    <button id="attachmentExpandBtn" class="addBtn font hoverColor btnPositionFullWidget" (click)="showDataFlagObj.isShowAttachmentList = !showDataFlagObj.isShowAttachmentList" 
+        *ngIf="(result?.grantCall?.grantCallAttachments?.length > 0)">
+        <i [ngClass]="showDataFlagObj.isShowAttachmentList?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+    </button>
+    <table class="table tableSkin grid2">
+        <tbody *ngIf = "result?.grantCall?.grantCallAttachments?.length > 0 && showDataFlagObj.isShowAttachmentList">
+            <tr>
+                <th>Sl No</th>
+                <th>Attachment Type</th>
+                <th>Description</th>
+                <th>File Name</th>
+                <th>Action</th>
+            </tr>
+            <tr *ngFor = "let attachment of result?.grantCall?.grantCallAttachments;let i = index">
+                <td>{{i+1}}</td>
+                <td>{{attachment?.grantCallAttachType?.description}}</td>
+                <td title="{{(attachment?.description?.length>60)?(attachment?.description):''}}">{{(attachment?.description?.length > 60)?(attachment?.description | slice:0:60)+'...':(attachment?.description)}}</td>
+                <td title="{{(attachment?.fileName?.length>60)?(attachment?.fileName):''}}">{{(attachment?.fileName?.length > 60)?(attachment?.fileName | slice:0:60)+'...':(attachment?.fileName)}}</td>
+                <td ><ul class="actionButtonGroup">
+                        <li><a  (click)="downloadAttachments(attachment)" title="Click here to download {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}"> 
+                            <i class="fa fa-download pointer" aria-hidden="true"></i></a></li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+        <tr *ngIf="result?.grantCall?.grantCallAttachments?.length == 0">
+            <td colspan="5"><div class="noDataExists">There are no attachments uploaded</div></td>
+        </tr>
+    </table>
+</div>

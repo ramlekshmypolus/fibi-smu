@@ -1,0 +1,22 @@
+<div class= "table-responsive">
+  <table class="table tableSkin">
+    <thead>
+      <tr>
+        <th>Summary</th>
+        <th class="text-right">Count</th>
+        <th class="text-right">Total Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let summaryView of summaryViewsData">
+        <td *ngIf="summaryView[1] != 0" class="demo-class" (click)="getDetailedResearchSummary(summaryView[0])">
+          <span>{{summaryView[0]}}</span>
+        </td>
+        <td *ngIf="summaryView[1] == 0"><span>{{summaryView[0]}}</span></td>
+        <td class="text-right">{{summaryView[1]}}</td>
+        <td class="text-right" *ngIf="summaryView[2] != null">{{summaryView[2] | currency:'USD':true}}</td>
+        <td class="text-right" *ngIf="summaryView[2] == null">$0.00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

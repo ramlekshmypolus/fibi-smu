@@ -1,0 +1,38 @@
+<button type="button" id="sessionModalButton" style="display:none" data-toggle="modal" data-target="#sessionModal"></button>
+<div class="modal ontop fade show" id="sessionModal" tabindex="-1" role="dialog" aria-labelledby="sessionModal" aria-hidden="true"
+data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog mySkinDialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 *ngIf="isWarningModal" class="modal-title">Still there?</h5>
+				<h5 *ngIf="!isWarningModal" class="modal-title">Logged out</h5>
+			</div>
+			<div class="modal-body">
+				<!-- waring modal body -->
+				<p *ngIf="isWarningModal">
+					<b> Due to inactivity, you will be logged out in <span [innerHTML]="timerTime"></span> minutes.
+					</b><br> For your security, work sessions are automatically logged out after {{ exitTimeInMin }} minutes {{ exitTimeInSec
+					}} seconds of inactivity.
+				</p>
+				<!-- session end modal body -->
+				<p *ngIf="!isWarningModal">
+					<b>You have been logged out due to inactivity.</b><br> For your security, work sessions are automatically logged out
+					after {{timerTime}} minutes of inactivity.
+				</p>
+			</div>
+			<div class="modal-footer">
+				<div *ngIf="isWarningModal">
+					<button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="continueSession()">Continue Working
+					</button>
+					<button type="button" class="btnSkin" data-dismiss="modal" (click)="logout()">Log out
+					</button>
+				</div>
+				<!-- seesion end modal button -->
+				<div *ngIf="!isWarningModal">
+					<button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="logout()">OK
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

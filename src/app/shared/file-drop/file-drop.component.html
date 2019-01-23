@@ -1,0 +1,8 @@
+<div class="drop-zone" appDragNdrop multiple = "multiple" (filesDropEvent)="onFileDrop($event)">
+  <div class="text-wrapper file">
+    <input type="file" id ="drag-drop-file" class="disp-none" (change)="onFileDrop($event.target.files)" />
+    <input type="button" class="btnSkin btnSkinPrimary" value="Choose Files" onclick = "document.getElementById('drag-drop-file').click()"
+    />
+    <div class="ml-2">OR Drop your file here</div>
+  </div>
+</div>

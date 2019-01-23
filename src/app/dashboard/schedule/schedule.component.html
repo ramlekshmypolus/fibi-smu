@@ -1,0 +1,76 @@
+
+
+<!-- SCHEDULE DETAILS -->
+
+<div class="borderBox table-responsive" *ngIf="(serviceRequestList != null && serviceRequestList?.length != 0)">
+  <table class="table tableSkin mb-0">
+    <thead>
+     <tr>
+        <td class="noDataOnChart filterElement">From :</td>
+        <td class="filterElement"><input id="schedule-filtrStrDt" [owlDateTimeTrigger]="fltrStrDt" [owlDateTime]="fltrStrDt"
+            [(ngModel)]="filterStartDate" class="committeeBox text-border-padding">&nbsp;<span class="fa fa-calendar fa-large"
+            [owlDateTimeTrigger]="fltrStrDt"></span>
+          <owl-date-time #fltrStrDt [pickerType]="'calendar'"></owl-date-time>
+        </td>
+        <td class="noDataOnChart filterElement">To :</td>
+        <td class="filterElement"><input id="schedule-fltrEndDt" [owlDateTimeTrigger]="fltrEndDt" [owlDateTime]="fltrEndDt"
+            [(ngModel)]="filterEndDate" class="committeeBox text-border-padding">&nbsp;<span class="fa fa-calendar fa-large"
+            [owlDateTimeTrigger]="fltrEndDt"></span>
+          <owl-date-time #fltrEndDt [pickerType]="'calendar'"></owl-date-time>
+        </td>
+        <td class="filterElement"><button type="button" id="filter-btn" class="btnSkin btnSkinPrimary" (click)="filterSchedule()">Filter</button></td>
+        <td class="filterElement"><button type="button" id="reset-filter-btn" class="btnSkin btn-secondary" (click)="clearFilterSchedule()">Clear</button></td>
+      </tr>
+      <tr>
+        <td id="filterWarning" colspan="9"><span *ngIf="!isValid"class="mandatory">{{errorMsg}}</span></td>
+      </tr>
+      <tr>
+        <th id="schedule-id" (click)="sortResult('scheduleId')" title="Click to sort by Schedule Id">Schedule
+          Id<span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'scheduleId')}"></span>
+        </th>
+        <th id="schedule-date" (click)="sortResult('scheduledDate')" title="Click to sort by Schedule Date">Schedule
+          Date<span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'scheduledDate')}"></span>
+        </th>
+        <th id="schedule-place" (click)="sortResult('place')" title="Click to sort by Place">Place
+          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'place')}"></span>
+        </th>
+        <th id="schedule-deadline"  (click)="sortResult('protocolSubDeadline')" title="Click to sort by Deadline Date">Deadline
+          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'protocolSubDeadline')}"></span>
+        </th>
+        <th style="width: 15%" id="schedule-status">Schedule Status</th>
+        <th id="schedule-committee-id">Committee Id</th>
+        <th id="schedule-committee-name">Committee Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let schedule of serviceRequestList">
+        <td>{{schedule.scheduleId}}</td>
+        <td>{{schedule.scheduledDate | date: 'MM/dd/yyyy'}}</td>
+        <td>{{schedule.place}}</td>
+        <td>{{schedule.protocolSubDeadline | date: 'MM/dd/yyyy'}}</td>
+        <td>{{schedule.scheduleStatus.description}}</td>
+        <td>{{schedule.committeeId}}</td>
+        <td>{{schedule.committeeName}}</td>
+        <td>
+          <ul class="actionButtonGroup">
+            <li><a title="Open" id="open-schedule-btn" (click)="loadSchedules($event,schedule.scheduleId)"><i class="fa fa-eye pointer"></i></a></li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="serviceRequestList?.length == 0 || serviceRequestList == null" class="borderBox noDataOnChart noDataExists">There are no Schedule data for your request</div>
+
+<!--Pagination-->
+<div *ngIf="((serviceRequestList != null && serviceRequestList?.length != 0))">
+  <div class="text-right pagiSkin">
+    <nav class="paginationSkin text-right">
+      <ngb-pagination id="pagination-schedule" [boundaryLinks]="true" [collectionSize]="result.totalServiceRequest"
+        [(page)]="requestObject.currentPage" currentPage=page [pageSize]="requestObject.pageNumber" [maxSize]="3"
+        [rotate]="true" (pageChange)="loadDashboard();_commonService.pageScroll('pageScrollToTop')">
+      </ngb-pagination>
+    </nav>
+  </div>
+</div>

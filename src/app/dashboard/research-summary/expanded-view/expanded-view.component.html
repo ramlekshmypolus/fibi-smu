@@ -1,0 +1,311 @@
+<div class="push4slideMenu pageMinHeight" id="scrollToTop">
+    <div class="container-fluid pushFixedHeaderFooter">
+      <div class="headerPush"></div>
+      <!-- Expanded view for submitted & inprogress proposals -->
+      <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 padding-tbx"
+           *ngIf="researchSummaryIndex === 'PROPOSALSSUBMITTED' || researchSummaryIndex === 'PROPOSALSINPROGRESS'">
+          <div class="borderBox">
+            <h5 class="borderBoxHeading">{{exportDataHeading}}
+              <span style="float: right;"
+                    *ngIf="serviceRequestResult?.proposalViews !== null || serviceRequestResult?.proposalViews?.length > 0">
+                <span style="margin-right: 5px">Export as:</span>
+                <a title="Export data to Excel sheet" style="margin-right: 5px" (click)="exportAsTypeDoc('excel')"><i class="fa fa-file-excel-o hand-cursor"></i></a>
+                <a style="margin-right: 5px">|</a>
+                <a title="Export data to PDF Document" (click)="exportAsTypeDoc('pdf')"><i class="fa fa-file-pdf-o hand-cursor"></i></a>
+              </span>
+            </h5>
+            <div class="table-responsive" *ngIf="serviceRequestResult?.proposalViews?.length > 0">
+              <table class="table tableSkin">
+                <thead>
+                  <tr>
+                    <th>Proposal #</th>
+                    <th>Title</th>
+                    <th>Sponsor</th>
+                    <th>Budget</th>
+                    <th>PI</th>
+                    <th>Sponsor DeadLine</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let proposalDetails of serviceRequestResult?.proposalViews">
+                    <td>{{proposalDetails?.proposalNumber}}</td>
+                    <td>{{proposalDetails?.title}}</td>
+                    <td>{{proposalDetails?.sponsor}}</td>
+                    <td>{{proposalDetails?.totalCost}}</td>
+                    <td>{{proposalDetails?.fullName}}</td>
+                    <td>{{proposalDetails?.deadLinedate}}</td>
+                    <td>
+                      <ul class="actionButtonGroup">
+                        <li><a title="Open {{proposalDetails?.proposalNumber}}" href="#/proposal/proposalHome?proposalId={{proposalDetails?.proposalNumber}}"
+                          [routerLink]="['/proposal/proposalHome']" [queryParams]="{proposalId :proposalDetails?.proposalNumber}"><i
+                            class="fa fa-eye"></i> </a>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="font noDataExists" *ngIf="serviceRequestResult?.proposalViews === null || serviceRequestResult?.proposalViews?.length === 0">
+            No proposals found!
+          </div>
+        </div>
+      </div>
+      </div>
+      <!-- Expanded view for active awards -->
+      <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 padding-tbx"
+           *ngIf="researchSummaryIndex === 'AWARDSACTIVE'">
+          <div class="borderBox">
+            <h5 class="borderBoxHeading">{{exportDataHeading}}
+              <span style="float: right;"
+                    *ngIf="serviceRequestResult?.awardViews !== null || serviceRequestResult?.awardViews?.length > 0">
+                <span style="margin-right: 5px">Export as:</span>
+                <a title="Export data to Excel sheet" style="margin-right: 5px" (click)="exportAsTypeDoc('excel')"><i class="fa fa-file-excel-o hand-cursor"></i></a>
+                <a style="margin-right: 5px">|</a>
+                <a title="Export data to PDF Document" (click)="exportAsTypeDoc('pdf')"><i class="fa fa-file-pdf-o hand-cursor"></i></a>
+              </span>
+            </h5>
+            <div class="table-responsive" *ngIf="serviceRequestResult?.awardViews?.length > 0">
+              <table class="table tableSkin">
+                <thead>
+                  <tr>
+                    <th>Award #</th>
+                    <th>Account</th>
+                    <th>Title</th>
+                    <th>Sponsor</th>
+                    <th>PI</th>
+                    <th>Budget</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let awardDetails of serviceRequestResult?.awardViews">
+                      <td width="8%">{{awardDetails.awardNumber}}</td>
+                      <td>{{awardDetails?.accountNumber}}</td>
+                      <td>{{awardDetails?.title}}</td>
+                      <td>{{awardDetails?.sponsor}}</td>
+                      <td>{{awardDetails?.fullName}}</td>
+                      <td>{{awardDetails?.total_cost}}</td>
+                      <td>
+                        <ul class="actionButtonGroup">
+                          <li><a title="Open {{awardDetails?.awardNumber}}" [routerLink]="'/award'" [queryParams]="{awardId:awardDetails?.awardId}"><i
+                                class="fa fa-eye"></i> </a>
+                          </li>
+                        </ul>
+                      </td>
+                    </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="font noDataExists" *ngIf="serviceRequestResult?.awardViews === null || serviceRequestResult?.awardViews?.length === 0">
+            No proposals found!
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- Expanded view for awards from piechart -->
+      <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 padding-tbx" *ngIf="pieChartIndex ==='AWARD'">
+          <div class="borderBox">
+            <h5 class="borderBoxHeading">{{exportDataHeading}}
+              <span style="float: right;" *ngIf="serviceRequestResult?.awardViews?.length > 0">
+                <span style="margin-right: 5px">Export as:</span>
+                  <a title="Export data to Excel sheet" style="margin-right: 5px" (click)="exportAsTypeDoc('excel')"><i class="fa fa-file-excel-o hand-cursor"></i></a>
+                  <a style="margin-right: 5px">|</a>
+                  <a title="Export data to PDF Document" (click)="exportAsTypeDoc('pdf')"><i class="fa fa-file-pdf-o hand-cursor"></i></a>
+              </span>
+            </h5>
+            <div class="table-responsive">
+              <table class="table tableSkin">
+                <thead>
+                  <tr>
+                    <th>Award #</th>
+                    <th>Account</th>
+                    <th>Title</th>
+                    <th>Sponsor</th>
+                    <th>PI</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let awardDetails of serviceRequestResult?.awardViews">
+                    <td>{{awardDetails[3]}}</td>
+                    <td>{{awardDetails[4]}}</td>
+                    <td>{{awardDetails[5]}}</td>
+                    <td>{{awardDetails[6]}}</td>
+                    <td width="8%">{{awardDetails[7]}}</td>
+                    <td>
+                      <ul class="actionButtonGroup">
+                        <li>
+                          <a title="Open {{awardDetails[0]}}" [routerLink]="['/award']" [queryParams]="{awardId:awardDetails[1]}"><i
+                            class="fa fa-eye"></i></a>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="font noDataExists" *ngIf="serviceRequestResult?.awardViews === null || serviceRequestResult?.awardViews?.length === 0">
+                No awards found!
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- Expanded view for proposals from piechart -->
+        <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 padding-tbx" *ngIf="pieChartIndex=='PROPOSAL'">
+          <div class="borderBox">
+            <h5 class="borderBoxHeading">{{exportDataHeading}}
+              <span style="float: right;" *ngIf="serviceRequestResult?.proposalViews?.length > 0">
+                <span style="margin-right: 5px">Export as:</span>
+                  <a title="Export data to Excel sheet" style="margin-right: 5px" (click)="exportAsTypeDoc('excel')"><i class="fa fa-file-excel-o hand-cursor"></i></a>
+                  <a style="margin-right: 5px">|</a>
+                  <a title="Export data to PDF Document" (click)="exportAsTypeDoc('pdf')"><i class="fa fa-file-pdf-o hand-cursor"></i></a>
+              </span>
+            </h5>
+            <div class="table-responsive">
+              <table class="table tableSkin">
+                <thead>
+                  <tr>
+                    <th>Proposal #</th>
+                    <th>Title </th>
+                    <th>Sponsor</th>
+                    <th>Proposal Type</th>
+                    <th>PI </th>
+                    <th>Sponsor DeadLine</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let proposalDetails of serviceRequestResult?.proposalViews">
+                    <td>{{proposalDetails[0]}}</td>
+                    <td>{{proposalDetails[1]}}</td>
+                    <td>{{proposalDetails[2]}}</td>
+                    <td>{{proposalDetails[3]}}</td>
+                    <td>{{proposalDetails[4]}}</td>
+                    <td>{{proposalDetails[5]| date: 'dd/MM/yyyy'}}</td>
+  
+                    <td>
+                      <ul class="actionButtonGroup">
+                        <li><a title="Open {{proposalDetails[0]}}" href="#/proposal/proposalHome?proposalId={{proposalDetails[0]}}"
+                            [routerLink]="['/proposal/proposalHome']" [queryParams]="{proposalId :proposalDetails[0]}"><i class="fa fa-eye"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="font noDataExists" *ngIf="serviceRequestResult?.proposalViews === null || serviceRequestResult?.proposalViews?.length === 0">
+                No proposals found!
+            </div>
+          </div>
+        </div>
+        </div>
+      <!-- Expanded view for awarded proposals from donutchart -->
+      <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 padding-tbx" *ngIf="donutChartIndex=='AWARDED'">
+          <div class="borderBox">
+            <h5 class="borderBoxHeading">{{exportDataHeading}}
+              <span style="float: right;" *ngIf="serviceRequestResult?.proposalViews?.length > 0">
+                <span style="margin-right: 5px">Export as:</span>
+                  <a title="Export data to Excel sheet" style="margin-right: 5px" (click)="exportAsTypeDoc('excel')"><i class="fa fa-file-excel-o hand-cursor"></i></a>
+                  <a style="margin-right: 5px">|</a>
+                  <a title="Export data to PDF Document" (click)="exportAsTypeDoc('pdf')"><i class="fa fa-file-pdf-o hand-cursor"></i></a>
+              </span>
+            </h5>
+            <div class="table-responsive">
+              <table class="table tableSkin">
+                <thead>
+                  <tr>
+                    <th>Award #</th>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Activity Type</th>
+                    <th>PI</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let awardedProposalDetails of serviceRequestResult?.proposalViews">
+                      <td>{{awardedProposalDetails[1]}}</td>
+                      <td>{{awardedProposalDetails[2]}}</td>
+                      <td>{{awardedProposalDetails[7]}}</td>
+                      <td>{{awardedProposalDetails[5]}}</td>
+                      <td>{{awardedProposalDetails[3]}}</td>
+                      <td>
+                        <ul class="actionButtonGroup">
+                          <li><a title="Open {{awardedProposalDetails[1]}}" [href]="outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+outputPath+'%2FinstitutionalProposalHome.do%3FmethodToCall%3DdocHandler%26docId%3D'+awardedProposalDetails[0]+'%26command%3DdisplayDocSearchView%26docFormKey%3D88888888&__login_user='+userName+'&kcComp=true'"><i
+                               class="fa fa-eye"></i> </a></li>
+                        </ul>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="font noDataExists" *ngIf="serviceRequestResult?.proposalViews === null || serviceRequestResult?.proposalViews?.length === 0">
+                No awarded proposals found!
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- Expanded view for inprogress proposals from donutchart -->
+      <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 padding-tbx" *ngIf="donutChartIndex=='INPROGRESS'">
+          <div class="borderBox">
+            <h5 class="borderBoxHeading">{{exportDataHeading}}
+              <span style="float: right;" *ngIf="serviceRequestResult?.proposalViews?.length > 0">
+                <span style="margin-right: 5px">Export as:</span>
+                  <a title="Export data to Excel sheet" style="margin-right: 5px" (click)="exportAsTypeDoc('excel')"><i class="fa fa-file-excel-o hand-cursor"></i></a>
+                  <a style="margin-right: 5px">|</a>
+                  <a title="Export data to PDF Document" (click)="exportAsTypeDoc('pdf')"><i class="fa fa-file-pdf-o hand-cursor"></i></a>
+              </span>
+            </h5>
+            <div class="table-responsive">
+              <table class="table tableSkin">
+                <thead>
+                  <tr>
+                    <th>Proposal #</th>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th> Budget</th>
+                    <th>PI</th>
+                    <th>Sponsor DeadLine</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let proposalDetails of serviceRequestResult?.proposalViews">
+                      <td>{{proposalDetails[0]}}</td>
+                      <td>{{proposalDetails[1]}}</td>
+                      <td>{{proposalDetails[4]}}</td>
+                      <td>{{proposalDetails[5]}}</td>
+                      <td>{{proposalDetails[2]}}</td>
+                      <td>{{proposalDetails[6]| date: 'dd/MM/yyyy'}}</td>
+                      <td>
+                        <ul class="actionButtonGroup">
+                          <li><a title="Open {{proposalDetails[0]}}" href="#/proposal/proposalHome?proposalId={{proposalDetails[0]}}"
+                            [routerLink]="['/proposal/proposalHome']" [queryParams]="{proposalId :proposalDetails[0]}"><i class="fa fa-eye"></i>
+                              </a>
+                          </li>
+                        </ul>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="font noDataExists" *ngIf="serviceRequestResult?.proposalViews === null || serviceRequestResult?.proposalViews?.length === 0">
+                No proposals found!
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footerPush"></div>
+    </div>
+  </div>
+  

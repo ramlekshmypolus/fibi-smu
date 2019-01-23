@@ -1,0 +1,139 @@
+<div class="text-left">
+  <span class="linkButtonGroup"> <a id="create-disclosure-btn" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FcoiDisclosure.do%3FmethodToCall%3DdocHandler%26command%3Dinitiate%26docTypeName%3DCoiDisclosureDocument%26returnLocation%3D'+_commonService.outputPath+'%252Fkc-krad%252FlandingPage%253FviewId%253DKc-LandingPage-RedirectView&methodToCall=start&__login_user='+disclosureRequestObject.userName+'&kcComp=true'"><i
+        class="fa fa-plus"></i> Create New Disclosure </a>
+  </span>
+</div>
+
+<div class="row">
+  <!--Elastic Search-->
+  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+    <app-elastic [options]="elasticSearchOptions" [placeHolder]="'Search: Disclosure#,  PI Name, Disposition, Status'"
+      (selectedResult)="selectDisclosureElasticResult($event)"></app-elastic>
+  </div>
+  <!--Advance Search-->
+  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 paddingAdvSearch">
+    <a id="advcance-search-disclosure" href="#" class="linkButton" (click)="showAdvanceSearch($event)"> <i class="fa fa-cog"></i>
+      Advanced Search
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div *ngIf="isShowAdvanceSearchOptions" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 advancedTools">
+    <!-- advance search options -->
+    <div class="row">
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input type="text" id="adv-search-disclosure-no" placeholder="Disclosure" maxlength="60" [(ngModel)]="disclosureRequestObject.property1" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input id="adv-search-disclosure-name" type="text" placeholder="Name" maxlength="60" [(ngModel)]="disclosureRequestObject.property2" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input id="adv-search-disclosure-disptn" type="text" placeholder="Disposition" maxlength="60" [(ngModel)]="disclosureRequestObject.property3" />
+      </div>
+      <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+        <input id="adv-search-disclosure-moditemkey" type="text" placeholder="Module item key" maxlength="60"
+          [(ngModel)]="disclosureRequestObject.property4" />
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div class="row">
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-disclosure" class="btnSkin btnSkinPrimary" (click)="searchUsingAdvanceOptions()">Search</button>
+          </div>
+          <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6 col-6">
+            <button id="adv-search-clear-disclosure" class="btnSkin btnSkinSecondary" (click)="clear(); loadDashboard();">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DISCLOSURE elastic search  results-->
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class=" viewMode resultCard" *ngIf="(isShowResultCard == true)">
+      <button class="closeResultCard" (click)="isShowResultCard = false">
+        <i class="fa fa-times"></i>
+      </button>
+      <div class="row">
+        <div class="col-xl-2 col-lg-2 col-md-8 col-sm-8 col-8">
+          <label> Disclosure # </label> <span> <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FcoiDisclosure.do%3FdocId%3D'+elasticResultObject.document_number+'%26docTypeName%3DCoiDisclosureDocument%26methodToCall%3DdocHandler%26command%3DdisplayDocSearchView&__login_user='+disclosureRequestObject.userName+'&kcComp=true'">{{elasticResultObject.coi_disclosure_number}}</a>
+          </span>
+        </div>
+        <div class="col-xl-4 col-lg-2 col-md-4 col-sm-4 col-4">
+          <label> Name </label> <span> <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FcoiDisclosure.do%3FdocId%3D'+elasticResultObject.document_number+'%26docTypeName%3DCoiDisclosureDocument%26methodToCall%3DdocHandler%26command%3DdisplayDocSearchView&__login_user='+disclosureRequestObject.userName+'&kcComp=true'">{{elasticResultObject.full_name}}</a>
+          </span>
+        </div>
+        <div class="col-xl-4 col-lg-2 col-md-8 col-sm-8 col-8">
+          <label> Disposition </label> <span> <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FcoiDisclosure.do%3FdocId%3D'+elasticResultObject.document_number+'%26docTypeName%3DCoiDisclosureDocument%26methodToCall%3DdocHandler%26command%3DdisplayDocSearchView&__login_user='+disclosureRequestObject.userName+'&kcComp=true'">{{elasticResultObject.disclosure_disposition}}</a>
+          </span>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
+          <label> Status </label> <span> <a [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href= '+_commonService.outputPath+'%2FcoiDisclosure.do%3FdocId%3D'+elasticResultObject.document_number+'%26docTypeName%3DCoiDisclosureDocument%26methodToCall%3DdocHandler%26command%3DdisplayDocSearchView&__login_user='+disclosureRequestObject.userName+'&kcComp=true'">{{elasticResultObject.disclosure_status}}</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DISCLOSURE DETAILS -->
+<div class="borderBox  table-responsive" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+  <table class="table tableSkin mb-0">
+    <thead>
+      <tr>
+        <th id="sortby-disclosure-no" (click)="sortResult('coiDisclosureNumber')" class="hand-cursor" title="Click to sort by Disclosure">Disclosure
+          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'coiDisclosureNumber')}"></span>
+        </th>
+        <th style="width: 15%" id="sortby-disclosure-name" (click)="sortResult('fullName')" class="hand-cursor" title="Click to sort by Name"
+          width="40%">Name
+          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'fullName')}"></span>
+        </th>
+        <th id="sortby-disclosure-disptn" (click)="sortResult('disclosureDisposition')" class="hand-cursor" title="Click to sort by Disclosure Disposition">Disclosure
+          Disposition <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'disclosureDisposition')}"></span>
+        </th>
+        <th id="sortby-disclosure-modItemKey" (click)="sortResult('moduleItemKey')" class="hand-cursor" title="Click to sort by Disclosure Status">Disclosure
+          Status <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'moduleItemKey')}"></span>
+        </th>
+        <th id="sortby-disclosure-status" (click)="sortResult('status')" class="hand-cursor" title="Click to sort by Module item key">Module
+          item key <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'status')}"></span>
+        </th>
+        <th id="sortby-disclosure-exptDt" (click)="sortResult('expirationDate')" class="hand-cursor" title="Click to sort by Expiration Date">Expiration
+          Date <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'expirationDate')}"></span>
+        </th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let DisclosureDetails of serviceRequestList">
+        <td>{{DisclosureDetails.coiDisclosureNumber}}</td>
+        <td>{{DisclosureDetails.fullName}}</td>
+        <td>{{DisclosureDetails.disclosureDisposition}}</td>
+        <td>{{DisclosureDetails.disclosureStatus}}</td>
+        <td>{{DisclosureDetails.moduleItemKey}}</td>
+        <td>{{DisclosureDetails.expirationDate | date: 'MM/dd/yyyy'}}</td>
+        <td>
+          <ul class="actionButtonGroup">
+            <li><a title="Open {{DisclosureDetails.coiDisclosureNumber}}" id="open-disclosure-btn" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FcoiDisclosure.do%3FdocId%3D'+DisclosureDetails.documentNumber+'%26docTypeName%3DCoiDisclosureDocument%26methodToCall%3DdocHandler%26command%3DdisplayDocSearchView&__login_user='+disclosureRequestObject.userName+'&kcComp=true'"><i
+                  class="fa fa-eye"></i> </a></li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="this.result?.disclosureViews?.length == 0" class="borderBox noDataOnChart noDataExists">There are no
+  Disclosure data for your request</div>
+
+<!--Pagination-->
+<div *ngIf="((serviceRequestList != null && serviceRequestList?.length != 0))">
+  <div class="text-right pagiSkin">
+    <nav class="paginationSkin text-right">
+      <ngb-pagination id="pagination-disclosure" [boundaryLinks]="true" [collectionSize]="result.totalServiceRequest"
+        [(page)]="disclosureRequestObject.currentPage" currentPage=page [pageSize]="disclosureRequestObject.pageNumber"
+        [maxSize]="3" [rotate]="true" (pageChange)="loadDashboard();_commonService.pageScroll('pageScrollToTop')">
+      </ngb-pagination>
+    </nav>
+  </div>
+</div>

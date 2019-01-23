@@ -1,0 +1,58 @@
+<div class="row">
+	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf = "($isExpenditureVolume | async)" >
+		<div class="borderBox">
+			<h4 class="borderBoxHeading">Expenditures Volume</h4>
+			<app-expenditure-volume-chart *ngIf="researchSummaryData?.expenditureVolumes?.length > 0" [expenditureVolumeData]="researchSummaryData?.expenditureVolumes"></app-expenditure-volume-chart>
+			<div class="noDataExists regularFont" *ngIf="researchSummaryData?.expenditureVolumes?.length === 0">
+				No expenditure data exists
+      </div>
+		</div>
+  </div>
+
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf = "($isResearchSummary | async)" >
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">Research Summary</h4>
+      <app-research-summary-count [summaryViewsData]="researchSummaryData?.summaryViews"></app-research-summary-count>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf = "($isAwardedProposal | async)" >
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">Awarded Proposals by Sponsors</h4>
+      <app-awarded-proposals-donut-chart [summaryAwardDonutChartData]="researchSummaryData?.summaryAwardDonutChart" [deptUnitNumber]="departmentUnitNumber" *ngIf="researchSummaryData?.summaryAwardDonutChart?.length > 0"></app-awarded-proposals-donut-chart>
+      <div class="noDataExists regularFont" *ngIf="researchSummaryData?.summaryAwardDonutChart?.length === 0">
+        No awarded proposals exist
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf = "($isAwardBysponsor | async)" >
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">Awards by Sponsor Types</h4>
+        <app-award-by-sponsor-piechart [summaryAwardPieChartData]="researchSummaryData?.summaryAwardPieChart" [deptUnitNumber]="departmentUnitNumber" *ngIf="researchSummaryData?.summaryAwardPieChart?.length > 0"></app-award-by-sponsor-piechart>
+        <div class="noDataExists regularFont" *ngIf="researchSummaryData?.summaryAwardPieChart?.length === 0">
+          No awards by sponsor type exist
+        </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf = "($inProgressproposal | async)" >
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">In Progress Proposals by Sponsors</h4>
+      <app-inprogress-proposals-donut-chart [summaryProposalDonutChartData]="researchSummaryData?.summaryProposalDonutChart" [deptUnitNumber]="departmentUnitNumber" *ngIf="researchSummaryData?.summaryProposalDonutChart?.length > 0"></app-inprogress-proposals-donut-chart>
+      <div class="noDataExists regularFont" *ngIf="researchSummaryData?.summaryProposalDonutChart?.length === 0">
+        No In Progress proposals exist
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6" *ngIf = "($isProposalBySponsor| async)" >
+    <div class="borderBox">
+      <h4 class="borderBoxHeading">Proposal by Sponsor Types</h4>
+      <app-proposal-by-sponsor-piechart [summaryProposalPieChartData]="researchSummaryData?.summaryProposalPieChart" [deptUnitNumber]="departmentUnitNumber" *ngIf="researchSummaryData?.summaryProposalPieChart?.length > 0"></app-proposal-by-sponsor-piechart>
+      <div class="noDataExists regularFont" *ngIf="researchSummaryData?.summaryProposalPieChart?.length === 0">
+        No In Progress proposals exist
+      </div>
+    </div>
+  </div>
+</div>

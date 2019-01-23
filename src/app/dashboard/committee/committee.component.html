@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-left">
+    <span class="linkButtonGroup">
+      <a title="Open" id="create-committee-btn" routerLink='fibi/committee' [queryParams]="{mode:'create'}"><i class="fa fa-plus"></i>
+        Create New Committee</a>
+    </span>
+  </div>
+</div>
+<!-- Committee Details -->
+<div class="borderBox table-responsive" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
+  <table class="table tableSkin mb-0">
+    <thead>
+      <tr>
+        <th id="sortby-committee-id" (click)="sortResult('committeeId')" title="Click to sort by Committee Id">Committee
+          Id<span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (sortBy == 'committeeId')}"></span>
+        </th>
+        <th id="sortby-committee-name" (click)="sortResult('committeeName')" title="Click to sort by Name">Committee
+          Name<span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (sortBy == 'committeeName')}"></span>
+        </th>
+        <th id="sortby-committee-unit-no" (click)="sortResult('homeUnitNumber')" title="Click to sort by Lead Unit">Home
+          Unit <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (sortBy == 'homeUnitNumber')}"></span>
+        </th>
+        <th id="sortby-committee-unit-name" (click)="sortResult('homeUnitName')" title="Click to sort by Lead Unit">Unit
+          Name <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (sortBy == 'homeUnitNumber')}"></span>
+        </th>
+        <th id="sortby-committee-reviewtype" (click)="sortResult('reviewTypeDescription')" title="Click to sort by Lead Unit">Review
+          Type<span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (sortBy == 'homeUnitNumber')}"></span>
+        </th>
+        <th id="sortby-committee-desc" (click)="sortResult('description')" title="Click to sort by Lead Unit">Committee
+          Description <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (sortBy == 'homeUnitNumber')}"></span>
+        </th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let committeeDetails of serviceRequestList">
+        <td width="8%">{{committeeDetails.committeeId}}</td>
+        <td>{{committeeDetails.committeeName}}</td>
+        <td>{{committeeDetails.homeUnitNumber}}</td>
+        <td>{{committeeDetails.homeUnitName}}</td>
+        <td>{{committeeDetails.reviewTypeDescription}}</td>
+        <td>{{committeeDetails.description}}</td>
+        <td>
+          <ul class="actionButtonGroup">
+            <li><a title="Open" id="open-committee-btn" routerLink='fibi/committee' [queryParams]="{mode:'view','id':committeeDetails.committeeId}"><i
+                  class="fa fa-eye"></i></a></li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="serviceRequestList?.length == 0 || serviceRequestList == null" class="borderBox noDataOnChart noDataExists">There
+  are no committee data for your request</div>
+<!-- Pagination -->
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="(serviceRequestList != null && serviceRequestList?.length != 0)">
+  <div class="text-right pagiSkin">
+    <nav class="paginationSkin text-right">
+      <ngb-pagination id="pagination-committee" [boundaryLinks]="true" [collectionSize]="result.totalServiceRequest"
+        [(page)]="committeeRequestObject.currentPage" currentPage=page [pageSize]="committeeRequestObject.pageNumber"
+        [maxSize]="3" [rotate]="true" (pageChange)="loadDashboard();_commonService.pageScroll('pageScrollToTop')">
+      </ngb-pagination>
+    </nav>
+  </div>
+</div>

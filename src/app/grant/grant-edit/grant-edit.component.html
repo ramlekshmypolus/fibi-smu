@@ -1,0 +1,526 @@
+<div class="row padding-tbx">
+    <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 text-left">
+        <span *ngIf="grantId != null" class="topHeading">#{{grantId}} :
+            {{result?.grantCall?.grantCallName}}</span></div>
+    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 text-right ">
+        <button class="btnSkin btnSkinPrimary" id="back-to-grant-btn" data-target="#warningOrAlertModal"
+            data-toggle="modal" (click)="openGoBackModal()">Back to Grant Call</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="borderBox">
+            <h4 class="borderBoxHeading">
+                <div class="row">
+                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">Overview</div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 text-right colorBlack">
+                        <span style="margin-right: 10px">
+                            <label style="margin-right: 10px">Status:</label>{{result?.grantCall?.grantCallStatus?.description}}
+                        </span>
+                    </div>
+                </div>
+            </h4>
+            <p *ngIf="warningMsgObj.isShowWarning"><span class="mandatory warningMessage">* Please fill all the mandatory fields marked</span></p>
+            <div class="pullSide">
+                <div class="topGrid gridSkin">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                            <label class="block-display"><span class="mandatory">*</span>Title:</label>
+                            <input id="grant-title" type="text" placeholder=""
+                                class="dateBox committeeBox" [(ngModel)]="result.grantCall.grantCallName"/>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
+                            <label class="block-display"><span class="mandatory">*</span>Type:</label>
+                            <select id="grant-type" class="dateBox committeeBox"
+                                [(ngModel)]="selectedGrantCallType" (ngModelChange)="grantCallTypeChange()">
+                                <option [value]=null>--Select--</option>
+                                <option *ngFor="let type of result?.grantCallTypes" [value]="type.description">{{type.description}}</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
+                            <label class="block-display"><span class="mandatory">*</span>Opening Date:</label>
+                            <span class="dateField">
+                                <input type="text" id="grant-opng-date" placeholder="mm/dd/yyyy"
+                                    [(ngModel)]="result.grantCall.openingDate" (keypress)="dateInputRestriction($event)"
+                                    [owlDateTime]="openingDt" class="committeeBox dateWidth" />&nbsp;
+                                <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
+                                    [owlDateTimeTrigger]="openingDt"></span>
+                                <owl-date-time #openingDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation()"></owl-date-time>
+                            </span>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
+                            <label class="block-display"><span class="mandatory">*</span>Closing Date:</label>
+                            <span class="dateField">
+                                <input type="text" id="grant-closing-date" placeholder="mm/dd/yyyy"
+                                    [(ngModel)]="result.grantCall.closingDate" (keypress)="dateInputRestriction($event)"
+                                    [owlDateTime]="closingDt" class="committeeBox dateWidth" />&nbsp;
+                                <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
+                                    [owlDateTimeTrigger]="closingDt"></span>
+                                <owl-date-time #closingDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation()"></owl-date-time>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="warningMsgObj.dateWarningText != null">
+                        <span class="mandatory font">* {{warningMsgObj.dateWarningText}}</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                            <label class="block-display"><span class="mandatory">*</span>Description:</label>
+                            <textarea id="grant-desc" rows="2" placeholder="" [(ngModel)]="result.grantCall.description" class="forTextAreaEntry scheduleBoxes"></textarea>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                            <label><span class="mandatory">*</span>Grant Theme</label>
+                            <textarea rows="2" id="grant-theme" placeholder="" maxlength="3999" [(ngModel)]="result.grantCall.grantTheme" class="forTextAreaEntry scheduleBoxes"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
+                            <label class="block-display"><span class="mandatory">*</span>Max Budget (SGD):</label>
+                            <input id="budgetID" id="grant-budget" type="number" placeholder="" *ngIf="showDataFlagObj.isCurrencyFocusOn == false"
+                                [(ngModel)]="result.grantCall.maximumBudget" class="dateBox committeeBox" />
+                            <span id="budgetAmount" *ngIf="showDataFlagObj.isCurrencyFocusOn == true" (click)="showDataFlagObj.isCurrencyFocusOn = false">{{result?.grantCall?.maximumBudget | currency:'USD':true}}</span>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
+                            <ng-container class="block-display"><label>Quantum:</label><span class="mandatory" *ngIf="warningMsgObj.stringWarningText != null">( {{warningMsgObj.stringWarningText}} )</span></ng-container>
+                            <input id="grant-quantum" type="number" [(ngModel)]="result.grantCall.quantum"
+                                placeholder="" class="dateBox committeeBox" (keypress)="stringInputRestriction($event)" />
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
+                            <label class="block-display">Lead Unit:</label>
+                            <ng2-completer [clearUnselected]="true"
+                                [fillHighlighted]="false" [inputClass]="completerID" [(ngModel)]="result.grantCall.homeUnitName"
+                                placeholder="Search here for Lead Unit" [datasource]="homeUnits"
+                                [minSearchLength]="0" (selected)="homeUnitChangeFunction()">
+                            </ng2-completer>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3" *ngIf="result.grantCall.grantTypeCode === 2">
+                            <label class="block-display"><span class="mandatory">*</span>External Weblink:</label>
+                            <input id="grant-weblink" class="dateBox committeeBox" type="text" placeholder="" [(ngModel)]="result.grantCall.externalUrl" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-4">
+                            <label class="block-display">Proposal Procedure:</label>
+                            <textarea id="grant-proposla-procedure" rows="2" placeholder="" maxlength="3999" 
+                            [(ngModel)]="result.grantCall.applicationProcedure" class="forTextAreaEntry scheduleBoxes">
+                            </textarea>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                            <label class="block-display">Other Information:</label>
+                            <textarea id="grant-other-info" rows="2" placeholder="" maxlength="3999" 
+                            [(ngModel)]="result.grantCall.otherInformation" class="forTextAreaEntry scheduleBoxes">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"><label class="block-display">Keywords:</label>
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"
+                                    style="padding-left: 0px">
+                                    <ng2-completer [inputClass]="completerID" id="grant-keyword"
+                                        [(ngModel)]="selectedKeyword" placeholder="Search here for Keyword"
+                                        [datasource]="keywordsList" [minSearchLength]="0"
+                                        [clearUnselected]="true" [fillHighlighted]="false" (selected)="keywordChangeFunction()">
+                                    </ng2-completer>
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-6 col-sm-12 col-10" style="padding-left: 0px">
+                                    <div *ngIf="result?.grantCall?.grantCallKeywords?.length != 0"
+                                        class="fileChips" style="word-break: break-all;">
+                                        <span *ngFor="let keyword of result?.grantCall?.grantCallKeywords;let i = index">{{keyword.scienceKeyword.description}}
+                                            <i class="fa fa-close hand-cursor" id="grant-remove-keyword"
+                                                (click)="temprySaveGrantObj(keyword.grantKeywordId,i,'KEYWORD')"title="remove this keyword"></i>&nbsp;
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="warningMsgObj.keyWordWarningMessage!=null"><span
+                            class="mandatory regularFont">*{{warningMsgObj.keyWordWarningMessage}}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="borderBox">
+    <h4 class="borderBoxHeading">Funding Agency Information</h4>
+    <div class="pullSide">
+        <div class="topGrid gridSkin">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-4">
+                    <label class="block-display">Type:</label>
+                    <select id="grant-sponsor-type" class="dateBox committeeBox"
+                        [(ngModel)]="selectedSponsorType" (change)="sponsorTypeChange($event.target.value)">
+                        <option [value]=null>--Select--</option>
+                        <option *ngFor="let type of result?.sponsorTypes" (value)="type">{{type.description}}</option>
+                    </select>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-4"><label class="block-display">Name:</label>
+                    <select id="grant-sponsor-name" class="dateBox committeeBox"
+                        [(ngModel)]="selectedSponsor" (change)="sponsorNameChange($event.target.value)">
+                        <option [value]=null>--Select--</option>
+                        <option *ngFor="let sponsor of result?.sponsors" (value)="sponsor">{{sponsor.sponsorName}}</option>
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"><label class="block-display">Research Type:</label>
+                    <select id="grant-research-type" class="dateBox committeeBox"
+                        (change)="researchTypeChange($event.target.value)" [(ngModel)]="selectedActivityType">
+                        <option [value]=null>--Select--</option>
+                        <option *ngFor="let type of result?.activityTypes" (value)="type">{{type.description}}</option>
+                    </select>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"><label class="block-display">Funding Type:</label>
+                    <select id="grant-funding-type" class="dateBox committeeBox"
+                        (change)="fundingTypeChange($event.target.value)" [(ngModel)]="selectedFundingType">
+                        <option [value]=null>--Select--</option>
+                        <option *ngFor="let type of this.result?.fundingSourceTypes" (value)="type">
+                            {{type.description}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Point of Contact</h4>
+    <button id="pointOfContactAddBtn" class="addBtn font hoverColor btnPositionFullWidget" (click)="showDataFlagObj.isShowAddPointOfContact = !showDataFlagObj.isShowAddPointOfContact">
+        <i class="fa-large" [ngClass]="showDataFlagObj.isShowAddPointOfContact?'fa fa-angle-double-up':'fa fa-angle-double-down'"></i>
+    </button>
+    <table class="table tableSkin grid2">
+        <tr id="addPointOfContactRow" *ngIf="showDataFlagObj.isShowAddPointOfContact">
+            <td>
+                <label class="block-display">Employee:</label>
+                <input class="text-center" #isSMUPersonCheck class="checkClass" type="checkbox"
+                    checked (change)="personTypeChanged(isSMUPersonCheck.checked)">
+            </td>
+            <td>
+                <label class="block-display">Name:</label>
+                <input type="text" id="POC-non-employee" *ngIf="!isPOC_EmployeeChecked" class="committeeBox"
+                    placeholder="" [(ngModel)]="pointOfContactObject.fullName">
+                <div class="searchBox memberSearchBox" *ngIf="isPOC_EmployeeChecked">
+                    <app-elastic [options]="elasticSearchOptions" [clearField]="clearField" [placeHolder]="'Search here for contact person'"
+                        (selectedResult)="selectedPOC($event)"></app-elastic>
+                </div>
+            </td>
+            <td>
+                <label class="block-display">Designation:</label>
+                <input type="text" id="POC-designation" class="dateBox committeeBox" placeholder=""
+                    [(ngModel)]="pointOfContactObject.designation">
+            </td>
+            <td>
+                <label class="block-display">Email:</label>
+                <input type="text" id="POC-email" class="dateBox" [ngClass]="{'committeeBoxNotEditable':isSMUPersonCheck.checked , 'committeeBox': !isSMUPersonCheck.checked}" [(ngModel)]="pointOfContactObject.email"
+                    [disabled]="isSMUPersonCheck.checked">
+            </td>
+            <td>
+                <label class="block-display">Phone:</label>
+                <div class="row">
+                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                        <input type="number" id="POC-phone" class="dateBox" [ngClass]="{'committeeBoxNotEditable':isSMUPersonCheck.checked , 'committeeBox': !isSMUPersonCheck.checked}" 
+                            (keypress)="stringInputRestriction($event)" [(ngModel)]="pointOfContactObject.mobile"
+                            [disabled]="isSMUPersonCheck.checked">
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                        <button class="btnSkin btnSkinPrimary" id="POC-add-btn" (click)="addPointOfContact()">Add</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tbody *ngIf="showDataFlagObj.isShowAddPointOfContact && result?.grantCall?.grantCallContacts?.length > 0">
+            <tr>
+                <th>Sl no</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Action</th>
+            </tr>
+            <tr *ngFor="let pointOfContact of result?.grantCall?.grantCallContacts; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{pointOfContact.fullName}}</td>
+                <td>{{pointOfContact.designation}}</td>
+                <td>{{pointOfContact.email}}</td>
+                <td>{{pointOfContact.mobile}}</td>
+                <td>
+                    <ul class="actionButtonGroup">
+                        <li><a href="#" data-toggle="modal" id="POC-delete-btn" data-target="#warningOrAlertModal"
+                                (click)="temprySaveGrantObj(pointOfContact.grantContactId,i, 'POC')"><i class="fa fa-trash-o pointer"
+                                    aria-hidden="true" title="remove this person"></i></a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+        <tr *ngIf="warningMsgObj.POCWarningMsg != null">
+            <td colspan="6"><span class="mandatory">*{{warningMsgObj.POCWarningMsg}}</span></td>
+        </tr>
+    </table>
+</div>
+<div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="borderBox">
+            <h4 class="borderBoxHeading">Area of Research</h4>
+            <button id="areaOfResearchAddBtn" class="addBtn font hoverColor" (click)="showDataFlagObj.isShowAreaOfResearch = !showDataFlagObj.isShowAreaOfResearch">
+                <i [ngClass]="showDataFlagObj.isShowAreaOfResearch?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+            </button>
+            <table class="table tableSkin grid2">
+                <tr id="addAreaOfResearchRow" *ngIf="showDataFlagObj.isShowAreaOfResearch">
+                    <td colspan="3"><label class="block-display">Research Area:</label>
+                        <div class="row">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                                <ng2-completer title="" id="area-of-research-input" [clearUnselected]="true"
+                                    [fillHighlighted]="false" [(ngModel)]="selectedArea"
+                                    placeholder="Search here for Area of Research" [datasource]="areaList"
+                                    [minSearchLength]="0">
+                                </ng2-completer>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                <button class="btnSkin btnSkinPrimary" id="area-of-research-add-btn"
+                                    (click)="addResearchArea()">Add</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tbody *ngIf="showDataFlagObj.isShowAreaOfResearch && result?.grantCall?.grantCallResearchAreas?.length > 0">
+                    <tr>
+                        <th style="width:10%">Sl no</th>
+                        <th style="width:10%">Code</th>
+                        <th>Research Area</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr *ngFor="let researchArea of result?.grantCall?.grantCallResearchAreas;let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{researchArea.researchAreaCode}}</td>
+                        <td>{{researchArea.researchArea.description}}</td>
+                        <td>
+                            <ul class="actionButtonGroup">
+                                <li><a href="#" data-toggle="modal" id="delete-area-of-research-btn"
+                                        data-target="#warningOrAlertModal" (click)="temprySaveGrantObj(researchArea.grantResearchAreaId,i,'AREA')"><i
+                                            class="fa fa-trash-o pointer" title="remove this research area"
+                                            aria-hidden="true"></i></a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr *ngIf="warningMsgObj.areaOfResearchWarning">
+                        <td colspan="4"><span class="mandatory">* Research area already added</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="borderBox">
+            <h4 class="borderBoxHeading">Eligibility</h4>
+            <button id="areaOfResearchAddBtn" class="addBtn font hoverColor" (click)="showaddEligibility()">
+                <i [ngClass]="showDataFlagObj.isShowEligibility?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+            </button>
+            <table class="table tableSkin grid2">
+                <tr id="addEligibilityRow" *ngIf="showDataFlagObj.isShowEligibility">
+                    <td colspan="2"><label class="block-display">Criteria:</label>
+                        <select id="grant-eligible-criteria" class="committeeBox dateBox" [(ngModel)]="selectedEligibilityCriteria">
+                            <option [value]=null>--Select--</option>
+                            <option *ngFor="let criteria of result?.grantCallCriterias" [ngValue]="criteria">{{criteria.description}}</option>
+                        </select></td>
+                    <td colspan="2"><label class="block-display">Type:</label>
+                        <div class="row">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                                <select id="grant-eligible-type" class="committeeBox dateBox" [(ngModel)]="selectedEligibilityType">
+                                    <option [value]=null>--Select--</option>
+                                    <option *ngFor="let type of result?.grantCallEligibilityTypes" [ngValue]="type">{{type.description}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-4 col-lg- col-md-4 col-sm-4 col-4">
+                                <button class="btnSkin btnSkinPrimary" id="grant-eligible-add-btn"
+                                    (click)="addEligibility()">Add</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tbody *ngIf="result?.grantCall?.grantCallEligibilities?.length > 0 && showDataFlagObj.isShowEligibility">
+                    <tr>
+                        <th>Sl no</th>
+                        <th>Criteria</th>
+                        <th colspan="2">Type</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr *ngFor="let eligibility of result?.grantCall?.grantCallEligibilities;let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{eligibility?.grantCallCriteria?.description}}</td>
+                        <td colspan="2">{{eligibility?.grantCallEligibilityType?.description}}</td>
+                        <td>
+                            <ul class="actionButtonGroup">
+                                <li><a href="#" data-toggle="modal" id="grant-eligible-remove-btn"
+                                        data-target="#warningOrAlertModal" (click)="temprySaveGrantObj(eligibility.grantEligibilityId,i,'ELIGIBILITY')"><i
+                                            class="fa fa-trash-o pointer" title="remove this eligibility criteria"
+                                            aria-hidden="true"></i></a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr *ngIf="warningMsgObj.isEligibilityWarning">
+                        <td colspan="5"><span class="mandatory">* Eligibility already added</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Supporting Documents</h4>
+    <button title="add new attachment" class="addBtn font attachBtn" style="right:55px" id="add-attachment-btn" (click)="clearAttachmentDetails();
+    modalHideAndShowObj.isShowAddAttachment = true;" data-toggle="modal" data-target="#addAttachment">
+        <i class="fa fa-plus"></i>&nbsp;<span>Add Attachment</span>
+    </button>
+    <button id="attachmentExpandBtn" class="addBtn font hoverColor btnPositionFullWidget" (click)="showDataFlagObj.isShowAttachmentList = !showDataFlagObj.isShowAttachmentList" 
+        *ngIf="(result?.grantCall?.grantCallAttachments?.length > 0)">
+        <i [ngClass]="showDataFlagObj.isShowAttachmentList?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+    </button>
+    <table class="table tableSkin grid2">
+        <tbody *ngIf = "result?.grantCall?.grantCallAttachments?.length > 0 && showDataFlagObj.isShowAttachmentList">
+            <tr >
+                <th >Sl No</th>
+                <th >Attachment Type</th>
+                <th >Description</th>
+                <th >File Name</th>
+                <th >Action</th>
+            </tr>
+            <tr *ngFor = "let attachment of result?.grantCall?.grantCallAttachments;let i = index">
+                <td>{{i+1}}</td>
+                <td>{{attachment?.grantCallAttachType?.description}}</td>
+                <td title="{{(attachment?.description?.length>60)?(attachment?.description):''}}">{{(attachment?.description?.length > 60)?(attachment?.description | slice:0:60)+'...':(attachment?.description)}}</td>
+                <td title="{{(attachment?.fileName?.length>60)?(attachment?.fileName):''}}">{{(attachment?.fileName?.length > 60)?(attachment?.fileName | slice:0:60)+'...':(attachment?.fileName)}}</td>
+                <td ><ul class="actionButtonGroup">
+                        <li><a (click)="temprySaveGrantObj(attachment.attachmentId,i,'ATTACHMENT')" 
+                            data-toggle="modal" data-target="#warningOrAlertModal" title="Click here to delete {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}"><i
+                                class="fa fa-trash-o" ></i></a></li>
+                        <li><a  (click)="downloadAttachments(attachment)" title="Click here to download {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}"> 
+                            <i class="fa fa-download pointer" aria-hidden="true"></i></a></li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="col-12 text-right">
+    <p class="mandatory warningMessage" *ngIf="saveSuccessfulMessage!=null">
+        {{saveSuccessfulMessage}}</p>
+    <button type="button" class="btnSkin btnPublish" (click)="checkGrantCallPublish()" data-toggle="modal"
+        data-target="#warningOrAlertModal" [disabled]="result.grantCall.grantCallId ==null"
+        *ngIf="result?.grantCall?.grantCallId !=null">Publish</button>
+    <button type="button" class="btnSkin btnSkinPrimary" (click)="saveGrant()" data-target="#warningOrAlertModal"
+        data-toggle="modal">Save</button>
+</div>
+<!-- MODAL SECTION -->
+<!-- ADD ATTACHMENT MODAL -->
+<div class="modal fade mySkinDialog" id="addAttachment" tabindex="-1" role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg"
+        role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="skippedSchedulesLongTitle">Add Attachment</h5>
+                <button type="button" class="close" data-dismiss="modal"
+                    aria-label="Close" (click)="clearAttachmentDetails();modalHideAndShowObj.isShowAddAttachment = false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="pullSide">
+                    <div class="gridSkin">
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-4 attach-desc">
+                                <label><span class="mandatory">*</span> Attachment Type:</label><br/>
+                                <select class="committeeBox dateBox" [(ngModel)] = "selectedAttachmentType">
+                                    <option [value]=null>--Select--</option>
+                                    <option *ngFor="let attachType of result?.grantCallAttachTypes" [ngValue]="attachType">
+                                        {{attachType.description}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-xl-8 col-lg-8 col-md-6 col-sm-12 col-8 attach-desc">
+                                <label>Description:</label><br/>
+                                <textarea id="desc" rows="1" [(ngModel)] = "attachmentDescription" placeholder="" class="scheduleBoxes forTextAreaEntry"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <app-file-drop [multiple]="true" (filesDropEvent)="fileDrop($event)"></app-file-drop>
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="fileChips regularFont">
+                            <span *ngFor="let item of uploadedFile; let i=index"
+                                title="{{(item?.name?.length > 30)?item?.name:''}}">
+                                    {{(item?.name?.length > 30)?(item?.name | slice:0:30)+'...':(item?.name)}}
+                                <i class="fa fa-close hand-cursor" title="Remove File" (click)="deleteFromUploadedFileList(i)"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="warningMsgObj.attachmentWarningMsg != null"><span class="mandatory font">{{warningMsgObj.attachmentWarningMsg}}</span></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" (click)="clearAttachmentDetails();modalHideAndShowObj.isShowAddAttachment = false">Close</button>
+                <button type="button" class="btnSkin btnSkinPrimary" (click)="addAttachments()" >Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- WARNING AND ALERT MODAL -->
+<div class="modal fade show mySkinDialog modal-opacity" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true || modalHideAndShowObj.isShowDeleteModal == true || modalHideAndShowObj.isShowPublishWarningModal == true"
+    tabindex="-1" id="warningOrAlertModal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true">Warning..!</h5>
+                <h5 class="modal-title" *ngIf="modalHideAndShowObj.isShowDeleteModal == true">Delete</h5>
+                <h5 class="modal-title" *ngIf="modalHideAndShowObj.isShowPublishWarningModal == true">Publish</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalHideAndShowObj = {};">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true">
+                <p>You are currently creating/editing a grant call. Unsaved changes may lost if you go back. Do you
+                    want to stay on this page.?</p>
+            </div>
+            <div class="modal-body" *ngIf="modalHideAndShowObj.isShowDeleteModal == true">
+                <p>Are you sure you want to delete this item?</p>
+            </div>
+            <div class="modal-body" *ngIf="modalHideAndShowObj.isShowPublishWarningModal == true">
+                <p>Are you sure you want to publish this grant call?</p>
+            </div>
+            <div class="modal-footer" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true ||modalHideAndShowObj.isShowDeleteModal == true || modalHideAndShowObj.isShowPublishWarningModal == true">
+                <button type="button" class="btnSkin btn-secondary" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true"
+                    (click)="backToList($event)" data-dismiss="modal" data-toggle="modal">No</button>
+                <button type="button" class="btnSkin btn-secondary" *ngIf="modalHideAndShowObj.isShowDeleteModal == true || modalHideAndShowObj.isShowPublishWarningModal == true"
+                    (click)="modalHideAndShowObj = {};" data-dismiss="modal" data-toggle="modal">No</button>
+                <button type="button" class="btnSkin btnSkinPrimary" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true"
+                    (click)="modalHideAndShowObj = {};" data-dismiss="modal">Yes</button>
+                <button type="button" class="btnSkin btnSkinPrimary" *ngIf="modalHideAndShowObj.isShowDeleteModal == true"
+                    (click)="deleteGrantDetail()" data-dismiss="modal">Yes</button>
+                <button type="button" class="btnSkin btnSkinPrimary" *ngIf="modalHideAndShowObj.isShowPublishWarningModal == true"
+                    (click)="publishGrantCall()" data-dismiss="modal">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Saved Successfully modal -->
+<div class="modal fade show mySkinDialog modal-opacity" tabindex="-1" id="saveAlertModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalHideAndShowObj = {};">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Grant Call has been saved successfully</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btnSkin btnSkinPrimary" (click)="modalHideAndShowObj = {};" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<button id="openSaveModal" [hidden]="true" data-toggle="modal" data-target="#saveAlertModal">modal</button>
