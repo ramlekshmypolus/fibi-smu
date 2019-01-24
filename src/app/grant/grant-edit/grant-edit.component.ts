@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CompleterService } from 'ng2-completer';
 
 import { CommonService } from '../../common/services/common.service';
-import { GrantService } from '../grant.service';
+import { GrantService } from '../services/grant.service';
 
 declare var $: any;
 
@@ -500,7 +500,6 @@ export class GrantEditComponent implements OnInit {
         a.click();
       } );
     } else {
-      console.log(attachment);
       const URL = 'data:' + attachment.mimeType + ';base64,' + attachment.attachment;
       const a = document.createElement( 'a' );
       a.href = URL;

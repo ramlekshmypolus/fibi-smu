@@ -61,43 +61,43 @@
     <div class="row">
       <div class="col-xl-1 col-lg-2 col-md-8 col-sm-8 col-8">
         <label> Proposal# </label> <span>
-          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+          <a (click)="setCurrentProposalTab()" routerLink='/fibi/proposal' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
             elasticResultObject?.proposal_id }}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
         <label>Title</label> <span>
-          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+          <a (click)="setCurrentProposalTab()" routerLink='/fibi/proposal' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
             elasticResultObject?.title }}</a>
         </span>
       </div>
       <div class="col-xl-3 col-lg-3 col-md-8 col-sm-8 col-8">
         <label> PI</label> <span>
-          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+          <a (click)="setCurrentProposalTab()" routerLink='/fibi/proposal' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
             elasticResultObject?.full_name}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-1 col-md-4 col-sm-4 col-4">
         <label>Category </label> <span>
-          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+          <a (click)="setCurrentProposalTab()" routerLink='/fibi/proposal' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
             elasticResultObject?.category}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-8 col-sm-8 col-8">
         <label> Type </label> <span>
-          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+          <a (click)="setCurrentProposalTab()" routerLink='/fibi/proposal' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
             elasticResultObject?.type}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
         <label> Status </label> <span>
-          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+          <a (click)="setCurrentProposalTab()" routerLink='/fibi/proposal' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
             elasticResultObject?.status}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
         <label> Sponsor </label> <span>
-          <a routerLink='fibi/proposal/proposalHome' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
+          <a (click)="setCurrentProposalTab()" routerLink='/fibi/proposal' [queryParams]="{proposalId:elasticResultObject.proposal_id}">{{
             elasticResultObject?.sponsor}}</a>
         </span>
       </div>

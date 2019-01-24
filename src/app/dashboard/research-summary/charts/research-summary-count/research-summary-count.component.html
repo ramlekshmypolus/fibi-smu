@@ -14,7 +14,7 @@
         </td>
         <td *ngIf="summaryView[1] == 0"><span>{{summaryView[0]}}</span></td>
         <td class="text-right">{{summaryView[1]}}</td>
-        <td class="text-right" *ngIf="summaryView[2] != null">{{summaryView[2] | currency:'USD':true}}</td>
+        <td class="text-right" *ngIf="summaryView[2] != null">{{summaryView[2] | currency:'USD'}}</td>
         <td class="text-right" *ngIf="summaryView[2] == null">$0.00</td>
       </tr>
     </tbody>

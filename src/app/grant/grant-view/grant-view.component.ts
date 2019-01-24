@@ -22,4 +22,8 @@ export class GrantViewComponent implements OnInit {
     this._router.navigate( ['fibi/dashboard/grantCall'] );
   }
 
+  setCurrentProposalTab() {
+    localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+  }
+
 }

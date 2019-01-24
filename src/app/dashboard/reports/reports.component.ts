@@ -91,7 +91,8 @@ export class ReportsComponent implements OnInit {
    */
   viewProposalById(event: any, proposalId) {
     event.preventDefault();
-    this._router.navigate(['fibi/proposal/proposalHome'], { queryParams: { 'proposalId': proposalId } });
+    localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+    this._router.navigate(['fibi/proposal'], { queryParams: { 'proposalId': proposalId } });
   }
 
 }

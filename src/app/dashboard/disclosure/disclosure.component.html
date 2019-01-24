@@ -84,23 +84,23 @@
     <thead>
       <tr>
         <th id="sortby-disclosure-no" (click)="sortResult('coiDisclosureNumber')" class="hand-cursor" title="Click to sort by Disclosure">Disclosure
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'coiDisclosureNumber')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (disclosureRequestObject.sortBy == 'coiDisclosureNumber')}"></span>
         </th>
         <th style="width: 15%" id="sortby-disclosure-name" (click)="sortResult('fullName')" class="hand-cursor" title="Click to sort by Name"
           width="40%">Name
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'fullName')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (disclosureRequestObject.sortBy == 'fullName')}"></span>
         </th>
         <th id="sortby-disclosure-disptn" (click)="sortResult('disclosureDisposition')" class="hand-cursor" title="Click to sort by Disclosure Disposition">Disclosure
-          Disposition <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'disclosureDisposition')}"></span>
+          Disposition <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (disclosureRequestObject.sortBy == 'disclosureDisposition')}"></span>
         </th>
         <th id="sortby-disclosure-modItemKey" (click)="sortResult('moduleItemKey')" class="hand-cursor" title="Click to sort by Disclosure Status">Disclosure
-          Status <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'moduleItemKey')}"></span>
+          Status <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (disclosureRequestObject.sortBy == 'moduleItemKey')}"></span>
         </th>
         <th id="sortby-disclosure-status" (click)="sortResult('status')" class="hand-cursor" title="Click to sort by Module item key">Module
-          item key <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'status')}"></span>
+          item key <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (disclosureRequestObject.sortBy == 'status')}"></span>
         </th>
         <th id="sortby-disclosure-exptDt" (click)="sortResult('expirationDate')" class="hand-cursor" title="Click to sort by Expiration Date">Expiration
-          Date <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (disclosureRequestObject.sortBy == 'expirationDate')}"></span>
+          Date <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (disclosureRequestObject.sortBy == 'expirationDate')}"></span>
         </th>
         <th>Action</th>
       </tr>

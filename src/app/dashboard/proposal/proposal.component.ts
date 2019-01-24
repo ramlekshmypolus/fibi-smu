@@ -97,7 +97,8 @@ export class ProposalListComponent implements OnInit {
   /** navigate to proposal create page if the logged in user has permission*/
   gotoProposal() {
     if (localStorage.getItem('createProposal') === 'true') {
-        this._router.navigate(['fibi/proposal/proposalHome']);
+        localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+        this._router.navigate(['fibi/proposal']);
     } else {
         this.isShowNoCreateProposalModal = true;
     }
@@ -143,7 +144,8 @@ export class ProposalListComponent implements OnInit {
    */
   viewProposalById(event: any, proposalId) {
     event.preventDefault();
-    this._router.navigate(['fibi/proposal/proposalHome'], { queryParams: { 'proposalId': proposalId } });
+    localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+    this._router.navigate(['fibi/proposal'], { queryParams: { 'proposalId': proposalId } });
   }
 
   /** export proposal data as excel sheet or pdf
@@ -185,7 +187,8 @@ export class ProposalListComponent implements OnInit {
         userFullName: localStorage.getItem('currentUser')
     };
     this._dashboardService.copyProposal(proposalVO).subscribe((success: any) => {
-        this._router.navigate(['fibi/proposal/proposalHome'], { queryParams: { 'proposalId': success.proposal.proposalId } });
+        localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+        this._router.navigate(['fibi/proposal'], { queryParams: { 'proposalId': success.proposal.proposalId } });
     });
   }
 
@@ -252,4 +255,7 @@ export class ProposalListComponent implements OnInit {
     }
   }
 
+  setCurrentProposalTab() {
+    localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+  }
 }

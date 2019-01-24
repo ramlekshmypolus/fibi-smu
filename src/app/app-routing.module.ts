@@ -12,7 +12,9 @@ const routes: Routes = [
       { path: 'dashboard', loadChildren: 'app/dashboard/dashboard.module#DashboardModule',
         canActivate: [AuthGuard] },
       { path: 'grant',  loadChildren: 'app/grant/grant.module#GrantModule',
-        canActivate: [AuthGuard] }
+        canActivate: [AuthGuard] },
+      { path: 'proposal', loadChildren: 'app/proposal/proposal.module#ProposalModule',
+        canActivate: [AuthGuard]}
     ]
   },
 

@@ -4,7 +4,7 @@
           {{result?.grantCall?.grantCallName}}</span></div>
   <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 text-right ">
       <span class="grantCall_create_proposal_link">
-          <a [routerLink]="['/fibi/proposal/proposalHome']" [queryParams]="{ 'grantId': result.grantCall.grantCallId }"><button
+          <a (click)="setCurrentProposalTab()" [routerLink]="['/fibi/proposal']" [queryParams]="{ 'grantId': result.grantCall.grantCallId }"><button
                   class="btnSkin btnSkinPrimary">Create Proposal</button></a>
       </span>
       <button class="btnSkin btnSkinPrimary" id="back-to-grant-btn" (click)="openGoBackModal()">Back to Grant Call</button>
@@ -78,7 +78,7 @@
                   <div class="row">
                       <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
                           <label class="block-display">Max Budget (SGD):</label>
-                          <span id="budgetAmount">{{result?.grantCall?.maximumBudget | currency:'USD':true}}</span>
+                          <span id="budgetAmount">{{result?.grantCall?.maximumBudget | currency:'USD'}}</span>
                       </div>
                       <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
                           <label class="block-display">Quantum:</label>

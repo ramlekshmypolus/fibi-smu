@@ -38,8 +38,8 @@
                     <td>{{proposalDetails?.deadLinedate}}</td>
                     <td>
                       <ul class="actionButtonGroup">
-                        <li><a title="Open {{proposalDetails?.proposalNumber}}" href="#/proposal/proposalHome?proposalId={{proposalDetails?.proposalNumber}}"
-                          [routerLink]="['/proposal/proposalHome']" [queryParams]="{proposalId :proposalDetails?.proposalNumber}"><i
+                        <li><a title="Open {{proposalDetails?.proposalNumber}}" (click)="setCurrentProposalTab()" href="#/fibi/proposal?proposalId={{proposalDetails?.proposalNumber}}"
+                          [routerLink]="['/fibi/proposal']" [queryParams]="{proposalId :proposalDetails?.proposalNumber}"><i
                             class="fa fa-eye"></i> </a>
                         </li>
                       </ul>
@@ -191,8 +191,8 @@
   
                     <td>
                       <ul class="actionButtonGroup">
-                        <li><a title="Open {{proposalDetails[0]}}" href="#/proposal/proposalHome?proposalId={{proposalDetails[0]}}"
-                            [routerLink]="['/proposal/proposalHome']" [queryParams]="{proposalId :proposalDetails[0]}"><i class="fa fa-eye"></i>
+                        <li><a title="Open {{proposalDetails[0]}}" (click)="setCurrentProposalTab()" href="#/fibi/proposal?proposalId={{proposalDetails[0]}}"
+                            [routerLink]="['/fibi/proposal']" [queryParams]="{proposalId :proposalDetails[0]}"><i class="fa fa-eye"></i>
                           </a>
                         </li>
                       </ul>
@@ -289,8 +289,8 @@
                       <td>{{proposalDetails[6]| date: 'dd/MM/yyyy'}}</td>
                       <td>
                         <ul class="actionButtonGroup">
-                          <li><a title="Open {{proposalDetails[0]}}" href="#/proposal/proposalHome?proposalId={{proposalDetails[0]}}"
-                            [routerLink]="['/proposal/proposalHome']" [queryParams]="{proposalId :proposalDetails[0]}"><i class="fa fa-eye"></i>
+                          <li><a title="Open {{proposalDetails[0]}}"(click)="setCurrentProposalTab()" href="#/fibi/proposal?proposalId={{proposalDetails[0]}}"
+                            [routerLink]="['/fibi/proposal']" [queryParams]="{proposalId :proposalDetails[0]}"><i class="fa fa-eye"></i>
                               </a>
                           </li>
                         </ul>

@@ -1,0 +1,39 @@
+<div class="push4slideMenu pageMinHeight" id="scrollToTop">
+	<div class="container-fluid pushFixedHeaderFooter">
+    <div class="headerPush"></div>
+    <section class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="fixed-proposalHeader"><br>
+          <div class="row">
+            <div class="col-6 text-left"><span *ngIf="result?.proposal?.proposalId" class="topHeading">#{{result?.proposal?.proposalId}}: {{result?.proposal?.title}}</span></div>
+            <div class="col-6 text-right back-button">
+              <button class="btnSkin btnSkinPrimary" title="Back to Proposal List" data-target="#confirmGoBack" data-toggle="modal" (click)="openGoBackModal()">Back to Proposal List</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+                <ul class="tabs">
+                  <li role="presentation" [ngClass]="{'active': showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'}">
+                    <a title="View Proposal" data-target="#gotoBudget" data-toggle="modal" (click)="showTab('PROPOSAL_HOME')"> Proposal </a>
+                  </li>
+                  <li role="presentation" [ngClass]="{'active': showOrHideDataFlagsObj.currentTab == 'BUDGET'}">
+                    <a title="View Detailed Budget" (click)="showTab('BUDGET')"> Budget</a>
+                  </li>
+                  <li role="presentation" [ngClass]="{'active': showOrHideDataFlagsObj.currentTab == 'QUESTIONNAIRE'}">
+                    <a title="View Questionnaire" (click)="showTab('QUESTIONNAIRE')"> Questionnaire</a>
+                  </li>
+                  <span *ngIf="result?.proposal?.ipNumber" class="topHeading pt-2 rate-float margin-IP">IP&nbsp;#{{result?.proposal?.ipNumber}}</span>
+                </ul>
+            </div>
+          </div>
+        </div>
+        <app-proposal-edit *ngIf="showOrHideDataFlagsObj.mode != 'view'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-proposal-edit>
+        <app-proposal-view *ngIf="showOrHideDataFlagsObj.mode == 'view'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-proposal-view>
+      </div>
+    </section>
+    <div class="col-12 text-right">
+      <button type="button" class="btnSkin btnPublish" (click)="saveProposal('fullSave')">Save</button>
+    </div>
+    <div class="footerPush"></div>
+	</div>
+</div>
