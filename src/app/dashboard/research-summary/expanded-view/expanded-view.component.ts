@@ -19,13 +19,13 @@ export class ExpandedViewComponent implements OnInit {
   exportIndex = '';
   exportDataHeading = '';
 
-
   constructor( private _route: ActivatedRoute, private _expandedViewService: ExpandedViewService) { }
 
   ngOnInit() {
     this.researchSummaryIndex = this._route.snapshot.queryParamMap.get('summaryIndex');
     this.pieChartIndex = this._route.snapshot.queryParamMap.get('pieChartIndex');
     this.donutChartIndex = this._route.snapshot.queryParamMap.get('donutChartIndex');
+    this.departmentUnitNumber = this._route.snapshot.queryParamMap.get('departUnitNumber');
 
     if (this.researchSummaryIndex !== null) {
       this.exportIndex = this.researchSummaryIndex;
@@ -99,5 +99,8 @@ export class ExpandedViewComponent implements OnInit {
          } );
     }
 
+    setCurrentProposalTab() {
+      localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+    }
 
 }

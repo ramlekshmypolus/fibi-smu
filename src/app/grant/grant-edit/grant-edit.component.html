@@ -78,7 +78,7 @@
                             <label class="block-display"><span class="mandatory">*</span>Max Budget (SGD):</label>
                             <input id="budgetID" id="grant-budget" type="number" placeholder="" *ngIf="showDataFlagObj.isCurrencyFocusOn == false"
                                 [(ngModel)]="result.grantCall.maximumBudget" class="dateBox committeeBox" />
-                            <span id="budgetAmount" *ngIf="showDataFlagObj.isCurrencyFocusOn == true" (click)="showDataFlagObj.isCurrencyFocusOn = false">{{result?.grantCall?.maximumBudget | currency:'USD':true}}</span>
+                            <span id="budgetAmount" *ngIf="showDataFlagObj.isCurrencyFocusOn == true" (click)="showDataFlagObj.isCurrencyFocusOn = false">{{result?.grantCall?.maximumBudget | currency:'USD'}}</span>
                         </div>
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
                             <ng-container class="block-display"><label>Quantum:</label><span class="mandatory" *ngIf="warningMsgObj.stringWarningText != null">( {{warningMsgObj.stringWarningText}} )</span></ng-container>

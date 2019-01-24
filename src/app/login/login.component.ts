@@ -2,6 +2,7 @@ import { Component, AfterViewInit, ViewChild, ViewChildren, Renderer, ElementRef
 import { Router } from '@angular/router';
 
 import { LoginService } from './login.service';
+import { CommonService } from '../common/services/common.service';
 
 @Component( {
     selector: 'app-login',
@@ -22,7 +23,7 @@ export class LoginComponent implements AfterViewInit, OnInit{
     @ViewChild('input') input: ElementRef;
 
     constructor( private loginService: LoginService, private router: Router,
-                private renderer: Renderer) {
+                private renderer: Renderer, private _commonService : CommonService) {
     }
 
     ngOnInit() {
@@ -57,8 +58,14 @@ export class LoginComponent implements AfterViewInit, OnInit{
                         localStorage.setItem('grantManager', String(this.result.grantManager ) );
                         localStorage.setItem('createProposal', String(this.result.createProposal) );
                         localStorage.setItem('superUser', String(this.result.superUser) );
+                        this._commonService.dashboardRequestObject.userName = localStorage.getItem( 'currentUser' );
+                        this._commonService.dashboardRequestObject.personId = localStorage.getItem( 'personId' );
+                        this._commonService.dashboardRequestObject.isUnitAdmin = (localStorage.getItem('isAdmin') === 'true');
+                        this._commonService.dashboardRequestObject.unitNumber = localStorage.getItem('unitNumber');
+                        this._commonService.dashboardRequestObject.provost = (localStorage.getItem( 'provost' ) === 'true');
+                        this._commonService.dashboardRequestObject.reviewer = (localStorage.getItem( 'reviewer' ) === 'true');
                         this.loginService.setLeadUnits(this.result.leadUnits);
-                        if (localStorage.getItem('currentUrl') != null && localStorage.getItem('currentUrl').indexOf('loginpage') === -1) {
+                        if (localStorage.getItem('currentUrl') != null && localStorage.getItem('currentUrl').indexOf('login') === -1) {
                             window.location.hash = localStorage.getItem('currentUrl');
                         } else {
                             this.router.navigate( ['fibi/dashboard'] );

@@ -3,11 +3,11 @@
         <div class="headerPush"></div>
         <section class="row">
             <!-- edit mode -->
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode != 'view' && (result.grantCall!=null && result.grantCall!=undefined)">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode != 'view'">
                 <app-grant-edit [result]="result" [showDataFlagObj]="showDataFlagObj"></app-grant-edit>
             </div>
             <!--view mode-->
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode == 'view' && (result.grantCall!=null && result.grantCall!=undefined)" >
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode == 'view'" >
                 <app-grant-view [result]="result" [showDataFlagObj]="showDataFlagObj"></app-grant-view>
             </div>
         </section>

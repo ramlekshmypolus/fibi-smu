@@ -111,20 +111,20 @@
     <thead>
       <tr>
         <th id="sortby-irb-protocolno" (click)="sortResult('protocolNumber')" class="hand-cursor" title="Click to sort by Protocol">Protocol
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'protocolNumber')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (irbRequestObject.sortBy == 'protocolNumber')}"></span>
         </th>
         <th id="sortby-irb-title" (click)="sortResult('title')" class="hand-cursor" title="Click to sort by Title"
           width="40%">Title
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'title')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (irbRequestObject.sortBy == 'title')}"></span>
         </th>
         <th id="sortby-irb-leadunit" (click)="sortResult('leadUnit')" class="hand-cursor" title="Click to sort by Lead Unit">Lead
-          Unit <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'leadUnit')}"></span>
+          Unit <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (irbRequestObject.sortBy == 'leadUnit')}"></span>
         </th>
         <th id="sortby-irb-protocoltyp" (click)="sortResult('protocolType')" class="hand-cursor" title="Click to sort by Protocol Type">Protocol
-          Type <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'protocolType')}"></span>
+          Type <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (irbRequestObject.sortBy == 'protocolType')}"></span>
         </th>
         <th id="sortby-irb-status" (click)="sortResult('status')" class="hand-cursor" title="Click to sort by Status">Status
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (irbRequestObject.sortBy == 'status')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (irbRequestObject.sortBy == 'status')}"></span>
         </th>
         <th>Action</th>
       </tr>

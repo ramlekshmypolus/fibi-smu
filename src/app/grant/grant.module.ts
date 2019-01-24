@@ -10,7 +10,7 @@ import { GrantComponent } from './grant.component';
 import { GrantViewComponent } from './grant-view/grant-view.component';
 import { GrantEditComponent } from './grant-edit/grant-edit.component';
 
-import { GrantService } from './grant.service';
+import { GrantService } from './services/grant.service';
 
 @NgModule({
   imports: [

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
+
+import { ResearchSummaryConfigService } from '../../../../common/services/research-summary-config.service';
 
 @Component({
   selector: 'app-research-summary-count',
@@ -10,9 +12,12 @@ export class ResearchSummaryCountComponent implements OnInit {
   @Input() summaryViewsData;
   departmentUnitNumber = null;
 
-  constructor(private _router: Router) { }
+  constructor( private _router: Router, private _researchSummaryConfigService: ResearchSummaryConfigService ) { }
 
   ngOnInit() {
+    this._researchSummaryConfigService.slectetedUnit.subscribe(data => {
+      this.departmentUnitNumber = data;
+    });
   }
 
   getDetailedResearchSummary(summaryView) {

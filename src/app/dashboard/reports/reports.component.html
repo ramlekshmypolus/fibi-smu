@@ -129,7 +129,7 @@
             <td>{{i+1}}</td>
             <td>{{expenditure[1]}}</td>
             <td>{{expenditure[2]}}</td>
-            <td>{{expenditure[0] | currency:'USD':true}}</td>
+            <td>{{expenditure[0] | currency:'USD'}}</td>
           </tr>
         </tbody>
         <tr *ngIf="reportObject?.selectedReportName == 'Expenditure by Award' &&   reportObject?.awardNumber  && reportObject?.expenditureList?.length == 0">

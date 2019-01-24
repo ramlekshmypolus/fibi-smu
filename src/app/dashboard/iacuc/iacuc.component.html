@@ -91,20 +91,20 @@
     <thead>
       <tr>
         <th id="sortby-iacuc-protocolno" (click)="sortResult('protocolNumber')" class="hand-cursor" title="Click to sort by Protocol">Protocol
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'protocolNumber')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (requestObject.sortBy == 'protocolNumber')}"></span>
         </th>
         <th id="sortby-iacuc-title" (click)="sortResult('title')" class="hand-cursor" title="Click to sort by Title"
           width="40%">Title
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'title')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (requestObject.sortBy == 'title')}"></span>
         </th>
         <th id="sortby-iacuc-leadunit" (click)="sortResult('leadUnit')" class="hand-cursor" title="Click to sort by Lead Unit">Lead
-          Unit <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'leadUnit')}"></span>
+          Unit <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (requestObject.sortBy == 'leadUnit')}"></span>
         </th>
         <th id="sortby-iacuc-protocoltyp" (click)="sortResult('protocolType')" class="hand-cursor" title="Click to sort by Protocol Type">Protocol
-          Type <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'protocolType')}"></span>
+          Type <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (requestObject.sortBy == 'protocolType')}"></span>
         </th>
         <th id="sortby-iacuc-status" (click)="sortResult('status')" class="hand-cursor" title="Click to sort by Status">Status
-          <span class="sortorder" [ngClass]="{reverse:reverse, sortorder: (requestObject.sortBy == 'status')}"></span>
+          <span class="sortorder" [ngClass]="{reverse:isReverse, sortorder: (requestObject.sortBy == 'status')}"></span>
         </th>
         <th>Action</th>
       </tr>
