@@ -23,3 +23,10 @@
 .owl-dt-calendar-control {
 	margin-top: 10px !important;
 }
+
+.cdk-global-overlay-wrapper, .cdk-overlay-container {
+  z-index: 1051;
+}
+.cdk-global-scrollblock .modal-open {
+  overflow: visible;
+}

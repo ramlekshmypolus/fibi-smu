@@ -1,0 +1,2 @@
+<app-proposal-home-edit *ngIf="showOrHideDataFlagsObj.mode != 'view'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-proposal-home-edit>
+<app-proposal-view *ngIf="showOrHideDataFlagsObj.mode == 'view'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj"></app-proposal-view>

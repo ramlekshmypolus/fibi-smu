@@ -1,6 +1,6 @@
 <div class="row padding-tbx">
     <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 text-left">
-        <span *ngIf="grantId != null" class="topHeading">#{{grantId}} :
+        <span *ngIf="result?.grantCall?.grantCallId != null" class="topHeading">#{{result?.grantCall?.grantCallId}} :
             {{result?.grantCall?.grantCallName}}</span></div>
     <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 text-right ">
         <button class="btnSkin btnSkinPrimary" id="back-to-grant-btn" data-target="#warningOrAlertModal"
@@ -41,7 +41,7 @@
                             <label class="block-display"><span class="mandatory">*</span>Opening Date:</label>
                             <span class="dateField">
                                 <input type="text" id="grant-opng-date" placeholder="mm/dd/yyyy"
-                                    [(ngModel)]="result.grantCall.openingDate" (keypress)="dateInputRestriction($event)"
+                                    [(ngModel)]="result.grantCall.openingDate" (keypress)="_commonService._keyPress($event, 'date')"
                                     [owlDateTime]="openingDt" class="committeeBox dateWidth" />&nbsp;
                                 <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
                                     [owlDateTimeTrigger]="openingDt"></span>
@@ -52,7 +52,7 @@
                             <label class="block-display"><span class="mandatory">*</span>Closing Date:</label>
                             <span class="dateField">
                                 <input type="text" id="grant-closing-date" placeholder="mm/dd/yyyy"
-                                    [(ngModel)]="result.grantCall.closingDate" (keypress)="dateInputRestriction($event)"
+                                    [(ngModel)]="result.grantCall.closingDate" (keypress)="_commonService._keyPress($event, 'date')"
                                     [owlDateTime]="closingDt" class="committeeBox dateWidth" />&nbsp;
                                 <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
                                     [owlDateTimeTrigger]="closingDt"></span>

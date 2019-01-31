@@ -1,0 +1,324 @@
+<div class="content-top">
+  <!--Proposal Overview -->
+  <div class="borderBox">
+    <h4 class="borderBoxHeading">
+      <div class="row">
+        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">Proposal Details</div>
+        <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-5 text-right colorBlack">
+          <span style="margin-right: 10px"><label style="margin-right: 10px">Created By: </label>{{result?.proposal?.createUser}}</span>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3 text-right colorBlack">
+          <span style="margin-right: 10px"><label style="margin-right: 10px">Last Updated By: </label><span *ngIf="result?.proposal?.proposalId != null">{{result?.proposal?.updateUser}}
+              on {{result?.proposal?.updateTimeStamp | date: 'MM/dd/yyyy'}}</span></span>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 colorBlack">
+          <span><label style="margin-right: 10px">Status: </label>{{result?.proposal?.proposalStatus?.description}}</span>
+        </div>
+      </div>
+    </h4>
+    <div class="pullSide">
+      <div class="topGrid gridSkin">
+        <div class="row">
+          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+            <label>Title:</label><br>
+            <span>{{result?.proposal?.title}}</span>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+            <label>Category:</label><br>
+            <span>{{result?.proposal?.activityType?.description}}</span>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+            <label class="greenLabel">Type:</label><br>
+            <span>{{result?.proposal?.proposalType?.description}}</span>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+            <label>Grant Call Type:</label><br>
+            <span>{{result?.proposal?.grantCallType?.description}}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+            <label>Lead Unit:</label><br>
+            <span>{{result?.proposal?.homeUnitName}}</span>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+            <label>Sponsor:</label><br>
+            <span>{{result?.proposal?.sponsorName}}</span>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+            <label>Proposed Start Date:</label><br>
+            <span>{{proposalDataBindObj?.proposalStartDate | date: 'MM/dd/yyyy'}}</span>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+            <label>Proposed End Date:</label><br>
+            <span>{{proposalDataBindObj?.proposalEndDate | date: 'MM/dd/yyyy'}}</span>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+            <label>Sponsor Deadline Date:</label><br>
+            <span>{{proposalDataBindObj?.sponsorDeadlineDate | date: 'MM/dd/yyyy'}}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2 subcontract-pr">
+            <label>Internal Deadline Date:</label><br>
+            <span>{{proposalDataBindObj?.internalDeadlineDate | date: 'MM/dd/yyyy'}}</span>
+          </div>
+          <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-1">
+              <label>Subcontract:</label><br>
+              <input type="checkbox" [(ngModel)]="result.proposal.isSubcontract" disabled/>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+            <label>Sponsor Proposal ID:</label><br>
+            <span *ngIf="result.proposal.sponsorProposalNumber != null">{{result?.proposal?.sponsorProposalNumber}}</span>
+            <span *ngIf="result.proposal.sponsorProposalNumber == null" class="noDataExists">No Sponsor Proposal Specified</span>
+          </div>
+          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+            <label>Keywords:</label>
+            <div class="row">
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8" *ngIf="result?.proposal?.proposalKeywords?.length > 0" style="padding-left: 0;">
+                <div class="fileChips" style="word-break: break-all;">
+                  <span *ngFor="let keyword of result?.proposal?.proposalKeywords;let i = index">{{keyword?.scienceKeyword?.description}}</span>
+                </div>
+              </div>
+              <span class="noDataExists" *ngIf="result?.proposal?.proposalKeywords?.length == 0">No keywords added</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Grant call details-->
+  <div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Grant Call Details</h4>
+    <button id="grantDetailsExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isGrantCallWdgtOpen = !showOrHideDataFlagsObj.isGrantCallWdgtOpen"
+      *ngIf="result?.proposal?.grantCall != null">
+      <i [ngClass]="showOrHideDataFlagsObj.isGrantCallWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+    </button>
+    <table class="table tableSkin grid2">
+      <tr *ngIf="result?.proposal?.grantCall == null">
+        <td colspan="6">
+          <div class="noDataExists">No grant call associated with this proposal</div>
+        </td>
+      </tr>
+      <tbody *ngIf="result?.proposal?.grantCall != null && showOrHideDataFlagsObj.isGrantCallWdgtOpen">
+        <tr>
+          <th>Id</th>
+          <th>Title</th>
+          <th>Funding Agency</th>
+          <th>Funding Scheme</th>
+          <th style="width: 35%">Grant Theme</th>
+        </tr>
+        <tr>
+          <td style="padding-left: 10px"><span>{{result?.proposal?.grantCallId}}</span></td>
+          <td title="{{(result?.proposal?.grantCall?.grantCallName?.length > 60)?(result?.proposal?.grantCall?.grantCallName):''}}"><span>{{(result?.proposal?.grantCall?.grantCallName?.length
+              > 60 )?(result?.proposal?.grantCall?.grantCallName |
+              slice:0:60):(result?.proposal?.grantCall?.grantCallName)}}</span></td>
+          <td><span>{{result?.proposal?.grantCall?.sponsor?.sponsorName}}</span></td>
+          <td><span>{{result?.proposal?.grantCall?.activityType?.description}}</span></td>
+          <td style="width: 35%"><span *ngIf=" result?.proposal?.grantCall?.grantTheme != null">
+              <p class="textView" *ngIf="!isGrantThemeReadMore">
+                {{(result?.proposal?.grantCall?.grantTheme.length>100)?
+                (result?.proposal?.grantCall?.grantTheme | slice:0:100)+'...' :
+                result?.proposal?.grantCall?.grantTheme}} <span *ngIf="(result?.proposal?.grantCall?.grantTheme?.length>100)"
+                  class="hand-cursor fibiDefaultColor italian" (click)="isGrantThemeReadMore = !isGrantThemeReadMore">Read
+                  more<i [ngClass]="isGrantThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                </span>
+              </p>
+              <p *ngIf=" isGrantThemeReadMore" class="textView">
+                {{result?.proposal?.grantCall?.grantTheme}} <span *ngIf="(result?.proposal?.grantCall?.grantTheme?.length>100)"
+                  class="hand-cursor fibiDefaultColor italian" (click)="isGrantThemeReadMore = !isGrantThemeReadMore">Show
+                  less<i [ngClass]="isGrantThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                </span>
+              </p>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!--Area of Research-->
+  <div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Area of Research</h4>
+    <button id="areaofResearchExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen = !showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen"
+      *ngIf="(result?.proposal?.proposalResearchAreas?.length > 0 )">
+      <i [ngClass]="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+        class="fa-large"></i>
+    </button>
+    <table class="table tableSkin grid2">
+      <tbody *ngIf="result?.proposal?.proposalResearchAreas?.length > 0 && showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
+        <tr>
+          <th style="width: 10%">Sl No.</th>
+          <th style="width: 10%">Code</th>
+          <th>Type</th>
+          <th colspan="2">Research Area</th>
+        </tr>
+        <tr *ngFor="let researchArea of result?.proposal?.proposalResearchAreas; let i = index">
+          <td>{{i+1}}</td>
+          <td style="width: 10%" *ngIf="researchArea.excellenceAreaCode? researchArea.excellenceAreaCode: researchArea.researchAreaCode;let areaCode; ">{{areaCode}}</td>
+          <td>{{researchArea.proposalResearchType.description}}</td>
+          <td colspan="2" *ngIf="researchArea.proposalExcellenceArea? researchArea.proposalExcellenceArea.description: researchArea.researchArea.description;let description; ">{{description}}</td>
+        </tr>
+        <tr>
+          <td><label>Description:</label></td>
+          <td colspan="8">
+            <span *ngIf="result?.proposal?.researchDescription != null">
+              <p class="textView" *ngIf="!isResearchDescriptionReadMore">
+                {{(result?.proposal?.researchDescription).length>240 ?
+                (result?.proposal?.researchDescription | slice:0:240)+'...' :
+                result?.proposal?.researchDescription}} <span *ngIf="(result?.proposal?.researchDescription?.length>240)"
+                  class="hand-cursor fibiDefaultColor italian" (click)="isResearchDescriptionReadMore = !isResearchDescriptionReadMore">Read
+                  more<i [ngClass]="isResearchDescriptionReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                </span>
+              </p>
+              <p *ngIf="isResearchDescriptionReadMore" class="textView">
+                {{result?.proposal?.researchDescription}} <span *ngIf="(result?.proposal?.researchDescription?.length>240)"
+                  class="hand-cursor fibiDefaultColor italian" (click)="isResearchDescriptionReadMore = !isResearchDescriptionReadMore">Show
+                  less<i [ngClass]="isResearchDescriptionReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                </span>
+              </p>
+            </span>
+            <div class="noDataExists" *ngIf="result?.proposal?.researchDescription == null">
+              No contributions or descriptions provided for this proposal</div>
+          </td>
+        </tr>
+      </tbody>
+      <tr *ngIf="result?.proposal?.proposalResearchAreas?.length == 0">
+        <td colspan="5">
+          <div class="noDataExists">No area of
+            research/excellence added with this proposal</div>
+        </td>
+      </tr>
+    </table>
+  </div>																														 
+  <!-- Project Description -->
+  <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'normalPadd':'lowPadd'">
+    <h4 class="borderBoxHeading">Project Description</h4>
+    <button id="projectDescExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectDescWdgtOpen = !showOrHideDataFlagsObj.isProjectDescWdgtOpen">
+      <i [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+    </button>
+    <div class="pullSide">
+      <div class="topGrid gridSkin" *ngIf="showOrHideDataFlagsObj.isProjectDescWdgtOpen">
+        <div class="row">
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <label>Abstract:</label><br>
+            <span *ngIf="result?.proposal?.abstractDescription != null">
+              <p class="textView" *ngIf="!isAbsDescReadMore">
+                {{(result?.proposal?.abstractDescription).length>240 ?
+                (result?.proposal?.abstractDescription | slice:0:240)+'...' :
+                result?.proposal?.abstractDescription}} <span *ngIf="(result?.proposal?.abstractDescription?.length>240)" class="hand-cursor fibiDefaultColor italian"
+                (click)="isAbsDescReadMore = !isAbsDescReadMore">Read more<i [ngClass]="isAbsDescReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                </span>
+              </p>
+              <p *ngIf="isAbsDescReadMore" class="textView">
+                {{result?.proposal?.abstractDescription}} <span *ngIf="(result?.proposal?.abstractDescription?.length>240)"
+                  class="hand-cursor fibiDefaultColor italian" (click)="isAbsDescReadMore = !isAbsDescReadMore">Show
+                  less<i [ngClass]="isAbsDescReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                </span>
+              </p>
+            </span>
+            <div class="noDataExists" *ngIf="result?.proposal?.abstractDescription == null">No abstract for this proposal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Special review Details-->
+  <div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Special Review</h4>
+    <button id="specialReviewExpandBtn" class="addBtn font hoverColor btnPositionFullWidget" (click)=" showOrHideDataFlagsObj.isSpecialReviewWidgetOpen = !showOrHideDataFlagsObj.isSpecialReviewWidgetOpen"
+      *ngIf="result.proposal.propSpecialReviews?.length > 0">
+      <i [ngClass]="showOrHideDataFlagsObj.isSpecialReviewWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+        class="fa-large"></i>
+    </button>
+    <div class="pullSide">
+      <table class="table tableSkin grid2">
+          <tr *ngIf="result?.proposal?.propSpecialReviews?.length == 0">
+              <td><div class="noDataExists">No special reviews added yet.</div></td>
+            </tr>
+        <tbody *ngIf="(showOrHideDataFlagsObj.isSpecialReviewWidgetOpen) && (result.proposal.propSpecialReviews?.length > 0)">
+          <tr>
+            <th>Review Type</th>
+            <th>Approval Status</th>
+            <th>Protocol Number</th>
+            <th>Application Date</th>
+            <th>Approval Date</th>
+            <th>Expiration Date</th>
+            <th>Comment</th>
+          </tr>
+          <tr *ngFor="let specialReview of result?.proposal?.propSpecialReviews;let i = index">
+            <td>{{specialReview?.specialReviewType?.description}}</td>
+            <td>{{specialReview?.approvalType?.description}}</td>
+            <td>{{specialReview?.protocolNumber}}</td>
+            <td>{{specialReview?.applicationDate| date:'MM/dd/yyyy'}}</td>
+            <td>{{specialReview?.approvalDate| date:'MM/dd/yyyy'}}</td>
+            <td>{{specialReview?.expirationDate| date:'MM/dd/yyyy'}}</td>
+            <td title="{{(specialReview?.comments?.length>20)?(specialReview?.comments):''}}">{{(specialReview?.comments?.length
+              > 20)?(specialReview?.comments|
+              slice:0:20)+'...':(specialReview?.comments)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Budget Details -->
+  <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'normalPadd':'lowPadd'">
+    <h4 class="borderBoxHeading">Proposal Budget</h4>
+    <span *ngIf="result?.proposal?.budgetHeader != null" class="addBtn font hoverColor" style="margin-right: 25px;"
+      title="View Detailed Budget" (click)="_proposalComponent.showTab('BUDGET')">Open
+      Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
+    </span>
+    <button id="budgetExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isBudgetWdgtOpen = !showOrHideDataFlagsObj.isBudgetWdgtOpen" *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length > 0">
+      <i [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+    </button>
+    <table id="periodTable" class="table tableSkin grid2" *ngIf="showOrHideDataFlagsObj.isBudgetWdgtOpen">
+      <tbody *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length > 0">
+        <tr>
+          <th width="10%">Period#</th>
+          <th width="15%">Period Start Date</th>
+          <th width="15%">Period End Date</th>
+          <th width="15%">Total Sponsor Cost</th>
+          <th width="15%">Direct Cost</th>
+          <th width="15%">Indirect Cost</th>
+          <th width="15%">Subcontract Cost</th>
+        </tr>
+        <tr *ngFor="let budget of result?.proposal?.budgetHeader?.budgetPeriods; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{budget?.startDate | date:'MM/dd/yyyy'}}</td>
+          <td>{{budget?.endDate | date:'MM/dd/yyyy'}}</td>
+          <td><span *ngIf="budget?.totalCost != null">{{budget?.totalCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalCost == null">$0.00</span></td>
+          <td><span *ngIf="budget?.totalDirectCost != null">{{budget?.totalDirectCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalDirectCost == null">$0.00</span></td>
+          <td><span *ngIf="budget?.totalIndirectCost != null">{{budget?.totalIndirectCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalIndirectCost == null">$0.00</span></td>
+          <td><span *ngIf="budget?.subcontractCost != null">{{budget?.subcontractCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.subcontractCost == null">$0.00</span></td>
+        </tr>
+        <tr>
+          <td colspan="2"></td>
+          <td class="totalText"><span>Total:</span></td>
+          <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalCost != null">{{result?.proposal?.budgetHeader?.totalCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalCost == null">$0.00</span>
+          </td>
+          <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalDirectCost != null">{{result?.proposal?.budgetHeader?.totalDirectCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalDirectCost == null">$0.00</span>
+          </td>
+          <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalIndirectCost != null">{{result?.proposal?.budgetHeader?.totalIndirectCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalIndirectCost == null">$0.00</span>
+          </td>
+          <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalSubcontractCost != null">{{result?.proposal?.budgetHeader?.totalSubcontractCost|
+              currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalSubcontractCost == null">$0.00</span>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length <= 0">
+        <tr>
+          <td colspan="7">
+            <div class="noDataExists">There are no
+              Budget Periods added yet.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

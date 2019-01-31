@@ -1,0 +1,259 @@
+ <div class="row">
+  <div class=" col-lg-2 col-2 p-0">
+    <app-questionnaire-tree [nodes] = 'nodes'  (viewQuestion) = "viewQuestion($event)"></app-questionnaire-tree>
+  </div>
+ <div class="col-lg-9 col-9 form-outer irb-qst-form-outer">
+    <div class="row">
+      <ng-container *ngFor='let question of questionnaire.questions;let i = index'>
+      <div id = "{{question.QUESTION_ID}}" class="col-lg-12 section-form irb-qst-leftline" *ngIf = " !question.HIDE_QUESTION "   [ngClass] = "{'form-G0': question.GROUP_NAME == 'G0' && i != 0}">
+        <div class="row margin-bottom">
+          <div class= "col-lg-12">
+            <div class="input-group-text new-qst-1" id="basic-addon1">
+              <div class="row">
+                  <a class="col-1" data-toggle="modal" data-target="#parentModel" (click) = "getParentDetails(question.PARENT_QUESTION_ID, question.GROUP_NAME)">
+                    <i aria-hidden="true" class="fa fa-question-circle"></i>
+                  </a>
+                  <div class="col-9">
+                      Question Number &nbsp; <b> {{question.QUESTION_ID}} &nbsp;</b>
+                      GroupName &nbsp;<b>{{question.GROUP_LABEL}}</b>
+                  </div>
+                  <div class="col-1 qst-delete">
+                    <span *ngIf = "i != 0 && !isViewmode"><a  (click) = "setDeleteData(question,'question')" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash-alt" title="delete"></i></a></span>
+                  </div>
+                  <div  class="col-1 arrow-div text-right"  *ngIf = "question.GROUP_NAME == 'G0'">
+                      <button (click) = "hideQuestions(i)">
+                        <i [ngClass] = "{' fas fa-chevron-up': question.HIDE_QUESTION,
+                                         ' fas fa-chevron-down': !question.HIDE_QUESTION }">
+                        </i>
+                      </button>
+                  </div>
+              </div> 
+            </div>
+          </div>
+        </div>
+        <div class="row margin-bottom">  
+          <div class="col-lg-8">   
+            <input class="form-control custom-input" [disabled] = "isViewmode" [(ngModel)]="question.QUESTION"  (ngModelChange) = "isQuestionEdited = true" type="text" placeholder="Question" id ="question{{question.QUESTION_ID}}">
+            <span class="bar"></span>
+          </div>
+          <div class="col-lg-4">
+            <div class="dropdown">
+              <select class="custom-select custom-s" [disabled]="isViewmode" [(ngModel)]="question.ANSWER_TYPE" (ngModelChange) = "changeQuestionType(question.ANSWER_TYPE,question.QUESTION_ID, i)">
+                <option value = 'Radio'>Multiple choice</option>
+                <option value = "Checkbox">Check box</option>
+                <option value = 'Text'> Short answer</option>
+                <option value = 'Textarea'>Paragraph</option>
+                <option value = 'Date'>Date</option>
+                <option value = 'Attachment'>File upload</option>
+                <option value = 'Y/N'>Yes/No</option>
+                <option value = 'Y/N/NA'>Yes/No/N/A</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf = "question.ANSWER_TYPE == 'Radio' || question.ANSWER_TYPE == 'Checkbox' ||
+                                  question.ANSWER_TYPE == 'Y/N'|| question.ANSWER_TYPE == 'Y/N/NA'">
+          <div class="col-lg-12 options"  >
+            <ng-container  *ngFor = "let option of questionnaire.options;let optionIndex = index">
+            <div class="input-group mb-3" *ngIf = "option.QUESTION_ID == question.QUESTION_ID">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"><i class="far fa-circle"></i></span>
+                </div>
+                <div class="col-lg-10">
+                  <input type="text" [disabled]="isViewmode" [(ngModel)]="option.OPTION_LABEL"  (ngModelChange) = "updateOptionACType(optionIndex)" class="form-control custom-input" placeholder="Options" aria-label="Username" aria-describedby="basic-addon1">
+                  <span class="bar"></span>
+                </div>
+                <div class="input-group-append">
+                  <span class="input-group-text"><a  (click) = "setDeleteData(option,'option')" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-times"></i></a></span>
+                </div>
+            </div>
+            </ng-container>
+          </div>
+          <div class="col-lg-12 options" *ngIf = "!isViewmode">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"><i class ="far fa-circle"></i></span>
+              </div>
+              <span class="input-group-text"><a (click) = "addOption(question.QUESTION_ID)">ADD "OTHER"</a></span>
+            </div>
+          </div>
+        </div>
+        <div class="row margin-bottom">
+          <div class="col-lg-6 offset-lg-6 text-right qst-two-btn">
+            <button type="button" (click) = "selectedQuestionIndex = i;"  data-toggle="modal" data-target="#moreDetailsModal" class="btn btn-primary custom-button fibi-btn-size button-size margin-r5 irb-qst-addbtn-clr" title="Add more details"><i class="fa fa-plus" aria-hidden="true"></i>Add More</button>
+            <button type="button" (click) = "addBranching(question.QUESTION_ID,i)" *ngIf = "enableBraching(question.QUESTION_ID,  question.ANSWER_TYPE)" class="btn btn-primary  fibi-btn-size  custom-button button-size margin-r5 irb-qst-graybtn-clr" title="Add branching"><i class="fa fa-sitemap" aria-hidden="true"></i> Add Branch</button>
+          </div>
+        </div>
+        <div class="row"  *ngIf = "question.HAS_CONDITION == 'Y'">
+          <div class="col-lg-12 card-details" >
+            <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div class="card-header qst-branch-header" id="headingOne"> 
+                  <h5 class="mb-0 card-down">
+                    <span class="mr-10"><a data-toggle="modal" data-target="#conditionModel">
+                        <i class=" float-none fas fa-info-circle"></i>
+                    </a></span>
+                    <span class="branch-name">Branch</span>                 
+                     <i class="fas fa-chevron-down" data-toggle="collapse"  [attr.data-target]="'#condition' + i"  aria-expanded="true" aria-controls="collapseOne"></i>                
+                  </h5>
+                </div>
+            </div>
+               <div id="condition{{i}}" class ="collapse show" aria-labelledby ="headingOne" data-parent ="#accordionExample">
+                  <div class="card-body">
+                    <ng-container  *ngFor = "let condition of questionnaire.conditions; let conditionIndex = index">
+                     <div class="row" *ngIf = "condition.QUESTION_ID == question.QUESTION_ID">
+                       <div class="col-md-12">
+                         <div class="row">
+                           <div class="col-1 braching-text">
+                             <span> If answer</span>
+                           </div>
+                           <div class="col-3">
+                             <select  [disabled]="isViewmode" [(ngModel)]="condition.CONDITION_TYPE" (ngModelChange) = "updateConditionACType(conditionIndex)" class="custom-select custom-s">
+                                <option value = 'EQUALS'>Equals</option>
+                                <option value = "CONTAINS">Contains</option>
+                                <option value = "GREATERTHAN">GreaterThan</option>
+                                <option value = "LESSTHAN">Less Than</option>
+                            </select>
+                          </div>
+                          <div class="col-3" *ngIf = "(question.ANSWER_TYPE == 'Radio' || question.ANSWER_TYPE == 'Checkbox' ||
+                                question.ANSWER_TYPE == 'Y/N'|| question.ANSWER_TYPE == 'Y/N/NA') && condition.CONDITION_TYPE == 'EQUALS';else textbox ">
+                            <select class="custom-select custom-s"  [disabled]="isViewmode" [(ngModel)]="condition.CONDITION_VALUE" (ngModelChange) = "updateConditionACType(conditionIndex)">
+                                <option value = '{{options.OPTION_LABEL}}' selected = options[0].OPTION_LABEL *ngFor =" let options of  getOptions(question.QUESTION_ID)">{{options.OPTION_LABEL}}</option>
+                            </select>
+                          </div>
+                          <ng-template #textbox>
+                            <div class="col-3">
+                                <input class="form-control custom-input"  [disabled]="isViewmode" [(ngModel)]="condition.CONDITION_VALUE" (ngModelChange) = "updateConditionACType(conditionIndex)" type="text">
+                            </div>
+                          </ng-template>
+                          <div class="col-1 braching-text">
+                            <span> Then {{condition.GROUP_LABEL}}</span>
+                          </div>
+                          <div class="col-3">
+                              <input class="form-control custom-input"  type="text" placeholder="Group name"  [disabled]="isViewmode" [(ngModel)]="groupLabels[condition.GROUP_NAME]" 
+                                (ngModelChange) = "updateConditionACType(conditionIndex)" (focusout)="updateTree($event.target.value,condition.GROUP_NAME)">
+                          </div>
+                          <div class="col-1 padding-sides0" *ngIf = "!isViewmode">
+                            <span class="sub-add"><a (click) = "addConditionBasedQuestion(i,condition.GROUP_NAME,question.QUESTION_ID)"><i class="fas fa-plus" title="Add Branching"></i></a></span>
+                            <span><a  (click) = "setDeleteData(condition,'condition')" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-times close-icon"></i></a></span>
+                          </div>
+                        </div>
+                       </div>
+                     </div>
+                    </ng-container>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="col-lg-1 col-1" *ngIf = "!isViewmode">
+    <span class="button-list fixed-save" >
+      <button type="button" class="btn btn-primary custom-button irb-qst-addbtn-clr" title="Add New Question" (click) = "addNewQuestion('G0')"><i class="fas fa-plus"></i></button>
+      <button type="button" class="btn btn-primary custom-button qst-save-button irb-qst-savebtn-clr" title="Save" (click) = "save()"><i class="far fa-save"></i></button>
+      <button type="button" class="btn btn-primary custom-button preview-btn" (click) ="changeCurrentTab('preview')" title="Preview" ><i class="fas fa-eye"></i></button>
+    </span>
+  </div>
+  </div>
+
+  <!-- Modal for more details -->
+<div class="modal fade" id="moreDetailsModal" tabindex="-1" role="dialog" aria-labelledby="moreDetailsModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Additional Info</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="col-12  mb-20">
+            <label class="help-header">Help Text :</label>
+              <app-ngx-editor [config]="editorConfig" [(ngModel)]=" questionnaire?.questions[selectedQuestionIndex].DESCRIPTION" resizer="basic"></app-ngx-editor>
+          </div>
+           <div class="col-12">
+             <div class="row" *ngIf = "questionnaire.questions[selectedQuestionIndex].ANSWER_TYPE == 'Text'" >
+              <label class="help-header">
+                Number of answers :
+                </label>
+                <div class="col-2">
+                  <input class="form-control custom-input"  [disabled]="isViewmode" [(ngModel)]=" questionnaire.questions[selectedQuestionIndex].NO_OF_ANSWERS" type="number" placeholder="">
+                </div>
+              </div>
+           </div>
+           <div class="col-12">
+              <div class="row" >
+                <label class="help-header">
+                Help Link :
+                </label>
+                <div class="col-9">
+                  <input class="form-control custom-input"  [disabled]="isViewmode" [(ngModel)]=" questionnaire.questions[selectedQuestionIndex].HELP_LINK" type="text" placeholder="helplink">
+                </div>
+              </div>
+           </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary fibi-btn-size custom-button" data-dismiss="modal">Add</button>
+          </div>
+      </div>
+    </div>
+</div>
+<!-- modal for parent detail -->
+<div class="modal fade" id="parentModel" tabindex="-1" role="dialog" aria-labelledby="parentModel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle1">Parent Question Information</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{parentDetails}}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modal for confirm delete  -->
+<div class="modal fade show mySkinDialog" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        Do you want to delete ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click) = "executeDeleteData()" data-dismiss="modal" class="btnSkin btnSkinPrimary">Yes</button>
+        <button type="button" class="btnSkin" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- condition explain modal -->
+<div class="modal fade" id="conditionModel" tabindex="-1" role="dialog" aria-labelledby="conditionModel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          Contains the branching logic for the question
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btnSkin" data-dismiss="modal">Close</button>  
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- validation  modal -->
+<div class="modal fade" id="validationModal" tabindex="-1" role="dialog" aria-labelledby="validationModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>  
+          </div>
+      </div>
+    </div>
+  </div>

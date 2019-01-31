@@ -97,16 +97,6 @@ export class GrantEditComponent implements OnInit {
      this.result.grantCall.externalUrl = null;
   }
 
-  /** restrict date input fields to numbers, - and /
-   * @param event
-   */
-  dateInputRestriction(event: any) {
-    const pattern = /[0-9\+\-\/\ ]/;
-    if (!pattern.test(String.fromCharCode(event.charCode))) {
-      event.preventDefault();
-    }
-  }
-
   /** check for validations in closing and opening dates */
   dateValidation() {
     if ( this.result.grantCall.openingDate == null ) {
