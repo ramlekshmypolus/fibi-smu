@@ -1,0 +1,177 @@
+<div class="borderBox col-12">
+  <h4 class="borderBoxHeading">Special Review</h4>
+  <button id="special-revw-view-modal-btn" title="add special review" class="addBtn font attachBtn" style="right: 55px"
+    (click)="showAddSpecialReviewPopUp($event)" data-toggle="modal" data-target="#addSpecialReview">
+    <i class="fa fa-plus"></i>&nbsp;<span>Add Special Review</span>
+  </button>
+  <button id="specialReviewExpandBtn" class="addBtn font hoverColor btnPositionFullWidget" (click)="showOrHideDataFlagsObj.isSpecialReviewWidgetOpen = !showOrHideDataFlagsObj.isSpecialReviewWidgetOpen"
+    *ngIf="result.proposal.propSpecialReviews?.length > 0">
+    <i [ngClass]="showOrHideDataFlagsObj.isSpecialReviewWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+      class="fa-large"></i>
+  </button>
+  <!--Special Review Details-->
+  <div class="pullSide">
+    <table class="table tableSkin grid2">
+      <tbody *ngIf="(showOrHideDataFlagsObj.isSpecialReviewWidgetOpen) && (result.proposal.propSpecialReviews?.length > 0)">
+        <tr>
+          <th>Review Type</th>
+          <th>Approval Status</th>
+          <th>Protocol Number</th>
+          <th>Application Date</th>
+          <th>Approval Date</th>
+          <th>Expiration Date</th>
+          <th>Comment</th>
+          <th>Action</th>
+        </tr>
+        <tr *ngFor="let specialReview of result?.proposal?.propSpecialReviews;let i = index">
+          <td>{{specialReview?.specialReviewType?.description}}</td>
+          <td>{{specialReview?.approvalType?.description}}</td>
+          <td>{{specialReview?.protocolNumber}}</td>
+          <td>{{specialReview?.applicationDate| date:'MM/dd/yyyy'}}</td>
+          <td>{{specialReview?.approvalDate| date:'MM/dd/yyyy'}}</td>
+          <td>{{specialReview?.expirationDate| date:'MM/dd/yyyy'}}</td>
+          <td title="{{(specialReview?.comments?.length>20)?(specialReview?.comments):''}}">{{(specialReview?.comments?.length
+            > 20)?(specialReview?.comments|
+            slice:0:20)+'...':(specialReview?.comments)}}</td>
+          <td>
+            <ul class="actionButtonGroup">
+                    <li><a (click)="temprySpecialReviewObj(specialReview.id,i)" data-toggle="modal" data-target="#deleteSpecialReview"
+                      id="special-revw-delete-btn" ><i class="fa fa-trash-o pointer"
+                          aria-hidden="true" title="Delete this special review"></i>
+                        </a>
+              </li>
+              <li *ngIf="specialReview.id != null"> <a href="#" data-toggle="modal" data-target="#addSpecialReview"><i
+                class="fa fa-pencil hand-cursor hoverColor" aria-hidden="true" title="Edit this special review"
+                (click)="editSpecialReview(specialReview)"></i></a></li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!--SPECIAL REVIEW MODAL-->
+<div class="modal fade show mySkinDialog modal-opacity" id="addSpecialReview" tabindex="-1" role="dialog"
+  aria-labelledby="skippedSchedulesTitle" aria-hidden="true" *ngIf="isShowSpecialReviewModal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="skippedSchedulesLongTitle">Add
+          Special Review</h5>
+        <button type="button" id="special-revw-close-btn" class="close" data-dismiss="modal" aria-label="Close" (click)="closeSpecialReview()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="pullSide">
+          <div class="gridSkin">
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <label><span class="mandatory">*</span>Type:</label>
+              </div>
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                <select class="committeeBox" id="special-revw-type" [(ngModel)]="selectedSpecialReviewType" (change)="specialReviewTypeChange($event.target.value)">
+                  <option [value]=null>--Select--</option>
+                  <option *ngFor="let type of result?.reviewTypes" (value)="type">{{type.description}}</option>
+                </select>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <label><span class="mandatory">*</span>Approval Status:</label>
+              </div>
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                <select class="committeeBox" id="special-revw-appovaltyp" [(ngModel)]="selectedSpecialReviewApprovalStatus"
+                  (change)="specialReviewApprovalStatusChange($event.target.value)">
+                  <option [value]=null>--Select--</option>
+                  <option *ngFor="let type of result.specialReviewApprovalTypes" (value)="type">{{type.description}}</option>
+                </select>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <label> Protocol Number:</label>
+              </div>
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                <input type="text" id="special-revw-protocolnumber" (keypress)="_commonService._keyPress($event, 'alphanum')"
+                  step="any" class="committeeBox" [(ngModel)]="specialReviewObject.protocolNumber" />
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <label> Application Date:</label>
+              </div>
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                <span class="dateField">
+                  <input type="text" id="special-revw-appldt" [owlDateTime]="appliDt" placeholder="mm/dd/yyyy"
+                    [(ngModel)]="specialReviewObject.applicationDate" (ngModelChange)="specialReviewDatevalidation()"
+                    class="committeeBox dateWidth" (keypress)="_commonService._keyPress($event, 'date')" />
+                  <span class="fa fa-calendar fa-large hand-cursor insidePicker" title="open calendar"
+                    [owlDateTimeTrigger]="appliDt"></span>
+                  <owl-date-time #appliDt [pickerType]="'calendar'"></owl-date-time>
+                </span>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <label> Approval Date:</label>
+              </div>
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                <span class="dateField">
+                  <input [owlDateTime]="approvDt" id="special-revw-appovaldt" placeholder="mm/dd/yyyy" [(ngModel)]="specialReviewObject.approvalDate"
+                    class="dateWidth committeeBox" (keypress)="_commonService._keyPress($event, 'date')" />
+                  <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="approvDt"></i>
+                  <owl-date-time #approvDt [pickerType]="'calendar'"></owl-date-time>
+                </span>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <label> Expiration Date:</label>
+              </div>
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                <span class="dateField"><input id="special-revw-expdt" [owlDateTime]="expDt" placeholder="mm/dd/yyyy"
+                    [(ngModel)]="specialReviewObject.expirationDate" (ngModelChange)="specialReviewDatevalidation()"
+                    class="dateWidth committeeBox" (keypress)="_commonService._keyPress($event, 'date')" /> <i class="fa fa-calendar fa-large hand-cursor insidePicker"
+                    [owlDateTimeTrigger]="expDt"></i>
+                  <owl-date-time #expDt [pickerType]="'calendar'"></owl-date-time>
+                </span>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <label> Comment:</label>
+              </div>
+              <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                <textarea id="special-revw-comnt" class="forTextAreaEntry committeeBox" [(ngModel)]="specialReviewObject.comments"></textarea>
+              </div>
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="warningMsgObj.specialReviewMandatoryFieldsMsg != null">
+                <span class="mandatory">{{warningMsgObj?.specialReviewMandatoryFieldsMsg}}</span>
+              </div>
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="warningMsgObj.specialReviewdateWarningMsg != null">
+                <span class="mandatory">{{warningMsgObj?.specialReviewdateWarningMsg}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="special-revw-close-btn" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeSpecialReview()">Close</button>
+          <button type="button" id="special-revw-add-btn" class="btnSkin btnSkinPrimary" *ngIf="!isSpecialReviewUpdate"  (click)="addSpecialReview()">Add</button>
+          <button type="button" id="special-revw-updt-btn" class="btnSkin btnSkinPrimary" *ngIf="isSpecialReviewUpdate" (click)="updateSpecialReview()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!--DELETE SPECIAL REVIEW MODAL-->
+  <div class="modal fade mySkinDialog modal-opacity" *ngIf="isShowDeleteSpecialReviewModal" tabindex="-1" id="deleteSpecialReview"
+    tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete</h5>
+  
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this special review?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteSpecialReviewModal= false">No</button>
+          <button type="button" class="btnSkin btnSkinPrimary" (click)="deleteSpecialReview($event)" data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>  

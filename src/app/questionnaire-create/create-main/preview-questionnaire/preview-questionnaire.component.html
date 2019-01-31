@@ -1,0 +1,192 @@
+<div class = "row">
+    <div class ="offset-2 col-9 form-outer">
+    <div>
+      <div class="row">
+        <!--collapse-->
+        <div class="col-12">
+          <div >
+            <div class="qst-header-margn">
+              <div class="quest-no qst-qstns"
+                *ngFor=' let question of questionnaire.questions; let indexQuestion = index'>
+                <ul [ngSwitch]="true" class="qst-list">
+                  <li *ngSwitchCase="question.ANSWER_TYPE == 'Text'">
+                    <div *ngIf= "question.SHOW_QUESTION == true">
+                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                            <div class="col-12 col-sm-12 col-md-12 pl-0">
+                              <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                            </div>
+                          </div>
+                      <p class="questionfont">{{question.QUESTION}} 
+                        <span class="infoicon">
+                          <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle"></i>
+                        </span>
+                      </p>
+                      <div  *ngFor =" let number of  getArray(question.NO_OF_ANSWERS); let i = index">
+                        <input type="text"  class="qst-input-width" [(ngModel)]="question.ANSWERS[i+1]" (ngModelChange) = "showChildQuestions(question)" 
+                          name="name" />
+                      </div> 
+                      <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+                          <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                            <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                              <i class="fa fa-times"></i>
+                            </button>
+                            <div class="qst-helpMsg">
+                              <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                    </div>
+                  </li> 
+                  <li *ngSwitchCase="question.ANSWER_TYPE == 'Radio' || question.ANSWER_TYPE == 'Y/N'|| question.ANSWER_TYPE == 'Y/N/NA'">
+                    <div *ngIf= "question.SHOW_QUESTION == true">
+                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                            <div class="col-12 col-sm-12 col-md-12 pl-0">
+                              <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                            </div>
+                          </div>
+                      <p class="questionfont">{{question.QUESTION}} 
+                        <span class="infoicon">
+                          <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle"></i>
+                        </span>
+                      </p>
+                      <div *ngFor = " let option of questionnaire.options"  class="radio-inline ">
+                        <span *ngIf = "question.QUESTION_ID == option.QUESTION_ID">
+                        <input type="radio"  name="{{option.QUESTION_ID}}" [value] = "option.OPTION_LABEL" 
+                           [(ngModel)] ="question.ANSWERS[1]"  (ngModelChange) = "showChildQuestions(question)"required/>
+                        {{option.OPTION_LABEL}}
+                        </span>
+                      </div>
+                      <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+                          <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                            <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                              <i class="fa fa-times"></i>
+                            </button>
+                            <div class="qst-helpMsg">
+                              <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                    </div>
+                  </li>
+                  <li *ngSwitchCase ="question.ANSWER_TYPE == 'Checkbox'">
+                    <div *ngIf= "question.SHOW_QUESTION == true">
+                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                            <div class="col-12 col-sm-12 col-md-12 pl-0">
+                              <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                            </div>
+                          </div>
+                      <p class="questionfont">{{question.QUESTION}} 
+                        <span class="infoicon">
+                          <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle"></i>
+                        </span>
+                      </p>
+                      <div class="checkbox-inline" *ngFor = " let option of questionnaire.options">
+                      <span *ngIf = "question.QUESTION_ID == option.QUESTION_ID">
+                      <input type="checkbox" required  [(ngModel)] ="question.ANSWERS[option.OPTION_LABEL]" (change) = "showChildQuestions(question)"/>
+                        {{option.OPTION_LABEL}}
+                      </span>
+                      </div>
+                      <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+                          <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                            <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                              <i class="fa fa-times"></i>
+                            </button>
+                            <div class="qst-helpMsg">
+                              <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                    </div>
+                  </li>
+                  <li *ngSwitchCase="question.ANSWER_TYPE == 'Attachment'">
+                    <div *ngIf= "question.SHOW_QUESTION == true">
+                      <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                        <div class="col-12 col-sm-12 col-md-12 pl-0">
+                          <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                        </div>
+                      </div>
+                      <p class="questionfont">{{question.QUESTION}}
+                        <span class="infoicon">
+                          <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
+                        </span>
+                      </p>
+                      <label class="questionfont">ATTACHMENT</label>
+                      <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+                          <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                            <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                              <i class="fa fa-times"></i>
+                            </button>
+                            <div class="qst-helpMsg">
+                              <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                    </div>  
+                  </li>
+                  <li *ngSwitchCase="question.ANSWER_TYPE == 'Textarea'">
+                    <div *ngIf= "question.SHOW_QUESTION == true">
+                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                            <div class="col-12 col-sm-12 col-md-12 pl-0">
+                              <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                            </div>
+                          </div>
+                      <p class="questionfont">{{question.QUESTION}} 
+                        <span class="infoicon">
+                          <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle"></i>
+                        </span>
+                      </p>
+                      <textarea  name="name" class="qst-input-width" [(ngModel)]="question.ANSWERS[1]" (ngModelChange) = "showChildQuestions(question)" > </textarea>
+                      <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+                          <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                            <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                              <i class="fa fa-times"></i>
+                            </button>
+                            <div class="qst-helpMsg">
+                              <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                    </div>
+                  </li>
+                  <li *ngSwitchCase="question.ANSWER_TYPE == 'Date'">
+                    <div *ngIf= "question.SHOW_QUESTION == true">
+                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                            <div class="col-12 col-sm-12 col-md-12 pl-0">
+                              <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                            </div>
+                          </div>
+                          <p class="questionfont">{{question.QUESTION}}
+                              <span class="infoicon">
+                                  <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
+                              </span>
+                          </p>
+                          <label class="questionfont">DATE</label>
+                          <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+                          <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                            <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                              <i class="fa fa-times"></i>
+                            </button>
+                            <div class="qst-helpMsg">
+                              <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                    </div>  
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+    
+    

@@ -13,8 +13,16 @@ export class ProposalComponent implements OnInit {
   result: any = {};
   showOrHideDataFlagsObj = {
     mode : '',
-    currentTab: (localStorage.getItem('currentTab') == null) ? 'PROPOSAL_HOME' : localStorage.getItem('currentTab')
+    currentTab: (localStorage.getItem('currentTab') == null) ? 'PROPOSAL_HOME' : localStorage.getItem('currentTab'),
+    isSpecialReviewWidgetOpen: true,
+    isGrantCallWdgtOpen: true,
+    isProjectDescWdgtOpen: true,
+    isBudgetWdgtOpen: true,
+    isAreaOfResearchWidgetOpen: true,
+    isDeclarationWidgetOpen: true
   };
+  warningMsgObj: any = {};
+  proposalDataBindObj: any = {};
 
   constructor( private _route: ActivatedRoute, private _proposalService: ProposalService ) { }
 
@@ -28,6 +36,7 @@ export class ProposalComponent implements OnInit {
         } else {
             this.showOrHideDataFlagsObj.mode = 'edit';
         }
+        this.initialiseProposalFormElements();
     }
   }
 
@@ -52,5 +61,23 @@ export class ProposalComponent implements OnInit {
     }
   }
 
+  initialiseProposalFormElements() {
+    this.proposalDataBindObj.proposalStartDate = this.result.proposal.startDate === null ?
+                                                 null : new Date(this.result.proposal.startDate);
+    this.proposalDataBindObj.proposalEndDate = this.result.proposal.endDate === null ?
+                                               null : new Date(this.result.proposal.endDate);
+    this.proposalDataBindObj.sponsorDeadlineDate = this.result.proposal.submissionDate === null ?
+                                                   null : new Date(this.result.proposal.submissionDate);
+    this.proposalDataBindObj.internalDeadlineDate = this.result.proposal.internalDeadLineDate === null ?
+                                                    null : new Date(this.result.proposal.internalDeadLineDate);
+    // set default grantCallType to Others if no grant call is associated with the proposal
+    if ( this.result.proposal.grantCallType == null ) {
+        this.result.proposal.grantCallType = this.result.defaultGrantCallType;
+        this.result.proposal.grantTypeCode = this.result.defaultGrantCallType.grantTypeCode;
+    } else if (this.result.proposal.grantCall != null) {
+        this.result.proposal.grantCallType = this.result.proposal.grantCall.grantCallType;
+        this.result.proposal.grantTypeCode = this.result.proposal.grantCall.grantCallType.grantTypeCode;
+    } else if ( this.result.proposal.grantCall == null ) {}
+}
   saveProposal() {}
 }

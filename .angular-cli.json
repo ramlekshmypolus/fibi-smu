@@ -23,7 +23,9 @@
         "../src/assets/css/bootstrap.min.css",
         "../src/assets/css/font-awesome.min.css",
         "../src/assets/css/style.css",
-        "../src/assets/css/search.css"  
+        "../src/assets/css/search.css",
+        "../src/assets/css/fibi-questionnaire-style.css",
+        "../src/assets/css/fibi-codetable-style.css"  
       ],
       "scripts": [ 
        "../src/assets/js/jquery-3.2.1.slim.min.js",

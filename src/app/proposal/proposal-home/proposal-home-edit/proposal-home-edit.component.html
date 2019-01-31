@@ -1,0 +1,190 @@
+<div class="row content-top">
+  <!-- Proposal Details -->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <app-proposal-details [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-proposal-details>
+  </div>
+  <!-- Grant call details -->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <div class="borderBox col-12">
+      <h4 class="borderBoxHeading">Grant Call Details</h4>
+      <button id="grant-details-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isGrantCallWdgtOpen = !showOrHideDataFlagsObj.isGrantCallWdgtOpen">
+        <i [ngClass]="showOrHideDataFlagsObj.isGrantCallWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+      </button>
+      <table class="table tableSkin grid2">
+        <tr *ngIf="result?.proposal?.grantCall == null && showOrHideDataFlagsObj.isGrantCallWdgtOpen">
+          <td class="text-right"><label>Title of Grant Call:</label></td>
+          <td class="pull-left">
+            <span>
+              <div class="searchBox memberSearchBox">
+                <input type="text" placeholder="Search here for Grant Call Title"  [(ngModel)]="proposalDataBindObj.selectedGrantCall" (blur)="isSearchGrantCallActive = false"
+                  (focus)="isSearchGrantCallActive = true" class="member_search" (ngModelChange)="grantCallChangeFunction()" />
+                <a href="#" class="searchButton" (click)="clearGrantCallSearchBox($event)"><i [ngClass]="grantCallIconClass"></i></a>
+                <div class="sb-seachresults" *ngIf="isSearchGrantCallActive">
+                  <ul class="sb-results-dropdown-menu text-left">
+                    <li *ngFor="let result of result.grantCalls " (mousedown)="grantCallSelectFunction(result)"><span [innerHTML]="result.grantCallName"></span></li>
+                  </ul>
+                </div>
+              </div>
+            </span>
+          </td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+        <tbody *ngIf="result?.proposal?.grantCall != null && showOrHideDataFlagsObj.isGrantCallWdgtOpen">
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Funding Agency</th>
+            <th>Funding Scheme</th>
+            <th style="width: 35%">Grant Theme</th>
+            <th>Action</th>
+          </tr>
+          <tr>
+            <td style="padding-left: 10px"><span>{{result?.proposal?.grantCallId}}</span></td>
+            <td title="{{(result?.proposal?.grantCall?.grantCallName?.length > 60)?(result?.proposal?.grantCall?.grantCallName):''}}"><span>{{(result?.proposal?.grantCall?.grantCallName?.length
+                > 60 )?(result?.proposal?.grantCall?.grantCallName |
+                slice:0:60):(result?.proposal?.grantCall?.grantCallName)}}</span></td>
+            <td><span>{{result?.proposal?.grantCall?.sponsor?.sponsorName}}</span></td>
+            <td><span>{{result?.proposal?.grantCall?.activityType?.description}}</span></td>
+            <td style="width: 35%"><span *ngIf=" result?.proposal?.grantCall?.grantTheme != null">
+                <p class="textView" *ngIf="!isGrantThemeReadMore">
+                  {{(result?.proposal?.grantCall?.grantTheme.length>100)?
+                  (result?.proposal?.grantCall?.grantTheme | slice:0:100)+'...' :
+                  result?.proposal?.grantCall?.grantTheme}} <span *ngIf="(result?.proposal?.grantCall?.grantTheme?.length>100)"
+                    class="hand-cursor fibiDefaultColor italian" (click)="isGrantThemeReadMore = !isGrantThemeReadMore">Read
+                    more<i [ngClass]="isGrantThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                  </span>
+                </p>
+                <p *ngIf=" isGrantThemeReadMore" class="textView">
+                  {{result?.proposal?.grantCall?.grantTheme}} <span *ngIf="(result?.proposal?.grantCall?.grantTheme?.length>100)"
+                    class="hand-cursor fibiDefaultColor italian" (click)="isGrantThemeReadMore = !isGrantThemeReadMore">Show
+                    less<i [ngClass]="isGrantThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                  </span>
+                </p>
+              </span>
+            </td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a href="#" data-target="#deleteGrantCall" data-toggle="modal"><i
+                      class="fa fa-trash-o" aria-hidden="true" title="Click here to remove this Grant Call"></i></a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Area Of Research -->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <app-area-of-research-details [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-area-of-research-details>
+  </div>
+  <!-- Project Desciption-->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'normalPadd':'lowPadd'">
+      <h4 class="borderBoxHeading">Project Description</h4>
+      <button id="projectDescExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectDescWdgtOpen = !showOrHideDataFlagsObj.isProjectDescWdgtOpen">
+        <i [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+      </button>
+      <div class="pullSide">
+        <div class="topGrid gridSkin" *ngIf="showOrHideDataFlagsObj.isProjectDescWdgtOpen">
+          <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+              <label>Abstract:</label><br>
+              <textarea name="abstract" id="proposalAbstract" maxlength="4000" placeholder="Please provide Lay Abstract or Scientic Abstract details here"
+                [(ngModel)]="result.proposal.abstractDescription" class="scheduleBoxes"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Special Review-->
+   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <app-special-review-details [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj"></app-special-review-details>
+  </div>
+  <!-- Budget Details-->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'normalPadd':'lowPadd'">
+      <h4 class="borderBoxHeading">Proposal Budget</h4>
+      <span *ngIf="result?.proposal?.budgetHeader == null" class="addBtn font hoverColor" style="margin-right: 25px;"
+        title="Create Proposal Budget" (click)="_proposalComponent.showTab('BUDGET')">Create Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
+      </span>
+      <span *ngIf="result?.proposal?.budgetHeader != null" class="addBtn font hoverColor" style="margin-right: 25px;"
+        title="View Detailed Budget" (click)="_proposalComponent.showTab('BUDGET')">Open Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
+      </span>
+      <button id="budgetExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isBudgetWdgtOpen = !showOrHideDataFlagsObj.isBudgetWdgtOpen" *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length > 0">
+        <i [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+      </button>
+      <table id="periodTable" class="table tableSkin grid2" *ngIf="showOrHideDataFlagsObj.isBudgetWdgtOpen">
+        <tbody *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length > 0">
+          <tr>
+            <th width="10%">Period#</th>
+            <th width="15%">Period Start Date</th>
+            <th width="15%">Period End Date</th>
+            <th width="15%">Total Sponsor Cost</th>
+            <th width="15%">Direct Cost</th>
+            <th width="15%">Indirect Cost</th>
+            <th width="15%">Subcontract Cost</th>
+          </tr>
+          <tr *ngFor="let budget of result?.proposal?.budgetHeader?.budgetPeriods; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{budget?.startDate | date:'MM/dd/yyyy'}}</td>
+            <td>{{budget?.endDate | date:'MM/dd/yyyy'}}</td>
+            <td><span *ngIf="budget?.totalCost != null">{{budget?.totalCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalCost == null">$0.00</span></td>
+            <td><span *ngIf="budget?.totalDirectCost != null">{{budget?.totalDirectCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalDirectCost == null">$0.00</span></td>
+            <td><span *ngIf="budget?.totalIndirectCost != null">{{budget?.totalIndirectCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalIndirectCost == null">$0.00</span></td>
+            <td><span *ngIf="budget?.subcontractCost != null">{{budget?.subcontractCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.subcontractCost == null">$0.00</span></td>
+          </tr>
+          <tr>
+            <td colspan="2"></td>
+            <td class="totalText"><span>Total:</span></td>
+            <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalCost != null">{{result?.proposal?.budgetHeader?.totalCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalCost == null">$0.00</span>
+            </td>
+            <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalDirectCost != null">{{result?.proposal?.budgetHeader?.totalDirectCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalDirectCost == null">$0.00</span>
+            </td>
+            <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalIndirectCost != null">{{result?.proposal?.budgetHeader?.totalIndirectCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalIndirectCost == null">$0.00</span>
+            </td>
+            <td class="totalText"><span *ngIf="result?.proposal?.budgetHeader?.totalSubcontractCost != null">{{result?.proposal?.budgetHeader?.totalSubcontractCost|
+                currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="result?.proposal?.budgetHeader?.totalSubcontractCost == null">$0.00</span>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length <= 0">
+          <tr>
+            <td colspan="7">
+              <div class="noDataExists">There are no
+                Budget Periods added yet.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- DELETE GRANT CALL WARNING MODAL -->
+<div class="modal fade mySkinDialog" tabindex="-1" id="deleteGrantCall"
+  tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove this grant call?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal">No</button>
+        <button type="button" class="btnSkin btnSkinPrimary" (click)="removeSelectedGrant($event)" data-dismiss="modal">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

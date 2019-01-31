@@ -30,7 +30,7 @@ export class CommonService {debugger;
     reverse: 'DESC',
     tabIndex: null,
     userName: localStorage.getItem( 'currentUser' ),
-    personId: localStorage.getItem( 'personId' ),
+    personId: localStorage.getItem('personId'),
     currentPage: 1,
     isUnitAdmin: (localStorage.getItem('isAdmin') === 'true'),
     unitNumber: localStorage.getItem('unitNumber'),
@@ -40,11 +40,19 @@ export class CommonService {debugger;
   };
 
   constructor() { }
+
   logout() {
     localStorage.clear();
   }
+
   getDashboardObject() {
-   return Object.assign({}, this.dashboardRequestObject);
+    this.dashboardRequestObject.isUnitAdmin = (localStorage.getItem('isAdmin') === 'true');
+    this.dashboardRequestObject.personId    = localStorage.getItem('personId');
+    this.dashboardRequestObject.unitNumber  = localStorage.getItem('unitNumber'),
+    this.dashboardRequestObject.userName    = localStorage.getItem( 'currentUser' );
+    this.dashboardRequestObject.provost     = (localStorage.getItem( 'provost' ) === 'true');
+    this.dashboardRequestObject.reviewer    = (localStorage.getItem( 'reviewer' ) === 'true');
+    return Object.assign({}, this.dashboardRequestObject);
   }
 
   /* scrolls page to top */
@@ -54,4 +62,12 @@ export class CommonService {debugger;
         id.scrollIntoView({behavior : 'smooth'});
     }
   }
+
+  _keyPress(event: any, patternType) {
+    const pattern = patternType === 'date' ? /[0-9\+\-\/\ ]/ : /[0-9\a-zA-Z]/;
+    if (!pattern.test(String.fromCharCode(event.charCode))) {
+        event.preventDefault();
+    }
+  }
+
 }

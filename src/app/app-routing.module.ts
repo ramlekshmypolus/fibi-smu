@@ -14,6 +14,10 @@ const routes: Routes = [
       { path: 'grant',  loadChildren: 'app/grant/grant.module#GrantModule',
         canActivate: [AuthGuard] },
       { path: 'proposal', loadChildren: 'app/proposal/proposal.module#ProposalModule',
+        canActivate: [AuthGuard]},
+      { path: 'questionnaire', loadChildren: 'app/questionnaire-create/create.module#CreateModule',
+        canActivate: [AuthGuard]},
+      { path: 'codetable', loadChildren: 'app/codetable/codetable.module#CodetableModule',
         canActivate: [AuthGuard]}
     ]
   },

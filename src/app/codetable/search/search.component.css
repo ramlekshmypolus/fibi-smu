@@ -1,0 +1,18 @@
+:host /deep/ .completer-input {
+	width: 100% !important;
+	border-radius: 20px;
+    border: 1px #DEDEDE solid;
+    width: 100%;
+    padding-right: 35px;
+    line-height: 27px;
+    font-size: .8em;
+    padding-left: 10px;
+	}
+	
+:host/deep/ .completer-dropdown {
+	width: 98% !important;
+	overflow-y: auto;
+	overflow-x: hidden;
+	max-height: 300px;
+}
+

@@ -58,12 +58,6 @@ export class LoginComponent implements AfterViewInit, OnInit{
                         localStorage.setItem('grantManager', String(this.result.grantManager ) );
                         localStorage.setItem('createProposal', String(this.result.createProposal) );
                         localStorage.setItem('superUser', String(this.result.superUser) );
-                        this._commonService.dashboardRequestObject.userName = localStorage.getItem( 'currentUser' );
-                        this._commonService.dashboardRequestObject.personId = localStorage.getItem( 'personId' );
-                        this._commonService.dashboardRequestObject.isUnitAdmin = (localStorage.getItem('isAdmin') === 'true');
-                        this._commonService.dashboardRequestObject.unitNumber = localStorage.getItem('unitNumber');
-                        this._commonService.dashboardRequestObject.provost = (localStorage.getItem( 'provost' ) === 'true');
-                        this._commonService.dashboardRequestObject.reviewer = (localStorage.getItem( 'reviewer' ) === 'true');
                         this.loginService.setLeadUnits(this.result.leadUnits);
                         if (localStorage.getItem('currentUrl') != null && localStorage.getItem('currentUrl').indexOf('login') === -1) {
                             window.location.hash = localStorage.getItem('currentUrl');

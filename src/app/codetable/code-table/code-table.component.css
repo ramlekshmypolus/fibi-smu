@@ -1,0 +1,5 @@
+.table thead th {
+  vertical-align: initial !important;
+  border-bottom: 2px solid #dee2e6;
+}
+

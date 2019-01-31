@@ -1,0 +1,171 @@
+<div class="push4slideMenu pageMinHeight">
+<div class="container-fluid pushFixedHeaderFooter">
+<div class="headerPush"></div>
+<div class="container-fluid">
+<section class="container-fluid form" style="margin-top: 20px;">		
+  <div class="row heading-bottom">
+    <div class="offset-md-2 col-lg-9 col-9 form-outer irb-qst-form-outer padding-15 padding-top0">
+      <div class="row">
+        <div class="col-lg-12 margin-bottom bottom-line">
+          <div class="row qst-main-header">
+          <div class="col-lg-10">
+              <h4 class="qst-head" *ngIf = "data.header.QUESTIONNAIRE_ID == null">New Questionnaire</h4>
+              <h4 class="qst-head" *ngIf = "data.header.QUESTIONNAIRE_ID != null">{{data.header.QUESTIONNAIRE_ID}}: {{data.header.QUESTIONNAIRE_NAME}}</h4>
+          </div>
+          <div class="col-lg-2 text-right">
+              <i class="fas fa-chevron-down qst-down-icon" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"></i>
+          </div>
+        </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-12 card-details">
+              <div class="accordion qst-boxshadow-none" id="accordionExample">
+                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <div class="card-body qst-padding0">
+                    <div class="form-group row">
+                      <label class="col-sm-2 col-form-label bold-600">Group</label>
+                      <div class="col-sm-3">
+                         <select class="custom-select custom-s"  [(ngModel)]= "data.header.QUEST_GROUP_TYPE_CODE">
+                            <option *ngFor ="let group of data.questionnaireGroup" value = "{{group.QUEST_GROUP_TYPE_CODE}}" >{{group.DESCRIPTION}}</option>
+                      </select>
+                      </div> 
+                      <div class="col-2 offset-1">
+                        <div class="form-check">
+                          <input class="form-check-input qst-form-check-input" type="checkbox" value="" [(ngModel)]= "data.header.IS_FINAL" id="defaultCheck1">
+                          <label class="form-check-label" for="defaultCheck1">
+                          <b>Final</b>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                       <div class="form-group row">
+                      <label class="col-sm-2 col-form-label bold-600">Name</label>
+                      <div class="col-lg-10">
+                        <input type="text" class="form-control custom-input" id ="questionaireName" [(ngModel)]= "data.header.QUESTIONNAIRE_NAME" (focusout) = "createTreeNodes($event)"  placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+                      <span class="bar"></span>
+                    </div>
+                    </div>
+                      <div class="form-group row">
+                      <label class="col-sm-2 col-form-label bold-600">Description</label>
+                      <div class="col-lg-10">
+                        <textarea class="form-control custom-input" placeholder="Description" [(ngModel)]= "data.header.QUESTIONNAIRE_DESCRIPTION" aria-label="Username" aria-describedby="basic-addon1"></textarea>
+                      <span class="bar"></span>
+                    </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="tbl-1-outer">
+                        <table class="table qst-table-thead">
+                          <thead class="qst-header-bg">
+                            <tr>
+                              <th scope="col">Mandatory</th>
+                              <th scope="col">Applied to</th>
+                              <th scope="col">Sub Section</th>
+                              <th scope="col">Questionnaire Label</th>
+                              <th scope="col" class = "sub-add qst-plus-icon"><i (click) = "addNewUsage()" class="fas fa-plus" title="Add Usage"></i></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor = "let list of data.usage; let listIndex= index">
+                              <ng-container *ngIf = "list.AC_TYPE != 'D'">
+                              <td> <input type="checkbox"  [(ngModel)] ="list.IS_MANDATORY"/></td>
+                              <td>
+                                <select [(ngModel)] = "list.MODULE_ITEM_CODE"  class="custom-select custom-s">
+                                  <option [value]= 0>--select option--</option>
+                                  <option [value]= 1>Award</option>
+                                  <option [value]= 2>Institute Proposal</option>
+                                  <option [value]= 3>Development Proposal</option>
+                                  <option [value]= 5>Negotiations</option>
+                                  <option [value]= 6>Person</option>
+                                  <option [value]= 8>COI Disclosure</option>
+                                  <option [value]= 9>IACUC Protocol</option>
+                                  <option [value]= 7>IRB</option>
+                                </select>
+                              </td>
+                              <td>
+                                <select [(ngModel)] = "list.MODULE_SUB_ITEM_CODE"  class="custom-select custom-s">
+                                  <option [value] = 0 >--select option--</option>
+                                  <option  value = {{submodule.subModuleId}} *ngFor = "let submodule of findSubmodulelist(list.MODULE_ITEM_CODE)">
+                                    {{submodule.label}}
+                                  </option>
+                                </select>
+                              <td>
+                                <input type="text" class="form-control custom-input"  [(ngModel)] = "list.QUESTIONNAIRE_LABEL" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+                                <span class="bar"></span>
+                              </td> 
+                              <td> <i  (click) = "removeUsage(listIndex)" class="fas fa-times close-icon"></i></td>
+                              </ng-container>
+                            </tr> 
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>    
+    </div>
+  </div>
+</div>
+</section>
+<div class="outer">
+  <section>
+      <div class="col-12">
+          <div class="row">
+            <div class=" offset-lg-2 col-lg-9 col-9 form-outer irb-qst-form-outer irb-qst-nav header-nav">
+                <div class="row">
+                  <div class="col-lg-12 header margin-bottom qst-preview-qstn-header">
+                      <ul class="nav">
+                        <li class="nav-item">
+                          <a class="nav-link"  [ngClass] = "{'active irb-qst-active': currentTab == 'create'}" (click) = "changeCurrentTab('create')">Create Questionnaire</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link"  [ngClass] = "{'active irb-qst-active': currentTab == 'preview'}" (click) = "changeCurrentTab('preview')">Preview</a>
+                        </li>           
+                      </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <ng-container *ngIf = "currentTab == 'create'">
+            <app-create-questionnaire
+                [questionnaire]     = "data.questionnaire"  
+                [commonValues]      = "QuestionnaireCommonValues"
+                [nodes]             = "nodes"
+                [groupLabels]       = "groupLabels"
+                (saveQuestionniare) = "confirmSave($event)"
+                (createTree)        = "createTreeNodes($event)"
+                (previewTab)        = "changeCurrentTab($event)">
+            </app-create-questionnaire>
+        </ng-container>
+        <ng-container *ngIf = "currentTab == 'preview'">
+            <app-preview-questionnaire [questionnaire] = "data.questionnaire"></app-preview-questionnaire>
+        </ng-container>
+        
+      </div>
+  </section>
+</div>
+<button type="button" class="btn btn-primary custom-button qst-disp-none" id ="saveQuestionniare" data-toggle="modal" data-target="#confirmSave"></button>
+<div class="modal fade" id="confirmSave" tabindex="-1" role="dialog" aria-labelledby="confirmSave" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          Do you want to save ?
+        </div>
+        <div class="modal-footer">
+        <button type="button"  (click) = " saveQuestionniare()" data-dismiss="modal" class="btn btnSkin btnSkinPrimary">Yes</button>
+        <button type="button" class="btn btnSkin" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="footerPush"></div>
+	</div>
+</div>
+  <div id="toast-success">{{toast_message}}</div>
+
