@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SpecialReviewDetailsComponent } from './special-review-details.component';
+import { SpecialReviewDetailsComponent } from './special-review.component';
 
 describe('SpecialReviewDetailsComponent', () => {
   let component: SpecialReviewDetailsComponent;

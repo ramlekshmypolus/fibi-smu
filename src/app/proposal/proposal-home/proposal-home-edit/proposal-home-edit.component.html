@@ -1,11 +1,11 @@
 <div class="row content-top">
   <!-- Proposal Details -->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <app-proposal-details [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-proposal-details>
+    <app-proposal-details [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj" [mandatoryObj]="mandatoryObj"></app-proposal-details>
   </div>
   <!-- Grant call details -->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <div class="borderBox col-12">
+    <div class="borderBox col-12 border-index">
       <h4 class="borderBoxHeading">Grant Call Details</h4>
       <button id="grant-details-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isGrantCallWdgtOpen = !showOrHideDataFlagsObj.isGrantCallWdgtOpen">
         <i [ngClass]="showOrHideDataFlagsObj.isGrantCallWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
@@ -75,11 +75,15 @@
   </div>
   <!-- Area Of Research -->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <app-area-of-research-details [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-area-of-research-details>
+    <app-area-of-research [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-area-of-research>
+  </div>
+  <!--Project Team-->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <app-project-team [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-project-team>
   </div>
   <!-- Project Desciption-->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'normalPadd':'lowPadd'">
+    <div class="borderBox col-12 border-index" [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'normalPadd':'lowPadd'">
       <h4 class="borderBoxHeading">Project Description</h4>
       <button id="projectDescExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectDescWdgtOpen = !showOrHideDataFlagsObj.isProjectDescWdgtOpen">
         <i [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
@@ -98,15 +102,19 @@
     </div>
   </div>
   <!-- Special Review-->
-   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <app-special-review-details [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj"></app-special-review-details>
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <app-special-review [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj"></app-special-review>
   </div>
+  <!--Declaration details-->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <app-declaration [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj"></app-declaration>
+  </div> 
   <!-- Budget Details-->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'normalPadd':'lowPadd'">
+    <div class="borderBox col-12 border-index" [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'normalPadd':'lowPadd'">
       <h4 class="borderBoxHeading">Proposal Budget</h4>
       <span *ngIf="result?.proposal?.budgetHeader == null" class="addBtn font hoverColor" style="margin-right: 25px;"
-        title="Create Proposal Budget" (click)="_proposalComponent.showTab('BUDGET')">Create Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
+        title="Create Proposal Budget" data-toggle="modal" data-target="#warning-modal" (click)="_proposalComponent.showTab('BUDGET')">Create Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
       </span>
       <span *ngIf="result?.proposal?.budgetHeader != null" class="addBtn font hoverColor" style="margin-right: 25px;"
         title="View Detailed Budget" (click)="_proposalComponent.showTab('BUDGET')">Open Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
@@ -165,6 +173,10 @@
         </tbody>
       </table>
     </div>
+  </div>
+  <!-- Supporting Documents -->
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <app-supporting-documents [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-supporting-documents>
   </div>
 </div>
 <!-- DELETE GRANT CALL WARNING MODAL -->

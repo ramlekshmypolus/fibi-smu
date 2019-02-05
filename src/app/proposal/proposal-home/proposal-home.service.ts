@@ -45,6 +45,14 @@ export class ProposalHomeService {
     return this.http.get( this._commonService.baseUrl + '/findGrantCall' + '?searchString=' + searchString);
   }
 
+  fetchDepartment( searchString) {
+    return this.http.get( this._commonService.baseUrl + '/findDepartment' + '?searchString=' + searchString);
+  }
+
+  deleteProposalPerson( params ) {
+    return this.http.post( this._commonService.baseUrl + '/deleteProposalPerson', params );
+  }
+
   deleteProposalSponsor( params ) {
     return this.http.post( this._commonService.baseUrl + '/deleteProposalSponsor', params );
   }
@@ -55,6 +63,21 @@ export class ProposalHomeService {
 
   deleteIrbProtocol( params ) {
     return this.http.post( this._commonService.baseUrl + '/deleteIrbProtocol', params );
-}
+  }
+
+  addProposalAttachment( formData ) {
+    return this.http.post( this._commonService.baseUrl + '/addProposalAttachment', formData );
+  }
+
+  deleteProposalAttachment( params ) {
+    return this.http.post( this._commonService.baseUrl + '/deleteProposalAttachment', params );
+  }
+
+  downloadProposalAttachment( attachmentId ) {
+    return this.http.get( this._commonService.baseUrl + '/downloadProposalAttachment', {
+        headers: new HttpHeaders().set( 'attachmentId', attachmentId.toString() ),
+        responseType: 'blob'
+    } );
+  }
 
 }

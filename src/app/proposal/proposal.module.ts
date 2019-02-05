@@ -11,12 +11,15 @@ import { ProposalViewComponent } from './proposal-home/proposal-view/proposal-vi
 import { ProposalBudgetComponent } from './proposal-budget/proposal-budget.component';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { ProposalDetailsComponent } from './proposal-home/proposal-home-edit/proposal-details/proposal-details.component';
-import { SpecialReviewDetailsComponent } from './proposal-home/proposal-home-edit/special-review-details/special-review-details.component';
-import { AreaOfResearchDetailsComponent } from './proposal-home/proposal-home-edit/area-of-research-details/area-of-research-details.component';
+import { AreaOfResearchDetailsComponent } from './proposal-home/proposal-home-edit/area-of-research/area-of-research.component';
+import { ProjectTeamComponent } from './proposal-home/proposal-home-edit/project-team/project-team.component';
+import { SpecialReviewDetailsComponent } from './proposal-home/proposal-home-edit/special-review/special-review.component';
+import { SupportingDocumentsComponent } from './proposal-home/proposal-home-edit/supporting-documents/supporting-documents.component';
 
 import { ProposalService } from './services/proposal.service';
 import { ProposalHomeService } from './proposal-home/proposal-home.service';
-import { GrantService } from '../grant/services/grant.service';													   
+import { GrantService } from '../grant/services/grant.service';
+import { DeclarationComponent } from './proposal-home/proposal-home-edit/declaration/declaration.component';
 
 @NgModule({
   imports: [
@@ -34,7 +37,10 @@ import { GrantService } from '../grant/services/grant.service';
     ProposalDetailsComponent,
     SpecialReviewDetailsComponent,
     ProposalHomeEditComponent,
-	AreaOfResearchDetailsComponent,
+    AreaOfResearchDetailsComponent,
+    SupportingDocumentsComponent,
+    ProjectTeamComponent,
+    DeclarationComponent,
   ],
   providers: [ProposalService, ProposalHomeService, GrantService]
 })

@@ -1,0 +1,191 @@
+<div class="borderBox col-12 border-index">
+  <h4 class="borderBoxHeading">Supporting Documents</h4>
+  <button title="add new attachment" class="addBtn font attachBtn"
+    style="right: 55px" (click)="showAddAttachmentPopUp($event); isReplaceAttachment = false;"
+    *ngIf="showOrHideDataFlagsObj.mode != 'view'" data-toggle="modal"
+    data-target="#addAttachment">
+    <i class="fa fa-plus"></i>&nbsp;<span>Add Document</span>
+  </button>
+  <button id="attachmentExpandBtn"
+    class="addBtn font hoverColor btnPositionFullWidget"
+    (click)="showOrHideDataFlagsObj.isAttachmentListOpen = !showOrHideDataFlagsObj.isAttachmentListOpen"
+    *ngIf="(result?.proposal?.proposalAttachments?.length > 0)">
+    <i [ngClass]="showOrHideDataFlagsObj.isAttachmentListOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+  </button>
+  <table class="table tableSkin grid2">
+    <tr *ngIf="result?.proposal?.proposalAttachments?.length == 0 && showOrHideDataFlagsObj.mode == 'view'">
+      <td colspan="5"><div class="noDataExists">There are no documents uploaded</div></td>
+    </tr>
+    <tbody
+      *ngIf="result?.proposal?.proposalAttachments?.length > 0 && showOrHideDataFlagsObj.isAttachmentListOpen">
+      <tr>
+        <th style="width: 24%">Document Type</th>
+        <th style="width: 25%">Description</th>
+        <th>File Name</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+      <tr *ngFor="let attachment of result?.proposal?.proposalAttachments;let i = index">
+        <td>{{attachment?.attachmentType?.description}}</td>
+        <td title="{{(attachment?.description?.length>60)?(attachment?.description):''}}">
+          <span *ngIf="result?.proposal?.statusCode == 11">{{(attachment?.description?.length
+            > 60)?(attachment?.description | slice:0:60)+'...':(attachment?.description)}}
+          </span>
+          <textarea *ngIf="result?.proposal?.statusCode != 11"
+          id="desc" cols=2 rows="1" [(ngModel)]="attachment.description" (ngModelChange)="proposalDataChange()" placeholder=""
+          class="scheduleBoxes forTextAreaEntry">
+          </textarea>
+        </td>
+        <td title="{{(attachment?.fileName?.length>60)?(attachment?.fileName):''}}">{{(attachment?.fileName?.length
+          > 60)?(attachment?.fileName | slice:0:60)+'...':(attachment?.fileName)}}</td>
+        <td>
+          <span *ngIf="result?.proposal?.statusCode == 11">
+            {{attachment?.narrativeStatus?.description}}
+          </span>
+          <select *ngIf="result?.proposal?.statusCode != 11"
+            class="committeeBox dateBox" [(ngModel)]="attachment.narrativeStatus.description">
+              <option
+                *ngFor="let attachStatus of this.result.narrativeStatus"
+                (value)="attachStatus">{{attachStatus?.description}}</option>
+          </select>
+        </td>
+        <td>
+          <ul class="actionButtonGroup">
+            <li *ngIf="showOrHideDataFlagsObj.mode != 'view'">
+              <a (click)="temprySaveAttachments(attachment.attachmentId,i)" data-toggle="modal" data-target="#deleteAttachment"><i
+                class="fa fa-trash-o" title="Click here to delete {{attachment?.fileName}}"></i></a>
+            </li>
+            <li>
+              <a (click)="downloadProposalAttachments(attachment)" title="Click here to download {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}">
+                <i class="fa fa-download pointer" aria-hidden="true"></i>
+            </a>
+            </li>
+            <li *ngIf="result?.proposal?.statusCode != 11 && attachment.attachmentId !== null">
+              <a (click)="isReplaceAttachment= true;showAddAttachmentPopUp($event, attachment)" data-toggle="modal" data-target="#addAttachment"
+              title="Click here to replace file {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}">
+                <i class="fa fa-retweet pointer" aria-hidden="true"></i>
+              </a>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ADD ATTACHMENT MODAL -->
+<div class="modal fade mySkinDialog" id="addAttachment" tabindex="-1" role="dialog"
+aria-labelledby="skippedSchedulesTitle" data-backdrop="static" data-keyboard="false"
+aria-hidden="true" *ngIf="isShowAddAttachment">
+  <div class="modal-dialog modal-lg"
+    role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 *ngIf="!isReplaceAttachment" class="modal-title" id="skippedSchedulesLongTitle">Add Document</h5>
+        <h5 *ngIf="isReplaceAttachment" class="modal-title">Replace Document</h5>
+        <button type="button" class="close" data-dismiss="modal"
+          aria-label="Close" (click)="clearAttachmentDetails()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <app-file-drop [multiple]="true" (filesDropEvent)="fileDrop($event)"></app-file-drop>
+        </div>
+        <div *ngIf="uploadedFile.length > 0">
+          <div class="gridSkin">
+            <div class="row">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+                  <label><span class="mandatory">*</span>Document Type</label>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                  <label>Description</label>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+                  <label><span class="mandatory">*</span>File Name</label>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+                  <label><span class="mandatory">*</span>Status</label>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1">
+                  <label>Action</label>
+                </div>
+            </div>
+            <div class="row" *ngFor="let item of uploadedFile; let i=index">
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+                <span *ngIf="isReplaceAttachment == true">
+                  {{selectedAttachmentType[i]}}
+                </span>
+                <select class="committeeBox dateBox" *ngIf="isReplaceAttachment != true"
+                  [(ngModel)]="selectedAttachmentType[i]">
+                  <option [value]=null>--Select--</option>
+                  <option
+                    *ngFor="let attachType of this.result.proposalAttachmentTypes"
+                    [value]="attachType.attachmentTypeCode">{{attachType?.description}}</option>
+                </select>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <textarea id="desc" cols=2 rows="1"
+                  [(ngModel)]="selectedAttachmentDescription[i]" placeholder=""
+                  class="scheduleBoxes forTextAreaEntry">
+                </textarea>
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2" title="{{item?.name}}">
+                  <span>{{(item?.name?.length
+                    > 15)?(item?.name | slice:0:15)+'...':(item?.name)}}</span>
+              </div>
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+                <select class="committeeBox dateBox"
+                  [(ngModel)]="selectedAttachmentStatus[i]">
+                  <option [value]=null>--Select--</option>
+                  <option
+                    *ngFor="let attachStatus of this.result.narrativeStatus"
+                    (value)="attachStatus">{{attachStatus?.description}}</option>
+                </select>
+              </div>
+              <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1">
+                  <ul class="actionButtonGroup">
+                    <li>
+                      <a
+                      class="fa fa-trash-o hand-cursor" title="Remove File"
+                      (click)="deleteFromUploadedFileList(i)"></a>
+                    </li>
+                  </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="warningMsgObj.attachmentWarningMsg != null">
+          <span class="mandatory font">{{warningMsgObj.attachmentWarningMsg}}</span>
+        </div>
+      </div>
+      <div class="modal-footer" *ngIf="uploadedFile.length > 0">
+        <button type="button" class="btnSkin btn-secondary"
+          data-dismiss="modal" (click)="clearAttachmentDetails()">Close</button>
+        <button type="button" class="btnSkin btnSkinPrimary" (click)="addAttachments()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- DELETE ATTACHMENT WARNING MODAL -->
+<div class="modal fade mySkinDialog" *ngIf="isShowDeleteAttachment" tabindex="-1" id="deleteAttachment"
+tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title">Delete</h5>
+
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body">
+       <p>Are you sure you want to delete this item?</p>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteAttachment = false">No</button>
+       <button type="button" class="btnSkin btnSkinPrimary" (click)="deleteAttachments()" data-dismiss="modal">Yes</button>
+     </div>
+   </div>
+ </div>
+</div>

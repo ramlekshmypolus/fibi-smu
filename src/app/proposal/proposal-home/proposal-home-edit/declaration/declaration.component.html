@@ -1,0 +1,170 @@
+<div class="borderBox col-12 border-index">
+  <h4 class="borderBoxHeading">Declaration</h4>
+  <button id="declaration-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isDeclarationWidgetOpen = !showOrHideDataFlagsObj.isDeclarationWidgetOpen">
+    <i [ngClass]="showOrHideDataFlagsObj.isDeclarationWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+      class="fa-large"></i>
+  </button>
+  <div class="borderBox col-12" *ngIf="showOrHideDataFlagsObj.isDeclarationWidgetOpen">
+    <h4 class="borderBoxHeading bordercolor">Funding Support</h4>
+    <div >
+      <table class="table tableSkin grid2">
+        <tr id="addFundingSupportRow">
+          <td><label class="block-display">Type of Funding Agency :</label>
+            <select id="declaration-funding-type" [(ngModel)]="selectedSponsorType" class="committeeBox" (change)="sponsorTypeChange($event.target.value)">
+              <option [value]=null>--Select--</option>
+              <option *ngFor="let type of result.sponsorTypes" (value)="type">{{type.description}}</option>
+            </select>
+          </td>
+          <td><label class="block-display">Name of Funding Agency:</label>
+            <select id="declaration-sponsor-name" [(ngModel)]="selectedSponsorName" (change)="sponsorNameChange($event.target.value)"
+              class="committeeBox">
+              <option [value]=null>--Select--</option>
+              <option *ngFor="let sponsor of result.sponsors" (value)="sponsor">{{sponsor?.sponsorName}}</option>
+            </select></td>
+          <td><label>Start Date:</label>
+            <span class="dateField"><input id="declaration-start-date" [owlDateTime]="startDt" placeholder="mm/dd/yyyy"
+           [(ngModel)]="fundingStartDate" class="dateWidth committeeBox dateBox" (keypress)="_commonService._keyPress($event, 'date')" />
+              <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="startDt"></i>
+              <owl-date-time #startDt [pickerType]="'calendar'" (afterPickerClosed)="sponsorDateValidation()"></owl-date-time>
+            </span>
+          </td>
+          <td><label>End Date:</label>
+            <span class="dateField"><input id="declaration-end-date" [owlDateTime]="endDt"
+                placeholder="mm/dd/yyyy" [(ngModel)]="fundingEndDate" class="dateWidth committeeBox dateBox" (keypress)="_commonService._keyPress($event, 'date')" />
+              <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="endDt"></i>
+              <owl-date-time #endDt [pickerType]="'calendar'" (afterPickerClosed)="sponsorDateValidation()"></owl-date-time>
+            </span>
+          </td>
+          <td><label class="block-display">Amount</label>
+            <input type="number" id="declaration-amount" class="committeeBox" [(ngModel)]="sponsorAmount" /></td>
+          <td><br>
+            <button class="btnSkin btnSkinPrimary" id="declaration-add-btn" (click)="addSponsor()">Add</button>
+          </td>
+        </tr>
+        <tr *ngIf="warningMsgObj.fundingWarningMsg != null">
+          <td colspan="3"><span class="mandatory">{{warningMsgObj.fundingWarningMsg}}</span></td>
+        </tr>
+        <!--Funding agency details-->
+        <tbody *ngIf="result?.proposal?.proposalSponsors?.length > 0">
+          <tr>
+            <th>Funding Agency</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Amount</th>
+            <th>Action</th>
+          </tr>
+          <tr *ngFor="let proposalSponsor of result?.proposal?.proposalSponsors;let i = index">
+            <td>{{proposalSponsor?.sponsor?.sponsorName}}</td>
+            <td>{{proposalSponsor?.startDate | date:'MM/dd/yyyy'}}</td>
+            <td>{{proposalSponsor?.endDate | date:'MM/dd/yyyy'}}</td>
+            <td>{{proposalSponsor?.amount | currency:'USD':true}}</td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a href="#" id="declaration-delete-btn" data-toggle="modal" data-target="#deleteSponsor" (click)="temprySaveSponsorObject(proposalSponsor,i)"><i
+                      class="fa fa-trash-o" aria-hidden="true" title="Click here to delete this Sponsor"></i></a></li>
+              </ul>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!--IRB DETAILS-->
+  <div class="borderBox col-12" *ngIf="showOrHideDataFlagsObj.isDeclarationWidgetOpen">
+    <h4 class="borderBoxHeading bordercolor">IRB</h4>
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 text-right ">
+            <label class="font bold">Protocol Title:</label>
+          </div>
+          <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
+            <div class= "searchBox memberSearchBox">
+              <input type="text" id="declaration-irb-protocol-title" placeholder="" [(ngModel)]="selectedProtocol" (blur)="isSearchProtocolTitleActive = false"
+                (focus)="isSearchProtocolTitleActive = true" class="member_search" (ngModelChange)="protocolTitleChangeFunction()" />
+              <a href="#" class="searchButton" (click)="clearProtocolSearchBox($event)"><i [ngClass]="protocolIconClass"></i></a>
+              <div class="sb-seachresults" *ngIf="isSearchProtocolTitleActive">
+                <ul class="sb-results-dropdown-menu text-left">
+                  <li *ngFor="let result of result.protocols "(mousedown)="addProtocol(result)"><span [innerHTML]="result.title"></span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="warningMsgObj.protocolWarningMsg != null">
+            <span class="mandatory font">{{warningMsgObj.protocolWarningMsg}}</span>
+        </div>
+        <div class="padding-tbx" *ngIf="result?.proposal?.proposalIrbProtocols?.length > 0">
+            <table class="table tableSkin grid2">
+                <tbody >
+                    <tr>
+                      <th width="15%">Protocol Number</th>
+                      <th>Title</th>
+                      <th>Approval Status</th>
+                      <th>Approval Date</th>
+                      <th>Expiration Date</th>
+                      <th>Action</th>
+                    </tr>
+                    <tr *ngFor="let protocol of result?.proposal?.proposalIrbProtocols; let i = index">
+                      <td>{{protocol?.protocol?.protocolNumber}}</td>
+                      <td>{{protocol?.protocol?.title}}</td>
+                      <td>{{protocol?.protocol?.protocolStatus?.description}}</td>
+                      <td>{{protocol?.protocol?.approvalDate | date:'MM/dd/yyyy'}}</td>
+                      <td>{{protocol?.protocol?.expirationDate | date:'MM/dd/yyyy'}}</td>
+                      <td>
+                        <ul class="actionButtonGroup">
+                          <li><a href="#" id="declaration-delete-btn" data-toggle="modal" data-target="#deleteIRB" (click)="temprySaveIRBProtocolDetails($event,protocol,i)"><i class="fa fa-trash-o"
+                                aria-hidden="true" title="Click here to delete {{protocol?.protocol?.title}}"></i></a></li>
+                        </ul>
+                      </td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>   
+      </div>
+</div>
+
+<!-- DELETE SPONSOR WARNING MODAL -->
+<div class="modal fade mySkinDialog modal-opacity" *ngIf="isShowDeleteSponsorModal" tabindex="-1" id="deleteSponsor" tabindex="-1"
+  role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this item?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteSponsorModal = false">No</button>
+        <button type="button" class="btnSkin btnSkinPrimary" (click)="deleteSponsor()" data-dismiss="modal">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--DELETE IRB PROTOCOL DETAILS WARNING MODAL-->
+<div class="modal fade show mySkinDialog modal-opacity" *ngIf="isShowDeleteIRBDetails" tabindex="-1" id="deleteIRB" tabindex="-1"
+   role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this item?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteIRBDetails = false">No</button>
+          <button type="button" class="btnSkin btnSkinPrimary" (click)="deleteIRBProtocolDetails()" data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>

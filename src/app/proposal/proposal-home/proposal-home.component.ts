@@ -11,6 +11,7 @@ export class ProposalHomeComponent implements OnInit {
   @Input() showOrHideDataFlagsObj: any = {};
   @Input() warningMsgObj: any = {};
   @Input() proposalDataBindObj: any = {};
+  @Input() mandatoryObj: any = {};
 
   constructor() { }
 

@@ -4,9 +4,8 @@ import { CommonService } from '../../../../common/services/common.service';
 import { ProposalHomeService } from '../../proposal-home.service';
 
 @Component({
-  selector: 'app-area-of-research-details',
-  templateUrl: './area-of-research-details.component.html',
-  styleUrls: ['./area-of-research-details.component.css']
+  selector: 'app-area-of-research',
+  templateUrl: './area-of-research.component.html'
 })
 export class AreaOfResearchDetailsComponent implements OnInit {
 
@@ -76,19 +75,19 @@ export class AreaOfResearchDetailsComponent implements OnInit {
 
   /* adds area of research */
   addAreaOfResearch() {
-    const AREAOFRESEARCHOBJECT: any = {};
+    const areaOfResearchObject: any = {};
     this.warningMsgObj.areaOfResearchWarningMsg = null;
     if (this.selectedAreaOfResearch != null && this.selectedAreaOfResearch !== '') {
       if (this.result.proposal.proposalResearchAreas.length !== 0) {
-        for (const DUPAREAOFRESEARCHOBJ of this.result.proposal.proposalResearchAreas) {
+        for (const dupAreaOfResearchObject of this.result.proposal.proposalResearchAreas) {
           if (this.proposalDataBindObj.selectedAreaType === 'Area of Excellence' &&
-            DUPAREAOFRESEARCHOBJ.proposalExcellenceArea != null &&
-            DUPAREAOFRESEARCHOBJ.proposalExcellenceArea.description === this.selectedAreaOfResearch) {
+          dupAreaOfResearchObject.proposalExcellenceArea != null &&
+          dupAreaOfResearchObject.proposalExcellenceArea.description === this.selectedAreaOfResearch) {
             this.warningMsgObj.areaOfResearchWarningMsg = 'Area already added';
             break;
           } else if (this.proposalDataBindObj.selectedAreaType === 'Area of Research' &&
-            DUPAREAOFRESEARCHOBJ.researchArea != null &&
-            DUPAREAOFRESEARCHOBJ.researchArea.description === this.selectedAreaOfResearch) {
+          dupAreaOfResearchObject.researchArea != null &&
+          dupAreaOfResearchObject.researchArea.description === this.selectedAreaOfResearch) {
             this.warningMsgObj.areaOfResearchWarningMsg = 'Area already added';
             break;
           }
@@ -97,25 +96,22 @@ export class AreaOfResearchDetailsComponent implements OnInit {
       if (this.warningMsgObj.areaOfResearchWarningMsg == null) {
         if (this.proposalDataBindObj.selectedAreaType === 'Area of Excellence') {
           if (this.selectedAreaOfResearchObject != null && this.selectedAreaOfResearchObject.description === this.selectedAreaOfResearch) {
-            AREAOFRESEARCHOBJECT.researchTypeCode = this.result.proposalResearchTypes[0].researchTypeCode;
-            AREAOFRESEARCHOBJECT.proposalResearchType = this.result.proposalResearchTypes[0];
-            AREAOFRESEARCHOBJECT.excellenceAreaCode = this.selectedAreaOfResearchObject.excellenceAreaCode;
-            AREAOFRESEARCHOBJECT.proposalExcellenceArea = this.selectedAreaOfResearchObject;
-            AREAOFRESEARCHOBJECT.updateTimeStamp = new Date().getTime();
-            AREAOFRESEARCHOBJECT.updateUser = localStorage.getItem('currentUser');
-            this.result.proposal.proposalResearchAreas.push(AREAOFRESEARCHOBJECT);
+            areaOfResearchObject.researchTypeCode = this.result.proposalResearchTypes[0].researchTypeCode;
+            areaOfResearchObject.proposalResearchType = this.result.proposalResearchTypes[0];
+            areaOfResearchObject.excellenceAreaCode = this.selectedAreaOfResearchObject.excellenceAreaCode;
+            areaOfResearchObject.proposalExcellenceArea = this.selectedAreaOfResearchObject;
           }
         } else {
           if (this.selectedAreaOfResearchObject != null && this.selectedAreaOfResearchObject.description === this.selectedAreaOfResearch ) {
-            AREAOFRESEARCHOBJECT.researchTypeCode = this.result.proposalResearchTypes[1].researchTypeCode;
-            AREAOFRESEARCHOBJECT.proposalResearchType = this.result.proposalResearchTypes[1];
-            AREAOFRESEARCHOBJECT.researchAreaCode = this.selectedAreaOfResearchObject.researchAreaCode;
-            AREAOFRESEARCHOBJECT.researchArea = this.selectedAreaOfResearchObject;
-            AREAOFRESEARCHOBJECT.updateTimeStamp = new Date().getTime();
-            AREAOFRESEARCHOBJECT.updateUser = localStorage.getItem('currentUser');
-            this.result.proposal.proposalResearchAreas.push(AREAOFRESEARCHOBJECT);
+            areaOfResearchObject.researchTypeCode = this.result.proposalResearchTypes[1].researchTypeCode;
+            areaOfResearchObject.proposalResearchType = this.result.proposalResearchTypes[1];
+            areaOfResearchObject.researchAreaCode = this.selectedAreaOfResearchObject.researchAreaCode;
+            areaOfResearchObject.researchArea = this.selectedAreaOfResearchObject;
           }
         }
+        areaOfResearchObject.updateTimeStamp = new Date().getTime();
+        areaOfResearchObject.updateUser = localStorage.getItem('currentUser');
+        this.result.proposal.proposalResearchAreas.push(areaOfResearchObject);
       }
     }
     this.selectedAreaOfResearch = '';
