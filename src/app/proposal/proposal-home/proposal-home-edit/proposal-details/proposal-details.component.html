@@ -1,4 +1,4 @@
-<div class="borderBox">
+<div class="borderBox col-12 border-index">
   <h4 class="borderBoxHeading">
     <div class="row">
       <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">Proposal Details</div>
@@ -19,18 +19,18 @@
       <div class="row">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
           <label><span class="mandatory">*</span>Title:</label><br>
-          <input type="text" placeholder="" class="committeeBox dateBox" [(ngModel)]="result.proposal.title"/>
+          <input type="text" placeholder="" [ngClass]="mandatoryObj.field == 'title' ? 'lineItem-mandatory' : ''" class="committeeBox dateBox" [(ngModel)]="result.proposal.title"/>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
           <label><span class="mandatory">*</span>Category:</label><br>
-          <select class="committeeBox dateBox" [(ngModel)]="proposalDataBindObj.selectedProposalCategory" (ngModelChange)="proposalCategoryChange()">
+          <select class="committeeBox dateBox" [ngClass]="mandatoryObj.field == 'category' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.selectedProposalCategory" (ngModelChange)="proposalCategoryChange()">
             <option [value]=null>--Select--</option>
             <option *ngFor="let category of result?.activityTypes" [value]="category.description">{{category.description}}</option>
           </select>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
           <label class="greenLabel"><span class="mandatory">*</span>Type:</label><br>
-          <select class="committeeBox dateBox" [(ngModel)]="proposalDataBindObj.selectedProposalType" (ngModelChange)="proposalTypeChange()">
+          <select class="committeeBox dateBox" [ngClass]="mandatoryObj.field == 'type' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.selectedProposalType" (ngModelChange)="proposalTypeChange()">
             <option [value]=null>--Select--</option>
             <option *ngFor="let type of result?.proposalTypes" [value]="type.description">{{type.description}}</option>
           </select>
@@ -45,7 +45,7 @@
           <label><span class="mandatory">*</span>Lead Unit:</label><br>
           <div>
             <div class="searchBox memberSearchBox">
-              <input type="text" placeholder="Search here for Lead Unit"  [(ngModel)]="result?.proposal.homeUnitName" (blur)="isSearchLeadUnitActive = false"
+              <input type="text" placeholder="Search here for Lead Unit" [ngClass]="mandatoryObj.field == 'homeUnit' ? 'lineItem-mandatory' : ''" [(ngModel)]="result?.proposal.homeUnitName" (blur)="isSearchLeadUnitActive = false"
                (focus)="isSearchLeadUnitActive = true" class="member_search" (ngModelChange)="leadUnitChangeFunction()" />
               <a href="#" class="searchButton" (click)="clearLeadUnitSearchBox($event)"><i [ngClass]="leadUnitIconClass"></i></a>
               <div class="sb-seachresults" *ngIf="isSearchLeadUnitActive">
@@ -59,7 +59,8 @@
         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
           <label><span class="mandatory">*</span>Sponsor:</label><br>
           <div class="searchBox memberSearchBox">
-            <input type="text" placeholder="Search here for Sponsor Name" [(ngModel)]="result.proposal.sponsorName" (blur)="isSearchSponsorActive = false"
+            <input type="text" placeholder="Search here for Sponsor Name"
+            [ngClass]="mandatoryObj.field == 'sponsor' ? 'lineItem-mandatory' : ''" [(ngModel)]="result.proposal.sponsorName" (blur)="isSearchSponsorActive = false"
              (focus)="isSearchSponsorActive = true" class="member_search" (ngModelChange)="sponsorChangeFunction()" />
             <a href="#" class="searchButton" (click)="clearSponsorSearchBox($event)"><i [ngClass]="sponsorIconClass"></i></a>
             <div class="sb-seachresults" *ngIf="isSearchSponsorActive">
@@ -72,7 +73,8 @@
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
           <label><span class="mandatory">*</span>Proposed Start Date:</label><br>
           <span class="dateField"> <input type="text" placeholder="mm/dd/yyyy"
-             style="width: 100% !important" [owlDateTime]="startDt" class="dateWidth committeeBox" [(ngModel)]="proposalDataBindObj.proposalStartDate"
+             style="width: 100% !important" [owlDateTime]="startDt" class="dateWidth committeeBox" 
+             [ngClass]="mandatoryObj.field == 'proposalStartDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.proposalStartDate"
              (keypress)="_commonService._keyPress($event, 'date')"/>
             <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="startDt"></i>
             <owl-date-time #startDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();"></owl-date-time>
@@ -81,14 +83,16 @@
         <div [ngClass]="mode == 'view'?'col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2':'col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2'">
           <label><span class="mandatory">*</span>Proposed End Date:</label><br>
           <span class="dateField"> <input type="text" class="dateWidth committeeBox"
-             placeholder="mm/dd/yyyy" [owlDateTime]="endDt" [(ngModel)]="proposalDataBindObj.proposalEndDate" (keypress)="_commonService._keyPress($event, 'date')">
+             placeholder="mm/dd/yyyy" [owlDateTime]="endDt"
+             [ngClass]="mandatoryObj.field == 'proposalEndDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.proposalEndDate" (keypress)="_commonService._keyPress($event, 'date')">
             <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="endDt"></i>
             <owl-date-time #endDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation()"></owl-date-time>
           </span>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
             <label><span class="mandatory">*</span>Sponsor Deadline Date:</label><br> <span class="dateField"> <input type="text"
-              placeholder="mm/dd/yyyy" style="width: 100% !important" [owlDateTime]="subDt" class="committeeBox dateWidth" [(ngModel)]="proposalDataBindObj.sponsorDeadlineDate"
+              placeholder="mm/dd/yyyy" style="width: 100% !important" [owlDateTime]="subDt" class="committeeBox dateWidth"
+              [ngClass]="mandatoryObj.field == 'sponsorDeadlineDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.sponsorDeadlineDate"
               (keypress)="_commonService._keyPress($event, 'date')" (ngModelChange)="getInternalDeadlineDate(proposalDataBindObj?.sponsorDeadlineDate)" />
              <i class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="subDt"></i>
              <owl-date-time #subDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();"></owl-date-time>

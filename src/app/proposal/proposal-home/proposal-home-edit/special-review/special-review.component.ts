@@ -6,9 +6,8 @@ import { ProposalHomeService } from '../../proposal-home.service';
 declare var $: any;
 
 @Component({
-  selector: 'app-special-review-details',
-  templateUrl: './special-review-details.component.html',
-  styleUrls: ['./special-review-details.component.css']
+  selector: 'app-special-review',
+  templateUrl: './special-review.component.html',
 })
 export class SpecialReviewDetailsComponent implements OnInit {
 

@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { ISubscription } from 'rxjs/Subscription';
 
-import {DashboardService} from '../dashboard.service';
-import { ResearchSummaryConfigService} from '../../common/services/research-summary-config.service';
+import { DashboardService } from '../dashboard.service';
+import { ResearchSummaryConfigService } from '../../common/services/research-summary-config.service';
 
 @Component({
   selector: 'app-research-summary',
@@ -18,6 +19,7 @@ export class ResearchSummaryComponent implements OnInit, OnDestroy {
   $isAwardBysponsor;
   $isProposalBySponsor;
   $inProgressproposal;
+  $selectedUnitSubscription: ISubscription;
   researchSummaryReqObj = {
         isAdmin: localStorage.getItem('isAdmin'),
         personId: localStorage.getItem('personId'),
@@ -28,7 +30,7 @@ export class ResearchSummaryComponent implements OnInit, OnDestroy {
                private _researchSummaryConfigService: ResearchSummaryConfigService) { }
 
   ngOnInit() {
-    this.loadResearchSummaryData();
+    // this.loadResearchSummaryData();
     this.getSelectedUnit();
     /** subscription for chart widget status */
     this.$isExpenditureVolume = this._researchSummaryConfigService.expenditureVolume;
@@ -49,18 +51,23 @@ export class ResearchSummaryComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   /**
    * subcribes unit list data from the dashboard component will use load dashboard service
    * to fetch data with updated unit value subcripition output emits the unit value
    */
   getSelectedUnit() {
-    this._researchSummaryConfigService.slectetedUnit.subscribe( data => {
-      this.researchSummaryReqObj.unitNumber = data;
-      this.loadResearchSummaryData();
-    });
+    this.$selectedUnitSubscription = this._researchSummaryConfigService.slectetedUnit.subscribe( data => {
+        this.researchSummaryReqObj.unitNumber = data;
+          this.loadResearchSummaryData();
+      });
   }
+
   ngOnDestroy() {
     this._researchSummaryConfigService.unitAdministrators.next([]);
+    if (this.$selectedUnitSubscription) {
+      this.$selectedUnitSubscription.unsubscribe();
+    }
   }
 
 }

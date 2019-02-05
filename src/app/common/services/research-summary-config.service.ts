@@ -27,5 +27,5 @@ export class ResearchSummaryConfigService {
             (localStorage.getItem('inProgressproposalBySponsorWidget') == null));
 
       unitAdministrators = new Subject();
-      slectetedUnit      = new Subject();
+      slectetedUnit      = new BehaviorSubject<string>(null);
 }

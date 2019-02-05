@@ -58,6 +58,7 @@ export class AppElasticComponent implements OnChanges {
     this.clearField = '' + this.clearField;
     if (this.clearField === 'true') {
       this.searchText = '';
+      this.results = [];
     }
   }
 
@@ -79,7 +80,8 @@ export class AppElasticComponent implements OnChanges {
           source.forEach((element, index) => {
             let label = '';
             Object.keys(this.options.fields).forEach(key => {
-              label =  label + (highlight[index][key] || source[index][key]) + '|';
+              label =  ((highlight[index][key] || source[index][key]) != null) ?
+                        label + (highlight[index][key] || source[index][key]) + '|' : label + '';
             });
           this.results.push({'label': label.slice(0, -1), 'value': element});
           });

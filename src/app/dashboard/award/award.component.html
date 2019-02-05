@@ -72,37 +72,37 @@
       <div class="col-xl-1 col-lg-2 col-md-8 col-sm-8 col-8">
         <label> Account# </label>
         <span>
-          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.account_number}}</a>
+          <a [routerLink]="['/fibi/award']" [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.account_number}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
         <label> Award# </label>
         <span>
-          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.award_number}}</a>
+          <a [routerLink]="['/fibi/award']" [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.award_number}}</a>
         </span>
       </div>
       <div class="col-xl-3 col-lg-3 col-md-8 col-sm-8 col-8">
         <label> Title </label>
         <span>
-          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.title}}</a>
+          <a [routerLink]="['/fibi/award']" [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.title}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-1 col-md-4 col-sm-4 col-4">
         <label> Sponsor </label>
         <span>
-          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.sponsor}}</a>
+          <a [routerLink]="['/fibi/award']" [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.sponsor}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-8 col-sm-8 col-8">
         <label> PI </label>
         <span>
-          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.pi_name}}</a>
+          <a [routerLink]="['/fibi/award']" [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.pi_name}}</a>
         </span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-4">
         <label> Lead Unit </label>
         <span>
-          <a routerLink='fibi/award' [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.lead_unit_name}}</a>
+          <a [routerLink]="['/fibi/award']" [queryParams]={awardId:elasticResultObject.award_id}>{{elasticResultObject?.lead_unit_name}}</a>
         </span>
       </div>
     </div>
@@ -144,7 +144,7 @@
         <td>{{awardDetails.fullName}}</td>
         <td>
           <ul class="actionButtonGroup">
-            <li><a title="Open {{awardDetails.awardNumber}}" id="open-award-btn" routerLink='fibi/award' [queryParams]={awardId:awardDetails.awardId}><i
+            <li><a title="Open {{awardDetails.awardNumber}}" id="open-award-btn" [routerLink]="['/fibi/award']" [queryParams]={awardId:awardDetails.awardId}><i
                   class="fa fa-eye pointer"></i> </a></li>
           </ul>
         </td>

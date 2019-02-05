@@ -15,6 +15,7 @@ export class ProposalHomeEditComponent implements OnInit {
   @Input() showOrHideDataFlagsObj: any = {};
   @Input() warningMsgObj: any = {};
   @Input() proposalDataBindObj: any = {};
+  @Input() mandatoryObj: any = {};
 
   isSearchGrantCallActive = false;
   isGrantThemeReadMore = false;

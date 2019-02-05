@@ -1,5 +1,5 @@
 <!--Adds area of research-->
-<div class="borderBox col-12">
+<div class="borderBox col-12 border-index">
   <h4 class="borderBoxHeading">Area of Research</h4>
   <button id="area-of-research-expnd-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen = !showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen"
     *ngIf="(result?.proposal?.proposalResearchAreas?.length > 0)">
@@ -42,20 +42,20 @@
       </td>
     </tr>
     <tr *ngIf="warningMsgObj.areaOfResearchWarningMsg != null">
-      <td colspan="3"><span class="mandatory">{{warningMsgObj.areaOfResearchWarningMsg}}</span></td>
-      <td colspan="2"></td>
+      <td colspan="12"><span class="mandatory">{{warningMsgObj.areaOfResearchWarningMsg}}</span></td>
+  
     </tr>
     <tbody *ngIf="result?.proposal?.proposalResearchAreas?.length > 0 && showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
       <tr>
-        <th style="width: 10%">Sl No.</th>
-        <th style="width: 10%">Code</th>
+        <th width="10%">Sl No.</th>
+        <th width="10%">Code</th>
         <th>Type</th>
         <th colspan="2">Research Area</th>
         <th title="">Action</th>
       </tr>
       <tr *ngFor="let researchArea of result?.proposal?.proposalResearchAreas; let i = index">
         <td>{{i+1}}</td>
-        <td style="width: 10%" *ngIf="researchArea.excellenceAreaCode? researchArea.excellenceAreaCode: researchArea.researchAreaCode;let areaCode; ">{{areaCode}}</td>
+        <td width="10%" *ngIf="researchArea.excellenceAreaCode? researchArea.excellenceAreaCode: researchArea.researchAreaCode;let areaCode; ">{{areaCode}}</td>
         <td>{{researchArea.proposalResearchType.description}}</td>
         <td colspan="2" *ngIf="researchArea.proposalExcellenceArea? researchArea.proposalExcellenceArea.description: researchArea.researchArea.description;let description; ">{{description}}</td>
         <td>

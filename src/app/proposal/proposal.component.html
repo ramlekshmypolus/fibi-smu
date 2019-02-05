@@ -6,35 +6,124 @@
         <div class="fixed-proposalHeader"><br>
           <div class="row">
             <div class="col-10 text-left"><span *ngIf="result?.proposal?.proposalId" class="topHeading">#{{result?.proposal?.proposalId}}: {{result?.proposal?.title}}</span></div>
-            <div class="col-2 text-right back-button">
+            <div class="col-2 text-right">
               <button class="btnSkin btnSkinPrimary" title="Back to Proposal List" data-target="#confirmGoBack" data-toggle="modal" (click)="openGoBackModal()">Back to Proposal List</button>
             </div>
           </div>
           <div class="row">
-            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
                 <ul class="tabs">
                   <li role="presentation" [ngClass]="{'active': showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'}">
-                    <a title="View Proposal" data-target="#gotoBudget" data-toggle="modal" (click)="showTab('PROPOSAL_HOME')"> Proposal </a>
+                    <a title="View Proposal" (click)="showTab('PROPOSAL_HOME')"> Proposal </a>
                   </li>
                   <li role="presentation" [ngClass]="{'active': showOrHideDataFlagsObj.currentTab == 'BUDGET'}">
-                    <a title="View Detailed Budget" (click)="showTab('BUDGET')"> Budget</a>
+                    <a title="View Detailed Budget" data-toggle="modal" data-target="#warning-modal" (click)="showTab('BUDGET')"> Budget</a>
                   </li>
                   <li role="presentation" [ngClass]="{'active': showOrHideDataFlagsObj.currentTab == 'QUESTIONNAIRE'}">
-                    <a title="View Questionnaire" (click)="showTab('QUESTIONNAIRE')"> Questionnaire</a>
+                    <a title="View Questionnaire" data-toggle="modal" data-target="#warning-modal" (click)="showTab('QUESTIONNAIRE')"> Questionnaire</a>
                   </li>
                   <span *ngIf="result?.proposal?.ipNumber" class="topHeading pt-2 rate-float margin-IP">IP&nbsp;#{{result?.proposal?.ipNumber}}</span>
                 </ul>
             </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+              <div id="toast-success-proposal">{{toast_message}}</div>
+            </div>
+            <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7 btn-margin">
+              <div class="text-right">
+                <button type="button" class="btnSkin btnPublish" *ngIf="result?.proposal?.statusCode!= 11" (click)="saveProposal('fullSave')" data-toggle="modal" data-target="#warning-modal">Save</button>
+                <button type="button" class="btnSkin btnSkinPrimary" data-toggle="modal" data-target="#warning-modal" *ngIf="result?.proposal?.statusCode == 1 && result?.proposal?.proposalId"
+                (click)="checkSubmitProposalValidation()">Submit</button>
+                <!-- <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal()" *ngIf="result?.proposal?.proposalId">Approve</button>
+                <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal()" *ngIf="result?.proposal?.proposalId">Disapprove</button>
+                <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal()" *ngIf="result?.proposal?.proposalId">Complete Pre-review</button> -->
+
+                    <button #moreActions class="btnSkin btnSkinPrimary dropdown-toggle" (click)="isShowMoreOptions = !isShowMoreOptions">More Actions</button>
+                    <ul class="more-options-box" *ngIf="isShowMoreOptions">
+                      <li>
+                        <p><a class="dropdown-item" href="">Route Log</a></p>
+                        <p><a class="dropdown-item" href="">Pre-review</a></p>
+                        <p><a class="dropdown-item" href="" (click)="copyProposal($event)" *ngIf="result?.proposal?.proposalId">Copy Proposal</a></p>
+                        <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event)">Print Proposal</a></p> 
+                      </li>
+                    </ul>
+
+
+
+                <!-- <div class="btn-group">
+                  <button type="button" class="btnSkin btnSkinPrimary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More actions
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="">Route Log</a>
+                    <a class="dropdown-item" href="">Pre-review</a>
+                    <a class="dropdown-item" href="" (click)="copyProposal($event)" *ngIf="result?.proposal?.proposalId">Copy Proposal</a>
+                    <a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event)">Print Proposal</a>
+                  </div>
+                </div> -->
+              </div>
+            </div>
           </div>
         </div>
-        <app-proposal-home *ngIf="showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj" [proposalDataBindObj]="proposalDataBindObj"></app-proposal-home>
+        <app-proposal-home *ngIf="showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj" [proposalDataBindObj]="proposalDataBindObj" [mandatoryObj]="mandatoryObj"></app-proposal-home>
         <app-proposal-budget *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-proposal-budget>
         <app-questionnaire *ngIf="showOrHideDataFlagsObj.currentTab == 'QUESTIONNAIRE'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-questionnaire>
       </div>
     </section>
-    <div class="col-12 text-right">
-      <button type="button" class="btnSkin btnPublish" (click)="saveProposal('fullSave')">Save</button>
-    </div>
     <div class="footerPush"></div>
 	</div>
+</div>
+<button id="openSucessModal" [hidden]="true" data-toggle="modal" data-target="#successModal">modal</button>
+<!-- Modal Section -->
+<!-- Warning modals-->
+<div class="modal fade mySkinDialog" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal || showOrHideDataFlagsObj.isShowSubmitWarningModal" tabindex="-1" id="warning-modal"
+tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="deleteModalTitle"
+aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal">Warning</h5>
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal">Submit Proposal</h5>
+       <button type="button" class="close" data-dismiss="modal"
+           aria-label="Close" (click)="closeWarningModal()">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal">
+       <p>Error in saving proposal, please review whether all mandatory fields are filled properly.</p>
+     </div>
+     <div class="modal-body" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal">
+        <p *ngIf="warningMsgObj.submitWarningMsg != null">{{warningMsgObj.submitWarningMsg}}</p>
+        <p *ngIf="warningMsgObj.submitConfirmation != null">{{warningMsgObj.submitConfirmation}}</p>
+      </div>
+     <div class="modal-footer">
+       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">Close</button>
+       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal && warningMsgObj.submitWarningMsg != null" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">Ok</button>
+       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal && warningMsgObj.submitConfirmation != null" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeWarningModal()">No</button>
+       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal && warningMsgObj.submitConfirmation != null" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="submitProposal();closeWarningModal()">Yes</button>
+     </div>
+   </div>
+ </div>
+</div>
+<!-- Success modals -->
+<div class="modal fade mySkinDialog" tabindex="-1" id="successModal"
+tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="deleteModalTitle"
+aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSaveSuccessModal">Success</h5>
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSubmitSuccessModal">Submit Proposal</h5>
+       <button type="button" class="close" data-dismiss="modal" (click)="closeWarningModal()" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body">
+       <p *ngIf="showOrHideDataFlagsObj.isShowSaveSuccessModal">Proposal has been saved successfully</p>
+       <p *ngIf="showOrHideDataFlagsObj.isShowSubmitSuccessModal">Proposal has been submitted successfully</p>
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">OK</button>
+     </div>
+   </div>
+ </div>
 </div>

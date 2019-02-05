@@ -17,6 +17,7 @@ export class ProposalDetailsComponent implements OnInit {
   @Input() showOrHideDataFlagsObj: any = {};
   @Input() warningMsgObj: any = {};
   @Input() proposalDataBindObj: any = {};
+  @Input() mandatoryObj: any = {};
 
   isSearchLeadUnitActive = false;
   isSearchSponsorActive = false;
@@ -55,7 +56,7 @@ export class ProposalDetailsComponent implements OnInit {
       this.result.proposal.proposalType = null;
       this.result.proposal.typeCode = null;
     } else {
-      const typeObj = this.result.activityTypes.find( category =>
+      const typeObj = this.result.proposalTypes.find( category =>
                           category.description === this.proposalDataBindObj.selectedProposalType);
       this.result.proposal.proposalType = typeObj;
       this.result.proposal.typeCode = typeObj.typeCode;

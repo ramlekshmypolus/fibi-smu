@@ -90,8 +90,7 @@
   <!-- Grant call details-->
   <div class="borderBox col-12">
     <h4 class="borderBoxHeading">Grant Call Details</h4>
-    <button id="grantDetailsExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isGrantCallWdgtOpen = !showOrHideDataFlagsObj.isGrantCallWdgtOpen"
-      *ngIf="result?.proposal?.grantCall != null">
+    <button id="grantDetailsExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isGrantCallWdgtOpen = !showOrHideDataFlagsObj.isGrantCallWdgtOpen">
       <i [ngClass]="showOrHideDataFlagsObj.isGrantCallWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
     </button>
     <table class="table tableSkin grid2">
@@ -115,7 +114,7 @@
               slice:0:60):(result?.proposal?.grantCall?.grantCallName)}}</span></td>
           <td><span>{{result?.proposal?.grantCall?.sponsor?.sponsorName}}</span></td>
           <td><span>{{result?.proposal?.grantCall?.activityType?.description}}</span></td>
-          <td style="width: 35%"><span *ngIf=" result?.proposal?.grantCall?.grantTheme != null">
+          <td width = "35%"><span *ngIf=" result?.proposal?.grantCall?.grantTheme != null">
               <p class="textView" *ngIf="!isGrantThemeReadMore">
                 {{(result?.proposal?.grantCall?.grantTheme.length>100)?
                 (result?.proposal?.grantCall?.grantTheme | slice:0:100)+'...' :
@@ -139,22 +138,21 @@
   <!--Area of Research-->
   <div class="borderBox col-12">
     <h4 class="borderBoxHeading">Area of Research</h4>
-    <button id="areaofResearchExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen = !showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen"
-      *ngIf="(result?.proposal?.proposalResearchAreas?.length > 0 )">
+    <button id="areaofResearchExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen = !showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
       <i [ngClass]="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
         class="fa-large"></i>
     </button>
-    <table class="table tableSkin grid2">
-      <tbody *ngIf="result?.proposal?.proposalResearchAreas?.length > 0 && showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
+    <table class="table tableSkin grid2" *ngIf="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
+      <tbody *ngIf="result?.proposal?.proposalResearchAreas?.length > 0">
         <tr>
-          <th style="width: 10%">Sl No.</th>
-          <th style="width: 10%">Code</th>
+          <th width = "10%">Sl No.</th>
+          <th width = "10%">Code</th>
           <th>Type</th>
           <th colspan="2">Research Area</th>
         </tr>
         <tr *ngFor="let researchArea of result?.proposal?.proposalResearchAreas; let i = index">
           <td>{{i+1}}</td>
-          <td style="width: 10%" *ngIf="researchArea.excellenceAreaCode? researchArea.excellenceAreaCode: researchArea.researchAreaCode;let areaCode; ">{{areaCode}}</td>
+          <td width = "10%" *ngIf="researchArea.excellenceAreaCode? researchArea.excellenceAreaCode: researchArea.researchAreaCode;let areaCode; ">{{areaCode}}</td>
           <td>{{researchArea.proposalResearchType.description}}</td>
           <td colspan="2" *ngIf="researchArea.proposalExcellenceArea? researchArea.proposalExcellenceArea.description: researchArea.researchArea.description;let description; ">{{description}}</td>
         </tr>
@@ -189,7 +187,42 @@
         </td>
       </tr>
     </table>
-  </div>																														 
+  </div>
+  <!--Project Team Details-->
+  <div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Project Team</h4>
+    <button id="projectExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectTeamWidgetOpen = !showOrHideDataFlagsObj.isProjectTeamWidgetOpen" *ngIf="(result?.proposal?.proposalPersons?.length > 0)">
+      <i [ngClass]="showOrHideDataFlagsObj.isProjectTeamWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+    </button>
+    <div class="pullSide">
+      <div class="topGrid gridSkin" *ngIf="showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
+        <div *ngIf="result?.proposal?.proposalPersons?.length == 0">
+          <div class="noDataExists">There are no
+            investigators added in this proposal</div>
+        </div>
+        <table class="table tableSkin grid2">
+          <tbody *ngIf="result?.proposal?.proposalPersons?.length > 0">
+            <tr>
+              <th colspan="2">Name</th>
+              <th>Role</th>
+              <th colspan="2">% of Effort</th>
+              <th colspan="2">Department</th>
+            </tr>
+            <tr *ngFor="let person of result?.proposal?.proposalPersons; let i = index">
+              <td colspan="2">{{person?.fullName}}</td>
+              <td>{{person?.proposalPersonRole?.description}}</td>
+              <td colspan="2">{{person?.percentageOfEffort}}</td>
+              <td colspan="2">
+                <span *ngFor="let dept of person?.units" title="{{dept.unit.unitDetail}}" class="fileChips" style="word-break: break-all; width:20%"><span>{{(dept.unit.unitName.length
+                    > 10)?(dept.unit.unitName|
+                    slice:0:10)+'...':(dept?.unit?.unitName)}}</span></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   <!-- Project Description -->
   <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'normalPadd':'lowPadd'">
     <h4 class="borderBoxHeading">Project Description</h4>
@@ -225,16 +258,17 @@
   <!--Special review Details-->
   <div class="borderBox col-12">
     <h4 class="borderBoxHeading">Special Review</h4>
-    <button id="specialReviewExpandBtn" class="addBtn font hoverColor btnPositionFullWidget" (click)=" showOrHideDataFlagsObj.isSpecialReviewWidgetOpen = !showOrHideDataFlagsObj.isSpecialReviewWidgetOpen"
-      *ngIf="result.proposal.propSpecialReviews?.length > 0">
+    <button id="specialReviewExpandBtn" class="addBtn font hoverColor" (click)=" showOrHideDataFlagsObj.isSpecialReviewWidgetOpen = !showOrHideDataFlagsObj.isSpecialReviewWidgetOpen">
       <i [ngClass]="showOrHideDataFlagsObj.isSpecialReviewWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
         class="fa-large"></i>
     </button>
     <div class="pullSide">
       <table class="table tableSkin grid2">
-          <tr *ngIf="result?.proposal?.propSpecialReviews?.length == 0">
-              <td><div class="noDataExists">No special reviews added yet.</div></td>
-            </tr>
+        <tr *ngIf="result?.proposal?.propSpecialReviews?.length == 0">
+          <td>
+            <div class="noDataExists">No special reviews added yet.</div>
+          </td>
+        </tr>
         <tbody *ngIf="(showOrHideDataFlagsObj.isSpecialReviewWidgetOpen) && (result.proposal.propSpecialReviews?.length > 0)">
           <tr>
             <th>Review Type</th>
@@ -260,6 +294,71 @@
       </table>
     </div>
   </div>
+  <!--Declaration Details-->
+  <div class="borderBox col-12">
+    <h4 class="borderBoxHeading">Declaration</h4>
+    <button id="declaration-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isDeclarationWidgetOpen = !showOrHideDataFlagsObj.isDeclarationWidgetOpen">
+      <i [ngClass]="showOrHideDataFlagsObj.isDeclarationWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+        class="fa-large"></i>
+    </button>
+    <div class="borderBox col-12" *ngIf="showOrHideDataFlagsObj.isDeclarationWidgetOpen">
+      <h4 class="borderBoxHeading bordercolor">Funding Support</h4>
+      <div class="pullSide">
+        <table class="table table-responsive tableSkin grid2">
+          <tr *ngIf="result?.proposal?.proposalSponsors?.length == 0">
+            <td colspan="6">
+              <div class="noDataExists">There are no
+                other funding supports declared by the investigator</div>
+            </td>
+          </tr>
+          <tbody *ngIf="result?.proposal?.proposalSponsors?.length > 0">
+            <tr>
+              <th>Funding Agency</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Amount</th>
+            </tr>
+            <tr *ngFor="let proposalSponsor of result?.proposal?.proposalSponsors;let i = index">
+              <td>{{proposalSponsor?.sponsor?.sponsorName}}</td>
+              <td>{{proposalSponsor?.startDate | date:'MM/dd/yyyy'}}</td>
+              <td>{{proposalSponsor?.endDate | date:'MM/dd/yyyy'}}</td>
+              <td>{{proposalSponsor?.amount | currency:'USD':true}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="borderBox col-12 " *ngIf="showOrHideDataFlagsObj.isDeclarationWidgetOpen">
+      <h4 class="borderBoxHeading bordercolor">IRB</h4>
+      <div class="pullSide">
+        <table class="table  tableSkin grid2">
+          <tr *ngIf="result?.proposal?.proposalIrbProtocols?.length == 0">
+            <td colspan="7">
+              <div class="noDataExists">
+                There are no IRB protocols linked to this proposal
+              </div>
+            </td>
+          </tr>
+          <tbody *ngIf="result?.proposal?.proposalIrbProtocols?.length > 0">
+            <tr>
+              <th width = "15%">Protocol Number</th>
+              <th>Title</th>
+              <th>Approval Status</th>
+              <th>Approval Date</th>
+              <th>Expiration Date</th>
+            </tr>
+            <tr *ngFor="let protocol of result?.proposal?.proposalIrbProtocols; let i = index">
+              <td>{{protocol?.protocol?.protocolNumber}}</td>
+              <td>{{protocol?.protocol?.title}}</td>
+              <td>{{protocol?.protocol?.protocolStatus?.description}}</td>
+              <td>{{protocol?.protocol?.approvalDate | date:'MM/dd/yyyy'}}</td>
+              <td>{{protocol?.protocol?.expirationDate | date:'MM/dd/yyyy'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   <!-- Budget Details -->
   <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'normalPadd':'lowPadd'">
     <h4 class="borderBoxHeading">Proposal Budget</h4>
@@ -267,7 +366,7 @@
       title="View Detailed Budget" (click)="_proposalComponent.showTab('BUDGET')">Open
       Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
     </span>
-    <button id="budgetExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isBudgetWdgtOpen = !showOrHideDataFlagsObj.isBudgetWdgtOpen" *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length > 0">
+    <button id="budgetExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isBudgetWdgtOpen = !showOrHideDataFlagsObj.isBudgetWdgtOpen">
       <i [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
     </button>
     <table id="periodTable" class="table tableSkin grid2" *ngIf="showOrHideDataFlagsObj.isBudgetWdgtOpen">
@@ -321,4 +420,6 @@
       </tbody>
     </table>
   </div>
+  <!-- Supporting Documents -->
+  <app-supporting-documents [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalDataBindObj]="proposalDataBindObj" [warningMsgObj]="warningMsgObj"></app-supporting-documents>
 </div>

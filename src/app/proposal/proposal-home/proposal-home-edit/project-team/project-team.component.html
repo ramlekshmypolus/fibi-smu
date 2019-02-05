@@ -1,0 +1,135 @@
+<div class="borderBox col-12 border-index">
+  <h4 class="borderBoxHeading">
+    <span class="mandatory">*</span>Project Team
+  </h4>
+  <button id="project-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectTeamWidgetOpen = !showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
+    <i [ngClass]="showOrHideDataFlagsObj.isProjectTeamWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
+      class="fa-large"></i>
+  </button>
+  <div class="pullSide">
+    <div class="topGrid gridSkin" *ngIf="showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
+      <div class="row">
+        <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
+          <label class="col-xl-5 col-lg-2 col-md-12 col-sm-12 col-2">Member Type:</label>
+          <select id="project-member-type" class="col-xl-6 col-lg-2 col-md-12 col-sm-12 col-2 committeeBox" [(ngModel)]="memberTypeSelected"
+            (change)="memberTypeChanged()">
+            <option *ngFor="let type of memberTypes" (value)="type">{{type.value}}</option>
+          </select>
+        </div>
+        <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
+          <label>Name:</label>
+          <div class="col-xl-10 col-lg-2 col-md-12 col-sm-12 col-2 searchBox memberSearchBox inline-block-display">
+            <app-elastic [options]="elasticSearchOptions" [clearField]="clearField" [placeHolder]="isNonEmployeeFlag ? 'Search a non-employee': 'Search an employee' "
+              (selectedResult)="selectedMemberName($event)"></app-elastic>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
+          <label class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">Role:</label>
+          <select id="project-role" [ngClass]="proposalDataBindObj.field == 'personRole' ? 'lineItem-mandatory' : ''"
+            class="col-xl-8 col-lg-2 col-md-12 col-sm-12 col-12 committeeBox" [(ngModel)]="proposalDataBindObj.personRoleSelected">
+            <option [value]=null>--Select--</option>
+            <option *ngFor="let role of proposalDataBindObj.personRolesList">{{role?.description}}</option>
+          </select>
+        </div>
+        <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
+          <label class="col-xl-5 col-lg-2 col-md-12 col-sm-12 col-2">% of Effort:</label>
+          <input type="number" id="project-percent-effort" step="any" placeholder="" class="col-xl-6 col-lg-2 col-md-12 col-sm-12 col-2 committeeBox"
+            [(ngModel)]="percentageEffort" (change)="checkPercentageEffortValidation()" appDecimalLimit>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-11 col-lg-11 col-md-11 col-sm-12 col-3">
+          <label class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-2">Department:</label>
+          <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4 inline-block-display dept-margin">
+            <div class="searchBox memberSearchBox">
+              <input type="text" id="project-dept" placeholder="Search here for departments" [(ngModel)]="departmentSelected"
+                (blur)="isSearchDepartmentActive = false" (focus)="isSearchDepartmentActive = true" class="member_search"
+                (ngModelChange)="departmentFetchCall()" />
+              <a href="#" class="searchButton" (click)="clearDepartmentSearchBox($event)"><i [ngClass]="departmentIconClass"></i></a>
+              <div class="sb-seachresults" *ngIf="isSearchDepartmentActive ">
+                <ul class="sb-results-dropdown-menu text-left">
+                  <li *ngFor="let result of result.departments " (mousedown)=" departmentChangeFunction(result)"><span
+                      [innerHTML]="result.unitDetail"></span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-7 col-lg-6 col-md-6 col-sm-4 col-4 inline-block-display pl-0">
+            <div *ngIf="personDepartments?.length > 0" class="fileChips" style="word-break: break-all;">
+              <span *ngFor="let depart of personDepartments;let i = index">{{depart?.unit?.unitDetail}}
+                <i class="fa fa-close hand-cursor" (click)="deleteDepartment(depart,i)" title="Remove this Department"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-8 ">
+          <div class="text-right">
+            <button id="project-delete-btn" class="btnSkin btnSkinPrimary add-btn" (click)="addProposalTeamMember()">Add</button>
+          </div>
+        </div>
+        <div *ngIf="warningMsgObj.departmentWarningMsg != null">
+          <div><span class="mandatory">{{warningMsgObj.departmentWarningMsg}}</span></div>
+        </div>
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="warningMsgObj.isPercentageValueErrorMsg!=null">
+        <div><span class="mandatory font">{{warningMsgObj.isPercentageValueErrorMsg}}</span></div>
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="warningMsgObj.personWarningMsg != null">
+        <div><span class="mandatory font">{{warningMsgObj.personWarningMsg}}</span></div>
+      </div>
+      <table class="table tableSkin grid2">
+        <tbody *ngIf="result?.proposal?.proposalPersons?.length > 0 && showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
+          <tr>
+            <th colspan="2">Name</th>
+            <th>Role</th>
+            <th colspan="2">% of Effort</th>
+            <th colspan="2">Department</th>
+            <th>Action</th>
+          </tr>
+          <tr *ngFor="let person of result?.proposal?.proposalPersons; let i = index">
+            <td colspan="2">{{person?.fullName}}</td>
+            <td>{{person?.proposalPersonRole?.description}}</td>
+            <td colspan="2">{{person?.percentageOfEffort}}</td>
+            <td colspan="2">
+              <span *ngFor="let dept of person?.units" title="{{dept.unit.unitDetail}}" class="fileChips" style="word-break: break-all; width:20%"><span>{{(dept.unit.unitName.length
+                  > 10)?(dept.unit.unitName|
+                  slice:0:10)+'...':(dept?.unit?.unitName)}}</span></span>
+            </td>
+            <td>
+              <ul class="actionButtonGroup">
+                <li><a href="#" id="project-team-delete" data-toggle="modal" data-target="#deleteMemberModal" (click)="tempSavePerson($event,person, i)"><i
+                      class="fa fa-trash-o" aria-hidden="true" title="Click here to delete {{person.fullName}}"></i></a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MEMBER WARNING MODAL -->
+<div class="modal fade mySkinDialog modal-opacity" *ngIf="isShowDeleteMember" tabindex="-1" id="deleteMemberModal"
+  tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete</h5>
+
+        <button id="project-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this member?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="project-close-btn" type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal"
+          (click)="showDeleteMember = false">No</button>
+        <button id="project-team-delete-btn" type="button" class="btnSkin btnSkinPrimary" (click)="deletePerson()"
+          data-dismiss="modal">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
