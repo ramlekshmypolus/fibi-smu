@@ -1,4 +1,4 @@
-<div class="borderBox col-12 border-index">
+<div class="borderBox col-12">
   <h4 class="borderBoxHeading">Supporting Documents</h4>
   <button title="add new attachment" class="addBtn font attachBtn"
     style="right: 55px" (click)="showAddAttachmentPopUp($event); isReplaceAttachment = false;"
@@ -46,7 +46,7 @@
             class="committeeBox dateBox" [(ngModel)]="attachment.narrativeStatus.description">
               <option
                 *ngFor="let attachStatus of this.result.narrativeStatus"
-                (value)="attachStatus">{{attachStatus?.description}}</option>
+                (value)="attachStatus.description">{{attachStatus?.description}}</option>
           </select>
         </td>
         <td>
@@ -140,7 +140,7 @@ aria-hidden="true" *ngIf="isShowAddAttachment">
                   <option [value]=null>--Select--</option>
                   <option
                     *ngFor="let attachStatus of this.result.narrativeStatus"
-                    (value)="attachStatus">{{attachStatus?.description}}</option>
+                    (value)="attachStatus.description">{{attachStatus?.description}}</option>
                 </select>
               </div>
               <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1">

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
@@ -38,7 +38,6 @@ export class ProposalComponent implements OnInit, OnDestroy {
   mandatoryObj: any = {};
 
   private autoSave_subscription: ISubscription;
-  @ViewChild( 'moreActions' ) moreActions: ElementRef;
 
   constructor( private _route: ActivatedRoute, private _proposalService: ProposalService, private _router: Router ) {
     this.autoSave_subscription = Observable.interval(1000 * 1200).subscribe(x => {
@@ -46,7 +45,6 @@ export class ProposalComponent implements OnInit, OnDestroy {
           this.saveProposal('autoSave');
       }
     });
-    document.addEventListener( 'mouseup', this.offClickHandler.bind( this ) );
    }
 
   ngOnInit() {
@@ -101,42 +99,47 @@ export class ProposalComponent implements OnInit, OnDestroy {
         this.result.proposal.grantCallType = this.result.proposal.grantCall.grantCallType;
         this.result.proposal.grantTypeCode = this.result.proposal.grantCall.grantCallType.grantTypeCode;
     } else if ( this.result.proposal.grantCall == null ) {}
-}
+  }
 
-// proposal details validation
-proposalValidation() {
-  if ( this.result.proposal.title === '' || this.result.proposal.title == null ) {
-      this.mandatoryObj.field = 'title';
-  } else if ( this.proposalDataBindObj.selectedProposalCategory == null || this.proposalDataBindObj.selectedProposalCategory === 'null' ) {
-    this.mandatoryObj.field = 'category';
-  } else if ( this.proposalDataBindObj.selectedProposalType == null || this.proposalDataBindObj.selectedProposalType === 'null') {
-      this.mandatoryObj.field = 'type';
-  } else if ( this.result.proposal.homeUnitName === '' || this.result.proposal.homeUnitName == null) {
-      this.mandatoryObj.field = 'homeUnit';
-  } else if (this.result.proposal.sponsorName === '' || this.result.proposal.sponsorName == null) {
-      this.mandatoryObj.field = 'sponsor';
-  } else if (this.proposalDataBindObj.proposalStartDate === '' || this.proposalDataBindObj.proposalStartDate == null) {
-    this.mandatoryObj.field = 'proposalStartDate';
-  } else if (this.proposalDataBindObj.proposalEndDate === '' || this.proposalDataBindObj.proposalEndDate == null) {
-    this.mandatoryObj.field = 'proposalEndDate';
-  } else if (this.proposalDataBindObj.sponsorDeadlineDate === '' || this.proposalDataBindObj.sponsorDeadlineDate == null) {
-    this.mandatoryObj.field = 'sponsorDeadlineDate';
-  }else {
-      this.mandatoryObj.field = null;
-      // this.dateValidation();
-  }
-  if ( this.result.proposal.proposalPersons.length > 0 ) {
-    let PIExists = {};
-    PIExists = this.result.proposal.proposalPersons.find( persons => persons.proposalPersonRole.description === 'Principal Investigator');
-    if (PIExists == null) {
-      this.warningMsgObj.personWarningMsg = '* Select a member as PI';
-    } else {
-      this.warningMsgObj.personWarningMsg = null;
+  // proposal details validation
+  proposalValidation() {
+    if ( this.result.proposal.title === '' || this.result.proposal.title == null ) {
+        this.mandatoryObj.field = 'title';
+    } else if ( this.proposalDataBindObj.selectedProposalCategory == null ||
+              this.proposalDataBindObj.selectedProposalCategory === 'null' ) {
+      this.mandatoryObj.field = 'category';
+    } else if ( this.proposalDataBindObj.selectedProposalType == null || this.proposalDataBindObj.selectedProposalType === 'null') {
+        this.mandatoryObj.field = 'type';
+    } else if ( this.result.proposal.homeUnitName === '' || this.result.proposal.homeUnitName == null) {
+        this.mandatoryObj.field = 'homeUnit';
+    } else if (this.result.proposal.sponsorName === '' || this.result.proposal.sponsorName == null) {
+        this.mandatoryObj.field = 'sponsor';
+    } else if (this.proposalDataBindObj.proposalStartDate === '' || this.proposalDataBindObj.proposalStartDate == null) {
+      this.mandatoryObj.field = 'proposalStartDate';
+    } else if (this.proposalDataBindObj.proposalEndDate === '' || this.proposalDataBindObj.proposalEndDate == null) {
+      this.mandatoryObj.field = 'proposalEndDate';
+    } else if (this.proposalDataBindObj.sponsorDeadlineDate === '' || this.proposalDataBindObj.sponsorDeadlineDate == null) {
+      this.mandatoryObj.field = 'sponsorDeadlineDate';
+    }else {
+        this.mandatoryObj.field = null;
     }
-  } else {
-      this.warningMsgObj.personWarningMsg = '* Select atleast one team member';
+    if ( this.result.proposal.proposalPersons.length > 0 ) {
+      let PIExists = {};
+      PIExists = this.result.proposal.proposalPersons.find( persons => persons.proposalPersonRole.description === 'Principal Investigator');
+      if (PIExists == null) {
+        this.warningMsgObj.personWarningMsg = '* Select a member as PI';
+      } else {
+        this.warningMsgObj.personWarningMsg = null;
+      }
+    } else {
+        this.warningMsgObj.personWarningMsg = '* Select atleast one team member';
+    }
   }
-}
+
+  openGoBackModal() {
+    this._router.navigate(['/fibi/dashboard/proposalList']);
+  }
+
   saveProposal(saveType) {
     this.showOrHideDataFlagsObj.isShowSaveWarningModal = false;
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = false;
@@ -153,7 +156,7 @@ proposalValidation() {
             this.result.proposal.submissionDate = new Date(this.proposalDataBindObj.sponsorDeadlineDate).getTime();
             this.result.proposal.internalDeadLineDate = new Date(this.proposalDataBindObj.internalDeadlineDate).getTime();
             this.mandatoryObj.ismandatory = false;
-            // this.updateAttachmentStatus();
+            this.updateAttachmentStatus();
             this._proposalService.saveProposal({'proposal': this.result.proposal,
               'updateType': TYPE, 'personId': localStorage.getItem( 'personId' )}).subscribe( data => {
                 this.result = data;
@@ -193,12 +196,10 @@ proposalValidation() {
 
   updateAttachmentStatus() {
     for (const attachment of this.result.proposal.proposalAttachments) {
-      for ( const ATTATCHMENT_STATUS of this.result.narrativeStatus ) {
-          if ( ATTATCHMENT_STATUS.description === attachment.narrativeStatus.description ) {
-              attachment.narrativeStatus = ATTATCHMENT_STATUS;
-              attachment.narrativeStatusCode = ATTATCHMENT_STATUS.code;
-          }
-      }
+      const attachmentStatusObj = this.result.narrativeStatus.find( status =>
+                                  status.description === attachment.narrativeStatus.description);
+      attachment.narrativeStatus = attachmentStatusObj;
+      attachment.narrativeStatusCode = attachmentStatusObj.code;
     }
   }
 
@@ -240,7 +241,7 @@ proposalValidation() {
     this.result.proposal.updateTimeStamp = new Date().getTime();
     this.result.proposal.updateUser = localStorage.getItem('currentUser');
     this.result.proposal.submitUser = localStorage.getItem('currentUser');
-    // this.updateAttachmentStatus();
+    this.updateAttachmentStatus();
     this._proposalService.submitProposal({'proposal': this.result.proposal, 'userName': localStorage.getItem( 'currentUser' ),
     'personId': localStorage.getItem( 'personId' ), 'proposalStatusCode': this.result.proposalStatusCode}).subscribe( data => {
       let tempryProposalObj: any = {};
@@ -271,11 +272,6 @@ proposalValidation() {
         });
     }
 
-  offClickHandler( event: any ) {
-    if ( !this.moreActions.nativeElement.contains( event.target ) ) {
-        this.isShowMoreOptions = false;
-    }
-  }
   ngOnDestroy() {
     this.autoSave_subscription.unsubscribe();
   }

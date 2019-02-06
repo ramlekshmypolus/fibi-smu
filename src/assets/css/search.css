@@ -955,12 +955,9 @@ table.tableSection th, table.tableSection td {
 	position: sticky;
 	background: #fff;
 	width: 100%;
-	/* z-index: 2; */
+	z-index: 2;
 	top: 47px;
 }
-/* .content-top {
-	margin-top: 120px;
-} */
 .back-button {
 	right: 90px;
 }
@@ -1008,9 +1005,6 @@ table.tableSection th, table.tableSection td {
 	background-color: #26a69a;
 	color: #fff;
 }
-.border-index {
-    z-index: -1;
-}
 
 /** for more actions **/
 .more-options-box {
@@ -1035,7 +1029,7 @@ table.tableSection th, table.tableSection td {
     background: #FFFFFF;
     overflow: hidden;
     text-overflow: ellipsis;
-    height: 125px;
+    height: auto;
 }
 .more-options-box>li>p {
 	margin: 0;
