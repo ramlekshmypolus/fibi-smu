@@ -35,31 +35,16 @@
                 (click)="checkSubmitProposalValidation()">Submit</button>
                 <!-- <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal()" *ngIf="result?.proposal?.proposalId">Approve</button>
                 <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal()" *ngIf="result?.proposal?.proposalId">Disapprove</button>
-                <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal()" *ngIf="result?.proposal?.proposalId">Complete Pre-review</button> -->
-
-                    <button #moreActions class="btnSkin btnSkinPrimary dropdown-toggle" (click)="isShowMoreOptions = !isShowMoreOptions">More Actions</button>
-                    <ul class="more-options-box" *ngIf="isShowMoreOptions">
-                      <li>
-                        <p><a class="dropdown-item" href="">Route Log</a></p>
-                        <p><a class="dropdown-item" href="">Pre-review</a></p>
-                        <p><a class="dropdown-item" href="" (click)="copyProposal($event)" *ngIf="result?.proposal?.proposalId">Copy Proposal</a></p>
-                        <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event)">Print Proposal</a></p> 
-                      </li>
-                    </ul>
-
-
-
-                <!-- <div class="btn-group">
-                  <button type="button" class="btnSkin btnSkinPrimary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    More actions
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="">Route Log</a>
-                    <a class="dropdown-item" href="">Pre-review</a>
-                    <a class="dropdown-item" href="" (click)="copyProposal($event)" *ngIf="result?.proposal?.proposalId">Copy Proposal</a>
-                    <a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event)">Print Proposal</a>
-                  </div>
-                </div> -->
+                <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal()" *ngIf="showOrHideDataFlagsObj.mode =='view' && result?.isReviewer == true && result?.isReviewed == false">Complete Pre-review</button> -->
+                <button class="btnSkin btnSkinPrimary dropdown-toggle" (click)="isShowMoreOptions = !isShowMoreOptions">More Actions</button>
+                <ul class="more-options-box" *ngIf="isShowMoreOptions">
+                  <li>
+                    <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11" (click)="isShowMoreOptions = !isShowMoreOptions">Route Log</a></p>
+                    <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="isShowMoreOptions = !isShowMoreOptions">Pre-review</a></p>
+                    <p><a class="dropdown-item" href="" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId">Copy Proposal</a></p>
+                    <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event);isShowMoreOptions = !isShowMoreOptions">Print Proposal</a></p> 
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -123,6 +108,175 @@ aria-hidden="true">
      </div>
      <div class="modal-footer">
        <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">OK</button>
+     </div>
+   </div>
+ </div>
+</div>
+<!--Pre-review Modal-->
+<div class="modal fade mySkinDialog" id="preReviewModal" *ngIf="showPreReviewModal"  data-backdrop="static" data-keyboard="false"
+tabindex="-1" role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
+ <div class="modal-dialog modal-lg" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title" id="skippedSchedulesLongTitle">Assign to Reviewer</h5>
+       <button type="button" class="close" (click)="closePreReviewModal()" data-dismiss="modal">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body">
+       <div class="pullSide">
+         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 viewMode resultCard">
+           <div class="row">
+             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6">
+               <label>Proposal #</label> <span>{{result?.proposal?.proposalId}}</span>
+             </div>
+             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+               <label>Status</label> <span>{{result?.proposal?.proposalStatus?.description}}</span>
+             </div>
+             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+               <label>PI</label> <span>{{result?.proposal?.principalInvestigator}}</span>
+             </div>
+             <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-6">
+               <label>Lead Unit</label> <span>{{result?.proposal?.homeUnitName}}</span>
+             </div>
+             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+               <label>Title</label> <span>{{result?.proposal?.title}}</span>
+             </div>
+           </div>
+         </div>
+         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="add-review">
+           <div class="row">
+             <button title="Request New Review" class="addBtn font attachBtn"
+             style="top:0; right:44px" (click)="showRequestNewReview()">
+               <i [ngClass]="isRequestNewReviewerOpen?'fa fa-minus':'fa fa-plus'"></i>&nbsp;<span>Request New Review</span>
+             </button>
+           </div>
+         </div>
+         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+           <div class="gridSkin" *ngIf="isRequestNewReviewerOpen">
+             <div class="row">
+               <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+                 <label><span class="mandatory">*</span>Review Type:</label>
+               </div>
+               <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+                 <select class="committeeBox"
+                 [(ngModel)]="selectedReviewType">
+                   <option (value)="select">{{select}}</option>
+                   <option *ngFor="let reviewType of reviewTypes" (value)="reviewType">{{reviewType?.description}}</option>
+                 </select>
+               </div>
+               <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2">
+                 <label><span class="mandatory">*</span>Reviewer:</label>
+               </div>
+               <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-5 searchBox memberSearchBox pt-1">
+                 <app-elastic [options]="elasticSearchOptions" [clearField]="clearField" [placeHolder]="'Search an employee'"
+   										(selectedResult)="selected($event)"></app-elastic>
+               </div>
+             </div>
+             <div class="row">
+               <div class="col-xl-2 col-lg-12 col-md-12 col-sm-12 col-12"><label><span class="mandatory">*</span>Comments:</label>
+               </div>
+               <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 col-12">
+                 <textarea class="forTextAreaEntry scheduleBoxes dateBox" [(ngModel)]="requesterComments"></textarea>
+               </div>
+             </div>
+             <div class="row">
+               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="isRequestNewReviewerOpen">
+                 <span class="mandatory" *ngIf="!isReviewMandatoryFilled">* Please fill all the mandatory fields.</span>
+                 <span class="mandatory" *ngIf="isPreReviewExist">* Please choose another reviewer since the specified reviewer has another review in progress. </span>
+                 <div class="rate-float pre-review-button">
+                   <button type="button" class="btnSkin btnSkinPrimary" (click)="addPreReviewer()">Add </button>
+                 </div>
+               </div>
+             </div>
+           </div>
+           <div class="pullside" *ngIf="result?.proposal?.proposalPreReviews?.length >0" [ngClass]="isRequestNewReviewerOpen?'height-scroll-sm':'height-scroll-lg'">
+             <div class="row" style="margin-right:0px" *ngFor="let reviewers of result?.proposal?.proposalPreReviews; let reviewIndex = index">
+               <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                 <div class="borderBox" [ngClass]="isReviewTypeOpen[reviewIndex]?'':'pb-0'">
+                   <div class="borderBoxHeading colorBlack" [ngClass]="isReviewTypeOpen[reviewIndex]?'':'mb-0'">
+                     <div class="row reviewbox-headerdata">
+                       <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                         <label>{{reviewers?.reviewerFullName}}({{reviewers?.preReviewType?.description}})</label>
+                       </div>
+                       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 colorBlack">
+                         <label style="margin-right: 10px">Status: </label>{{reviewers?.preReviewStatus?.description}}
+                       </div>
+                       <button id="budgetExpndBtn" class="addBtn font hoverColor" (click)="isReviewTypeOpen[reviewIndex] = !isReviewTypeOpen[reviewIndex]">
+                         <i class="fa-large" [ngClass]="isReviewTypeOpen[reviewIndex]?'fa fa-angle-double-up':'fa fa-angle-double-down'"></i>
+                       </button>
+                     </div>
+                   </div>
+                   <div class="pullSide" *ngIf="isReviewTypeOpen[reviewIndex]">
+                     <div class="topGrid gridSkin block-display-span">
+                       <div class="row">
+                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                           <label>Request Date</label>
+                           <span>{{reviewers?.requestDate | date:'MM/dd/yyyy'}}</span>
+                         </div>
+                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                           <label>Completion Date</label>
+                           <span>{{reviewers?.completionDate | date:'MM/dd/yyyy'}}</span>
+                         </div>
+                       </div>
+                       <div class="row">
+                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <label>Requester Comments</label>
+                           <span title="{{(reviewers?.requestorComment?.length>120)?(reviewers?.requestorComment):''}}">
+                               {{(reviewers?.requestorComment?.length
+                                 > 120)?(reviewers?.requestorComment |
+                                 slice:0:120)+'...':(reviewers?.requestorComment)}}</span>
+                         </div>
+                       </div>
+                       <div class="row" *ngIf="reviewers?.proposalPreReviewComments.length>0">
+                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                           <label>Reviewer Comments</label>
+                         </div>
+                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+                           <label>Attachments</label>
+                         </div>
+                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+                           <label>Action</label>
+                         </div>
+                       </div>
+                       <ng-container *ngIf="reviewers?.proposalPreReviewComments.length>0">
+                         <div class="row" *ngFor="let comments of reviewers.proposalPreReviewComments; let i=index" >
+                           <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                             <span title="{{(comments?.reviewComment?.length>80)?(comments?.reviewComment):''}}">
+                                 {{i+ 1}}. {{(comments?.reviewComment?.length
+                                 > 80)?(comments?.reviewComment |
+                                 slice:0:80)+'...':(comments?.reviewComment)}}</span>
+                           </div>
+                           <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+                             <span *ngIf="comments?.proposalPreReviewAttachments?.length == 0"
+                             class="noDataExists">No attachments</span>
+                             <select class="committeeBoxNotEditable" style="padding-left: 0px;margin-left: -6px;" *ngIf="comments?.proposalPreReviewAttachments?.length > 0" [(ngModel)]="selectedReviewAttachment[reviewIndex][i]">
+                               <option *ngFor="let attachment of comments?.proposalPreReviewAttachments;let attachIndex = index" (value)="attachment">{{attachment.fileName}}</option>
+                             </select>
+                           </div>
+                           <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
+                             <ul class="actionButtonGroup" *ngIf="comments?.proposalPreReviewAttachments?.length > 0">
+                               <li><a (click)="downloadReviewAttachment($event, selectedReviewAttachment[reviewIndex][i], comments?.proposalPreReviewAttachments)"><i
+                                     title="download this document" class="fa fa-download" aria-hidden="true"></i></a></li>
+                             </ul>
+                           </div>
+                         </div>
+                       </ng-container>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+     <div class="modal-footer" *ngIf="result?.proposal?.proposalPreReviews?.length >0">
+       <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+         <div class="rate-float pre-review-button">
+           <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closePreReviewModal()">Close</button>
+         </div>
+       </div>
      </div>
    </div>
  </div>

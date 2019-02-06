@@ -108,28 +108,22 @@ export class SupportingDocumentsComponent implements OnInit {
     if (this.warningMsgObj.attachmentWarningMsg == null) {
       for (let uploadIndex = 0; uploadIndex < this.uploadedFile.length; uploadIndex++) {
         const tempObjectForAdd: any = {};
-        for ( const ATTATCHMENT_TYPE of this.result.proposalAttachmentTypes ) {
-            if (!this.isReplaceAttachment) {
-              if ( ATTATCHMENT_TYPE.attachmentTypeCode === parseInt(this.selectedAttachmentType[uploadIndex], 10) ) {
-                  tempObjectForAdd.attachmentType = ATTATCHMENT_TYPE;
-                  tempObjectForAdd.attachmentTypeCode = ATTATCHMENT_TYPE.attachmentTypeCode;
-              }
-            } else {
-              if ( ATTATCHMENT_TYPE.description === this.selectedAttachmentType[uploadIndex] ) {
-                  tempObjectForAdd.attachmentType = ATTATCHMENT_TYPE;
-                  tempObjectForAdd.attachmentTypeCode = ATTATCHMENT_TYPE.attachmentTypeCode;
-              }
-            }
+        if (!this.isReplaceAttachment) {
+          const attachTypeObj = this.result.proposalAttachmentTypes.find( attachtype =>
+                                attachtype.attachmentTypeCode === parseInt(this.selectedAttachmentType[uploadIndex], 10));
+            tempObjectForAdd.attachmentType = attachTypeObj;
+            tempObjectForAdd.attachmentTypeCode = attachTypeObj.attachmentTypeCode;
+        } else {
+          const attachTypeObj = this.result.proposalAttachmentTypes.find( attachtype =>
+                                attachtype.description === this.selectedAttachmentType[uploadIndex]);
+            tempObjectForAdd.attachmentType = attachTypeObj;
+            tempObjectForAdd.attachmentTypeCode = attachTypeObj.attachmentTypeCode;
+          tempObjectForAdd.attachmentId = this.replaceAttachmentObj.attachmentId;
         }
-        for ( const ATTATCHMENT_STATUS of this.result.narrativeStatus ) {
-            if ( ATTATCHMENT_STATUS.description === this.selectedAttachmentStatus[uploadIndex] ) {
-                tempObjectForAdd.narrativeStatus = ATTATCHMENT_STATUS;
-                tempObjectForAdd.narrativeStatusCode = ATTATCHMENT_STATUS.code;
-            }
-        }
-        if (this.isReplaceAttachment === true) {
-            tempObjectForAdd.attachmentId = this.replaceAttachmentObj.attachmentId;
-        }
+        const statusObj = this.result.narrativeStatus.find( status => status.description === this.selectedAttachmentStatus[uploadIndex]);
+        tempObjectForAdd.narrativeStatus = statusObj;
+        tempObjectForAdd.narrativeStatusCode = statusObj.code;
+
         tempObjectForAdd.description = this.selectedAttachmentDescription[uploadIndex];
         tempObjectForAdd.fileName = this.uploadedFile[uploadIndex].name;
         tempObjectForAdd.updateTimeStamp = new Date().getTime();
@@ -145,11 +139,8 @@ export class SupportingDocumentsComponent implements OnInit {
     for (const file of this.uploadedFile) {
       formData.append( 'files', file );
     }
-    const attachmentAddReqObject = {
-        proposal: this.result.proposal,
-        newAttachments: this.result.newAttachments,
-    };
-    formData.append( 'formDataJson', JSON.stringify( attachmentAddReqObject ) );
+    formData.append( 'formDataJson', JSON.stringify( {'proposal': this.result.proposal,
+      'newAttachments': this.result.newAttachments} ) );
     this._proposalHomeService.addProposalAttachment( formData).subscribe( success => {
     let temporaryObject: any = {};
     temporaryObject = success;
