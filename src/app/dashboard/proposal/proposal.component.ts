@@ -186,7 +186,7 @@ export class ProposalListComponent implements OnInit {
         proposalId: proposalId,
         userFullName: localStorage.getItem('currentUser')
     };
-    this._dashboardService.copyProposal(proposalVO).subscribe((success: any) => {
+    this._commonService.copyProposal(proposalVO).subscribe((success: any) => {
         localStorage.setItem('currentTab', 'PROPOSAL_HOME');
         this._router.navigate(['fibi/proposal'], { queryParams: { 'proposalId': success.proposal.proposalId } });
     });
@@ -242,7 +242,7 @@ export class ProposalListComponent implements OnInit {
     event.preventDefault();
     for ( const ATTACHMENT of selectedAttachArray ) {
         if ( ATTACHMENT.fileName === selectedFileName ) {
-            this._dashboardService.downloadRoutelogAttachment( ATTACHMENT.attachmentId )
+            this._commonService.downloadRoutelogAttachment( ATTACHMENT.attachmentId )
             .subscribe(
                 data => {
                     const a = document.createElement( 'a' );

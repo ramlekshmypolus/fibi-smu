@@ -1005,13 +1005,17 @@ table.tableSection th, table.tableSection td {
 	background-color: #26a69a;
 	color: #fff;
 }
-
+.overflow {
+	overflow: hidden;
+    width: 100%;
+    float: left;
+}
 /** for more actions **/
 .more-options-box {
 	list-style: none;
     padding: 0px;
     position: absolute;
-    width: 19%;
+    width: auto;
     right: 13px;
     font-size: .85em;
     border-width: 3px 1px 2px;
@@ -1029,7 +1033,8 @@ table.tableSection th, table.tableSection td {
     background: #FFFFFF;
     overflow: hidden;
     text-overflow: ellipsis;
-    height: auto;
+	height: auto;
+	line-height: 30px;
 }
 .more-options-box>li>p {
 	margin: 0;

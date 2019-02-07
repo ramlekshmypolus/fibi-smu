@@ -430,6 +430,7 @@ export class GrantEditComponent implements OnInit {
 
   deleteFromUploadedFileList(index) {
     this.uploadedFile.splice(index, 1);
+    this.warningMsgObj.attachmentWarningMsg = null;
   }
 
   addAttachments() {

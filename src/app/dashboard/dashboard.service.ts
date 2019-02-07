@@ -43,14 +43,4 @@ export class DashboardService {
       return this._http.post( this._commonService.baseUrl + '/getUserNotification', params);
   }
 
-  downloadRoutelogAttachment( attachmentId ) {
-    return this._http.get( this._commonService.baseUrl + '/downloadWorkflowAttachment', {
-        headers: new HttpHeaders().set( 'attachmentId', attachmentId.toString() ),
-        responseType: 'blob'
-    } );
-  }
-
-  copyProposal(proposal) {
-    return this._http.post( this._commonService.baseUrl + '/copyProposal', proposal );
-  }
 }

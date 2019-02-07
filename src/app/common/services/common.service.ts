@@ -1,4 +1,5 @@
 import { Injectable} from '@angular/core';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class CommonService {
@@ -39,7 +40,7 @@ export class CommonService {
     proposalTabName: null
   };
 
-  constructor() { }
+  constructor( private _http: HttpClient) { }
 
   logout() {
     localStorage.clear();
@@ -68,6 +69,17 @@ export class CommonService {
     if (!pattern.test(String.fromCharCode(event.charCode))) {
         event.preventDefault();
     }
+  }
+
+  downloadRoutelogAttachment( attachmentId ) {
+    return this._http.get( this.baseUrl + '/downloadWorkflowAttachment', {
+        headers: new HttpHeaders().set( 'attachmentId', attachmentId.toString() ),
+        responseType: 'blob'
+    } );
+  }
+
+  copyProposal(proposal) {
+    return this._http.post( this.baseUrl + '/copyProposal', proposal );
   }
 
 }

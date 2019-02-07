@@ -4,6 +4,9 @@ import { ISubscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
 import { ProposalService } from './services/proposal.service';
+import { CommonService } from '../common/services/common.service';
+
+declare var $: any;
 
 @Component({
   selector: 'app-proposal',
@@ -29,18 +32,40 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isShowSubmitWarningModal: false,
     isShowSubmitSuccessModal: false
   };
+
   isShowMoreOptions = false;
+  isShowPreReviewModalOptions = false;
+  isPreReviewExist = false;
+  isReviewMandatoryFilled = true;
+  isAttachmentIncomplete = false;
 
   toast_message = '';
+  clearField;
+  superUser = localStorage.getItem( 'superUser');
+  approveDisapprovePlaceHolder: string;
+  modalAproveHeading: string;
+  approveComments: string;
+
+  selectedReviewAttachment = [];
+  isReviewTypeOpen = [];
+  uploadedFile = [];
 
   warningMsgObj: any = {};
   proposalDataBindObj: any = {};
   mandatoryObj: any = {};
+  addPreReviewerObj: any = {};
+  elasticSearchOptions: any = {};
+  requestObject: any = {};
+  showApproveDisapproveModal = {
+    isReadyToApprove: false
+  };
 
   private autoSave_subscription: ISubscription;
 
-  constructor( private _route: ActivatedRoute, private _proposalService: ProposalService, private _router: Router ) {
-    this.autoSave_subscription = Observable.interval(1000 * 1200).subscribe(x => {
+  constructor( private _route: ActivatedRoute, private _proposalService: ProposalService,
+    private _router: Router, private _commonService: CommonService ) {
+    this.proposalDataBindObj.dataChangeFlag = false;
+    this.autoSave_subscription = Observable.interval(1000 * 120).subscribe(x => {
       if (this.result.proposal.proposalId !== null && this.result.proposal.statusCode !== 11) {
           this.saveProposal('autoSave');
       }
@@ -48,6 +73,16 @@ export class ProposalComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit() {
+    this.elasticSearchOptions.url   = this._commonService.elasticIndexUrl;
+    this.elasticSearchOptions.index = 'fibiperson';
+    this.elasticSearchOptions.type  = 'person';
+    this.elasticSearchOptions.size  = 20;
+    this.elasticSearchOptions.contextField = 'full_name';
+    this.elasticSearchOptions.debounceTime = 500;
+    this.elasticSearchOptions.fields = {
+      full_name: {},
+      prncpl_nm: {}
+    };
     this.result = this._route.snapshot.data.proposalDetails;
     if (this._route.snapshot.queryParamMap.get('proposalId') == null) {
       this.showOrHideDataFlagsObj.mode = 'create';
@@ -84,21 +119,29 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   initialiseProposalFormElements() {
     this.proposalDataBindObj.proposalStartDate = this.result.proposal.startDate === null ?
-                                                 null : new Date(this.result.proposal.startDate);
+      null : new Date(this.result.proposal.startDate);
     this.proposalDataBindObj.proposalEndDate = this.result.proposal.endDate === null ?
-                                               null : new Date(this.result.proposal.endDate);
+      null : new Date(this.result.proposal.endDate);
     this.proposalDataBindObj.sponsorDeadlineDate = this.result.proposal.submissionDate === null ?
-                                                   null : new Date(this.result.proposal.submissionDate);
+      null : new Date(this.result.proposal.submissionDate);
     this.proposalDataBindObj.internalDeadlineDate = this.result.proposal.internalDeadLineDate === null ?
-                                                    null : new Date(this.result.proposal.internalDeadLineDate);
+      null : new Date(this.result.proposal.internalDeadLineDate);
+    this.proposalDataBindObj.selectedResearchType = this.result.proposalResearchTypes === null ?
+      null : this.result.proposalResearchTypes[0].description;
+    this.proposalDataBindObj.selectedAreaType = this.result.proposalResearchTypes === null ?
+      null : this.result.proposalResearchTypes[0].description;
+     if ( this.requestObject.actionType === 'R' ) {
+      this.showOrHideDataFlagsObj.mode = 'edit';
+     }
     // set default grantCallType to Others if no grant call is associated with the proposal
-    if ( this.result.proposal.grantCallType == null ) {
-        this.result.proposal.grantCallType = this.result.defaultGrantCallType;
-        this.result.proposal.grantTypeCode = this.result.defaultGrantCallType.grantTypeCode;
+    if (this.result.proposal.grantCallType == null) {
+      this.result.proposal.grantCallType = this.result.defaultGrantCallType;
+      this.result.proposal.grantTypeCode = this.result.defaultGrantCallType.grantTypeCode;
     } else if (this.result.proposal.grantCall != null) {
-        this.result.proposal.grantCallType = this.result.proposal.grantCall.grantCallType;
-        this.result.proposal.grantTypeCode = this.result.proposal.grantCall.grantCallType.grantTypeCode;
-    } else if ( this.result.proposal.grantCall == null ) {}
+      this.result.proposal.grantCallType = this.result.proposal.grantCall.grantCallType;
+      this.result.proposal.grantTypeCode = this.result.proposal.grantCall.grantCallType.grantTypeCode;
+    } else if (this.result.proposal.grantCall == null) { }
+    // this.updateRouteLogHeader();
   }
 
   // proposal details validation
@@ -137,7 +180,11 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   openGoBackModal() {
-    this._router.navigate(['/fibi/dashboard/proposalList']);
+    if (this.proposalDataBindObj.dataChangeFlag) {
+      alert('data changed');
+    } else {
+      this._router.navigate(['/fibi/dashboard/proposalList']);
+    }
   }
 
   saveProposal(saveType) {
@@ -216,7 +263,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     event.preventDefault();
     this.result.userFullName = localStorage.getItem('currentUser');
     this.result.proposal.updateUser = localStorage.getItem('currentUser');
-    this._proposalService.copyProposal(this.result).subscribe(success => {
+    this._commonService.copyProposal(this.result).subscribe(success => {
     let temryProposalObj: any = {};
     temryProposalObj = success;
       this._router.navigate(['/fibi/proposal'], { queryParams: { 'proposalId': temryProposalObj.proposal.proposalId }});
@@ -272,7 +319,252 @@ export class ProposalComponent implements OnInit, OnDestroy {
         });
     }
 
+    getPreReview() {
+      this.addPreReviewerObj = {};
+      this.addPreReviewerObj.preReviewType = null;
+      if (this.result.proposal.proposalPreReviews != null) {
+        if (this.result.proposal.proposalPreReviews.length <= 0) {
+          this.isShowPreReviewModalOptions = true;
+        } else {
+          this.isShowPreReviewModalOptions = false;
+          this.result.proposal.proposalPreReviews.forEach((reviews, reviewsIndex) => {
+            this.selectedReviewAttachment[reviewsIndex] = [];
+              reviews.proposalPreReviewComments.forEach((value, index) => {
+              if (value.proposalPreReviewAttachments.length !== 0) {
+                this.selectedReviewAttachment[reviewsIndex][index] = value.proposalPreReviewAttachments[0].fileName;
+              }
+            });
+          });
+        }
+      }
+    }
+
+  showRequestNewReview() {
+    this.isShowPreReviewModalOptions = !this.isShowPreReviewModalOptions;
+    this.isReviewMandatoryFilled = true;
+    this.isPreReviewExist = false;
+    this.addPreReviewerObj = {};
+    this.addPreReviewerObj.preReviewType = null;
+  }
+
+  selected( value ) {
+    if ( value != null) {
+        this.addPreReviewerObj.reviewerPersonId = value.prncpl_id;
+        this.addPreReviewerObj.reviewerFullName = value.full_name;
+        this.addPreReviewerObj.reviewerEmailAddress = value.email_addr;
+    } else {
+        this.addPreReviewerObj.reviewerPersonId = null;
+        this.addPreReviewerObj.reviewerFullName = null;
+        this.addPreReviewerObj.reviewerEmailAddress = null;
+    }
+  }
+
+  closePreReviewModal() {
+    this.addPreReviewerObj = {};
+    this.isShowPreReviewModalOptions = false;
+    this.selectedReviewAttachment = [];
+    this.isReviewTypeOpen = [];
+    this.isReviewMandatoryFilled = true;
+    this.isPreReviewExist = false;
+  }
+
+  addPreReviewer() {
+    this.isReviewMandatoryFilled = true;
+    this.isPreReviewExist = false;
+    if ( this.addPreReviewerObj.preReviewType == null || this.addPreReviewerObj.preReviewType === 'null' ||
+        this.addPreReviewerObj.requestorComment == null || this.addPreReviewerObj.requestorComment === '' ||
+        this.addPreReviewerObj.reviewerPersonId == null) {
+        this.isReviewMandatoryFilled = false;
+     } else {
+      this.addPreReviewerObj.reviewTypeCode = this.addPreReviewerObj.preReviewType.reviewTypeCode;
+      this.addPreReviewerObj.proposalId = this.result.proposal.proposalId;
+      this.addPreReviewerObj.requestorPersonId = localStorage.getItem('personId');
+      this.addPreReviewerObj.requestorFullName = localStorage.getItem('userFullname');
+      this.addPreReviewerObj.requestorEmailAddress = localStorage.getItem('userEmailId');
+      this.addPreReviewerObj.requestDate = new Date().getTime();
+      this.addPreReviewerObj.updateTimeStamp = new Date().getTime();
+      this.addPreReviewerObj.updateUser = localStorage.getItem( 'currentUser' );
+      this._proposalService.createProposalPreReview ({'proposal': this.result.proposal,
+        'newProposalPreReview': this.addPreReviewerObj, 'personId': localStorage.getItem( 'personId' )})
+        .subscribe( data => {
+          // tslint:disable-next-line:no-construct
+          this.clearField = new String('true');
+          let temp: any = {};
+          temp = data || [];
+          if (temp.proposal.preReviewExist) {
+            this.isPreReviewExist = true;
+          } else {
+            this.result.proposal = temp.proposal;
+            this.addPreReviewerObj = {};
+            this.addPreReviewerObj.preReviewType = null;
+            this.isShowPreReviewModalOptions = false;
+          }
+        });
+     }
+  }
+
+  downloadReviewAttachment( event, selectedFileName, selectedAttachArray: any[] ) {
+    event.preventDefault();
+      for ( const ATTACHMENT of selectedAttachArray ) {
+        if ( ATTACHMENT.fileName === selectedFileName ) {
+          this._proposalService.downloadPreReviewAttachment( ATTACHMENT.preReviewAttachmentId )
+          .subscribe(
+            data => {
+                const a = document.createElement( 'a' );
+                a.href = URL.createObjectURL( data );
+                a.download = ATTACHMENT.fileName;
+                a.click();
+            } );
+        }
+      }
+  }
+
+  updatePreReviewAttachmentSelectbox() {
+    this.result.proposal.reviewerReview.proposalPreReviewComments.forEach((value, index) => {
+      if (value.proposalPreReviewAttachments.length !== 0) {
+        this.selectedReviewAttachment[index] = value.proposalPreReviewAttachments[0].fileName;
+      }
+    });
+  }
+
+  fileDrop(files) {
+    this.warningMsgObj.attachmentWarningMsg = null;
+    let dupCount = 0;
+    for (let index = 0; index < files.length; index++) {
+      if (this.uploadedFile.find(dupFile => dupFile.name === files[index].name) != null) {
+        dupCount = dupCount + 1;
+        this.warningMsgObj.attachmentWarningMsg = '* ' + dupCount + ' File(s) already added';
+      } else {
+        this.uploadedFile.push(files[index]);
+      }
+    }
+  }
+
+  deleteFromUploadedFileList(index) {
+    this.uploadedFile.splice(index, 1);
+    this.warningMsgObj.attachmentWarningMsg = null;
+  }
+
+  addPreReview() {
+    this.isReviewMandatoryFilled = true;
+    if (this.addPreReviewerObj.reviewComment == null || this.addPreReviewerObj.reviewComment === '') {
+      this.isReviewMandatoryFilled = false;
+    } else {
+      this.addPreReviewerObj.proposalId = this.result.proposal.proposalId;
+      this.addPreReviewerObj.updateTimeStamp = new Date().getTime();
+      this.addPreReviewerObj.updateUser = localStorage.getItem('currentUser');
+      this.result.proposal.reviewerReview.proposalPreReviewComments.push(this.addPreReviewerObj);
+
+      const formData = new FormData();
+      for ( let i = 0; i < this.uploadedFile.length; i++ ) {
+          formData.append( 'files', this.uploadedFile[i] );
+      }
+      const sendObject = {
+          proposal: this.result.proposal,
+          userName: localStorage.getItem( 'currentUser' )
+      };
+      formData.append( 'formDataJson', JSON.stringify( sendObject ) );
+
+      this._proposalService.addPreReviewComment( formData ).subscribe( success => {
+          let temporaryObject: any = {};
+          temporaryObject = success;
+          this.result.proposal = temporaryObject.proposal;
+          this.updatePreReviewAttachmentSelectbox();
+          this.clearPreReviewDatas();
+      });
+    }
+  }
+
+  approveDisapprovePreReview(actionType) {
+    this._proposalService.approveOrDisapprovePreReview( {'proposal': this.result.proposal,
+      'actionType': actionType, 'personId': localStorage.getItem( 'personId' )} ).subscribe( success => {
+    let temporaryObject: any = {};
+    temporaryObject = success;
+    this.result.proposal = temporaryObject.proposal;
+    this.updatePreReviewAttachmentSelectbox();
+    this.clearPreReviewDatas();
+    }, err => {}, () => { $('#completePreReviewModal').modal('hide'); });
+  }
+
+  clearPreReviewDatas() {
+    this.addPreReviewerObj = {};
+    this.uploadedFile = [];
+    this.isReviewMandatoryFilled = true;
+  }
+
+  /* approve proposal */
+  approveProposal() {
+    this.checkPreReviewCompletion();
+    this.modalAproveHeading = 'Approve';
+    if (this.showApproveDisapproveModal.isReadyToApprove) {
+      this.requestObject = {};
+      this.approveDisapprovePlaceHolder = 'Comments on approving the proposal';
+      this.requestObject.actionType = 'A';
+      this.isAttachmentIncomplete = false;
+      if (this.result.finalApprover === true && this.result.isApproved === false) {
+        const attachments = this.result.proposal.proposalAttachments.find(attachment => attachment.narrativeStatus.code === 'I');
+        this.isAttachmentIncomplete = (attachments != null) ? true : false;
+      }
+    }
+  }
+
+  /* disapprove proposal */
+  disapproveProposal() {
+    this.showApproveDisapproveModal.isReadyToApprove = true;
+    this.requestObject = {};
+    this.approveDisapprovePlaceHolder = 'Comments on disapproving the proposal';
+    this.modalAproveHeading = 'Disapprove';
+    this.requestObject.actionType = 'R';
+  }
+
+  /* checking whether any prereview exists with inprogress status */
+  checkPreReviewCompletion() {
+    if (this.result.finalApprover && this.result.isPreReviewCompletionRequired) {
+      const prereviews = this.result.proposal.proposalPreReviews.find(prereview => prereview.preReviewStatus.reviewStatusCode === '1');
+      this.showApproveDisapproveModal.isReadyToApprove = (prereviews != null) ? false : true;
+    } else {
+      this.showApproveDisapproveModal.isReadyToApprove = true;
+    }
+  }
+
+   /* approves or disapproves proposal */
+   approveDisapproveProposal() {
+    this.requestObject.personId = localStorage.getItem('personId');
+    this.requestObject.proposalId = this.result.proposal.proposalId;
+    this.requestObject.isSuperUser = this.superUser;
+    this.requestObject.approverStopNumber = this.result.approverStopNumber;
+    this.requestObject.approveComment = this.approveComments;
+    const approveFormData = new FormData();
+    approveFormData.delete( 'files' );
+    approveFormData.delete( 'formDataJson' );
+
+    for ( let i = 0; i < this.uploadedFile.length; i++ ) {
+      approveFormData.append( 'files', this.uploadedFile[i] );
+    }
+    approveFormData.append( 'formDataJson', JSON.stringify( this.requestObject ) );
+    this._proposalService.approveDisapproveProposal(approveFormData ).subscribe(data => {
+      let temp: any = {};
+      temp = data;
+      this.result = temp;
+      this.initialiseProposalFormElements();
+    }, err => {}, () => { $('#approveDisapproveModal').modal('hide'); });
+    this.approveComments = '';
+    this.uploadedFile = [];
+  }
+
+  // updateRouteLogHeader() {
+  //   if ( this.result.proposal != null && this.result.proposal.proposalPersons.length > 0 ) {
+  //       this.result.proposal.proposalPersons.forEach(( value, index ) => {
+  //           if ( value.proposalPersonRole.code === 'PI' ) {
+  //               this.proposalPIName = value.fullName;
+  //               this.proposalLeadUnit = value.leadUnitName;
+  //           }
+  //       } );
+  //   }
+  // }
+
   ngOnDestroy() {
     this.autoSave_subscription.unsubscribe();
   }
+
 }
