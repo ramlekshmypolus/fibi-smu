@@ -28,15 +28,34 @@ export class ProposalService {
     return this._http.post( this._commonService.baseUrl + '/submitProposal', params );
   }
 
-  copyProposal(proposal) {
-    return this._http.post( this._commonService.baseUrl + '/copyProposal', proposal );
+  printProposal(proposalId) {
+    return this._http.get( this._commonService.baseUrl + '/printProposalPdfReport', {
+      headers: new HttpHeaders().set( 'proposalId', proposalId.toString() ),
+      responseType: 'blob'
+      } );
   }
 
-  printProposal(proposalId) {
-  return this._http.get( this._commonService.baseUrl + '/printProposalPdfReport', {
-    headers: new HttpHeaders().set( 'proposalId', proposalId.toString() ),
-    responseType: 'blob'
+  createProposalPreReview( params ) {
+    return this._http.post( this._commonService.baseUrl + '/createProposalPreReview', params );
+  }
+
+  downloadPreReviewAttachment( attachmentId ) {
+    return this._http.get( this._commonService.baseUrl + '/downloadPreReviewAttachment', {
+        headers: new HttpHeaders().set( 'attachmentId', attachmentId.toString() ),
+        responseType: 'blob'
     } );
+  }
+
+  addPreReviewComment( formData ) {
+    return this._http.post( this._commonService.baseUrl + '/addPreReviewComment', formData );
+  }
+
+  approveOrDisapprovePreReview( params ) {
+    return this._http.post( this._commonService.baseUrl + '/approveOrDisapprovePreReview', params );
+  }
+
+  approveDisapproveProposal( formData ) {
+    return this._http.post( this._commonService.baseUrl + '/approveOrRejectProposal', formData );
   }
 
 }
