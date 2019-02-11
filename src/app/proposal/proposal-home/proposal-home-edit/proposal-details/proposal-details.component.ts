@@ -33,10 +33,6 @@ export class ProposalDetailsComponent implements OnInit {
   ngOnInit() {
     this.leadUnitIconClass = this.result.proposal.homeUnitName ? 'fa fa-times fa-med' : 'fa fa-search fa-med';
     this.sponsorIconClass = this.result.proposal.homeUnitName ? 'fa fa-times fa-med' : 'fa fa-search fa-med';
-    this.proposalDataBindObj.selectedProposalType = ( this.result.proposal.proposalType != null ) ?
-                              this.result.proposal.proposalType.description : null;
-    this.proposalDataBindObj.selectedProposalCategory = ( this.result.proposal.activityType != null ) ?
-                              this.result.proposal.activityType.description : null;
   }
 
   proposalCategoryChange() {

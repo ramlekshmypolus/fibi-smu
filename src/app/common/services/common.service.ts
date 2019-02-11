@@ -82,4 +82,12 @@ export class CommonService {
     return this._http.post( this.baseUrl + '/copyProposal', proposal );
   }
 
+  deleteProposal(params) {
+    return this._http.post( this.baseUrl + '/deleteProposal', params);
+  }
+
+  copyGrantCall(params) {
+    return this._http.post( this.baseUrl + '/copyGrantCall', params );
+  }
+
 }

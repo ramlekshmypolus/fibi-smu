@@ -64,7 +64,7 @@
         </div>
         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-8 ">
           <div class="text-right">
-            <button id="project-delete-btn" class="btnSkin btnSkinPrimary add-btn" (click)="addProposalTeamMember()">Add</button>
+            <button id="project-team-add-btn" class="btnSkin btnSkinPrimary add-btn" (click)="addProposalTeamMember()">Add</button>
           </div>
         </div>
         <div *ngIf="warningMsgObj.departmentWarningMsg != null">
@@ -97,7 +97,7 @@
             </td>
             <td>
               <ul class="actionButtonGroup">
-                <li><a href="#" id="project-team-delete" data-toggle="modal" data-target="#deleteMemberModal" (click)="tempSavePerson($event,person, i)"><i
+                <li><a href="#" id="project-team-delete-btn" data-toggle="modal" data-target="#deleteMemberModal" (click)="tempSavePerson($event,person, i)"><i
                       class="fa fa-trash-o" aria-hidden="true" title="Click here to delete {{person.fullName}}"></i></a></li>
               </ul>
             </td>
@@ -125,10 +125,8 @@
         <p>Are you sure you want to delete this member?</p>
       </div>
       <div class="modal-footer">
-        <button id="project-close-btn" type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal"
-          (click)="showDeleteMember = false">No</button>
-        <button id="project-team-delete-btn" type="button" class="btnSkin btnSkinPrimary" (click)="deletePerson()"
-          data-dismiss="modal">Yes</button>
+        <button id="project-close-btn" type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="showDeleteMember = false">No</button>
+        <button id="project-team-delete-btn" type="button" class="btnSkin btnSkinPrimary" (click)="deletePerson()" data-dismiss="modal">Yes</button>
       </div>
     </div>
   </div>

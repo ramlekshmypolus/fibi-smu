@@ -6,8 +6,8 @@
         <div class="fixed-proposalHeader"><br>
           <div class="row">
             <div class="col-9 text-left"><span *ngIf="result?.proposal?.proposalId" class="topHeading overflow">#{{result?.proposal?.proposalId}}: {{result?.proposal?.title}}</span></div>
-            <div class="col-1 text-right"><span *ngIf="result?.proposal?.ipNumber" class="topHeading pt-2">IP&nbsp;#{{result?.proposal?.ipNumber}}</span></div>
-            <div class="col-2"><button class="btnSkin btnSkinPrimary" title="Back to Proposal List" data-target="#confirmGoBack" data-toggle="modal" (click)="openGoBackModal();">Back to Proposal List</button></div>
+            <div class="col-2 text-right"><span *ngIf="result?.proposal?.ipNumber" class="topHeading">IP&nbsp;#{{result?.proposal?.ipNumber}}</span></div>
+            <div class="col-1"><a href="" title="Back to Proposal List" class="back-btn" data-target="#warning-modal" data-toggle="modal" (click)="openGoBackModal();"><i class="fa fa-reply" aria-hidden="true"></i></a></div>
           </div>
           <div class="row">
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
@@ -29,7 +29,7 @@
             <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7 btn-margin">
               <div class="text-right">
                 <button type="button" id="prop-save-btn" class="btnSkin btnPublish" *ngIf="result?.proposal?.statusCode!= 11" (click)="saveProposal('fullSave')" data-toggle="modal" data-target="#warning-modal">Save</button>
-                <button type="button" class="btnSkin btnSkinPrimary" data-toggle="modal" data-target="#warning-modal" *ngIf="(showOrHideDataFlagsObj.mode == 'edit') && result?.proposal?.proposalId" (click)="checkSubmitProposalValidation()">Submit</button>
+                <button type="button" class="btnSkin btnSkinPrimary" data-toggle="modal" data-target="#warning-modal" *ngIf="(result.proposal.statusCode == 1 || result.proposal.statusCode == 3) && result?.proposal?.proposalId" (click)="checkSubmitProposalValidation()">Submit</button>
                 <button type="button" class="btnSkin btn-secondary" data-toggle="modal" data-target="#approveDisapproveModal"
                   *ngIf="( showOrHideDataFlagsObj.mode =='view' && (result?.isApprover === true && result?.isApproved == false) ) || (showOrHideDataFlagsObj.mode =='view' && superUser == 'true' && result?.proposal?.statusCode !== 11 ) "
                   (click)="isAttachmentIncomplete = false; disapproveProposal()">Disapprove</button>
@@ -37,23 +37,22 @@
                   *ngIf="( showOrHideDataFlagsObj.mode =='view' && (result?.isApprover === true && result?.isApproved == false) ) ||  (showOrHideDataFlagsObj.mode =='view' && superUser == 'true' && result?.proposal?.statusCode !== 11 ) "
                   (click)="approveProposal()">Approve</button>
 
-                <button class="btnSkin btnSkinPrimary dropdown-toggle" (click)="isShowMoreOptions = !isShowMoreOptions">More Actions</button>
+                <button *ngIf="result?.proposal?.proposalId"  title="More Actions" class="btn more-btn" (click)="isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
                 <ul class="more-options-box" *ngIf="isShowMoreOptions">
-                  <li>
-                    <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11" (click)="isShowMoreOptions = !isShowMoreOptions">Route Log</a></p>
-                    <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal">Pre-review</a></p>
-                    <p><a class="dropdown-item" href="" (click)="isShowMoreOptions = !isShowMoreOptions;updatePreReviewAttachmentSelectbox();" data-target="#completePreReviewModal" data-toggle="modal" *ngIf="result.proposal?.isPreReviewer == true">Complete Pre-review</a></p>
-                    <p><a class="dropdown-item" href="" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId">Copy Proposal</a></p>
-                    <p><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event);isShowMoreOptions = !isShowMoreOptions">Print Proposal</a></p>
-                  </li>
+                  <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11 || result?.proposal?.proposalStatus?.statusCode == 3" data-toggle="modal" data-target="#routeLogModal"
+                      (click)="isShowMoreOptions = !isShowMoreOptions;openRouteLog();"><i class="fa fa-history" aria-hidden="true" ></i>Route Log</a></li>
+                  <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
+                  <li><a class="dropdown-item" href="" (click)="isShowMoreOptions = !isShowMoreOptions;updatePreReviewAttachmentSelectbox();" data-target="#completePreReviewModal" data-toggle="modal" *ngIf="result.proposal?.isPreReviewer == true"><i class="fa fa-check" aria-hidden="true"></i>Complete Pre-review</a></li>
+                  <li><a class="dropdown-item" href="" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId && showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'"><i class="fa fa-copy" aria-hidden="true"></i>Copy Proposal</a></li>
+                  <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId  && showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'" (click)="printProposal($event);isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-print" aria-hidden="true"></i>Print Proposal</a></li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-        <app-proposal-home *ngIf="showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj" [proposalDataBindObj]="proposalDataBindObj" [mandatoryObj]="mandatoryObj"></app-proposal-home>
-        <app-proposal-budget *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-proposal-budget>
-        <app-questionnaire *ngIf="showOrHideDataFlagsObj.currentTab == 'QUESTIONNAIRE'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-questionnaire>
+        <app-proposal-home *ngIf="showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME' && result.proposal != null" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj" [proposalDataBindObj]="proposalDataBindObj" [mandatoryObj]="mandatoryObj"></app-proposal-home>
+        <app-proposal-budget *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET' && result.proposal != null" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-proposal-budget>
+        <app-questionnaire *ngIf="showOrHideDataFlagsObj.currentTab == 'QUESTIONNAIRE' && result.proposal != null" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-questionnaire>
       </div>
     </section>
     <div class="footerPush"></div>
@@ -62,14 +61,17 @@
 <button id="openSucessModal" [hidden]="true" data-toggle="modal" data-target="#successModal">modal</button>
 <!-- Modal Section -->
 <!-- Warning modals-->
-<div class="modal fade mySkinDialog" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal || showOrHideDataFlagsObj.isShowSubmitWarningModal" tabindex="-1" id="warning-modal"
+<div class="modal fade mySkinDialog" tabindex="-1" id="warning-modal" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal || showOrHideDataFlagsObj.isShowSubmitWarningModal ||
+showOrHideDataFlagsObj.isShowSaveBeforeExitWarning || showOrHideDataFlagsObj.isShowNotifyApprover"
 tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="deleteModalTitle"
 aria-hidden="true">
  <div class="modal-dialog" role="document">
    <div class="modal-content">
      <div class="modal-header">
-       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal">Warning</h5>
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal || showOrHideDataFlagsObj.isShowSaveBeforeExitWarning">Warning</h5>
        <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal">Submit Proposal</h5>
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowNotifyApprover">Notify Approver</h5>
+       <h5 class="modal-title" *ngIf="warningMsgObj.errorMsg != null">Error</h5>
        <button type="button" class="close" data-dismiss="modal"
            aria-label="Close" (click)="closeWarningModal()">
          <span aria-hidden="true">&times;</span>
@@ -82,12 +84,28 @@ aria-hidden="true">
         <p *ngIf="warningMsgObj.submitWarningMsg != null">{{warningMsgObj.submitWarningMsg}}</p>
         <p *ngIf="warningMsgObj.submitConfirmation != null">{{warningMsgObj.submitConfirmation}}</p>
       </div>
-     <div class="modal-footer">
-       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">Close</button>
-       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal && warningMsgObj.submitWarningMsg != null" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">Ok</button>
-       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal && warningMsgObj.submitConfirmation != null" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeWarningModal()">No</button>
-       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal && warningMsgObj.submitConfirmation != null" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="submitProposal();closeWarningModal()">Yes</button>
+      <div class="modal-body" *ngIf="showOrHideDataFlagsObj.isShowSaveBeforeExitWarning">
+        <p>Please save the changes made to the proposal. Do you want to Save and Exit?</p>
+      </div>
+      <div class="modal-body" *ngIf="showOrHideDataFlagsObj.isShowNotifyApprover">
+        <p>All attached documents are completed. Do you want to notify approver?</p>
+      </div>
+      <div class="modal-footer" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal">
+        <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">Close</button>
+      </div>
+      <div class="modal-footer" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal">
+        <button type="button" *ngIf="warningMsgObj.submitWarningMsg != null" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">Ok</button>
+        <button type="button" *ngIf="warningMsgObj.submitConfirmation != null" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeWarningModal()">No</button>
+        <button type="button" *ngIf="warningMsgObj.submitConfirmation != null" class="btnSkin btnSkinPrimary" (click)="submitProposal();">Yes</button>
+      </div>
+     <div class="modal-footer" *ngIf="showOrHideDataFlagsObj.isShowSaveBeforeExitWarning">
+       <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeGoBackModal()">No</button>
+       <button type="button" class="btnSkin btnSkinPrimary" (click)="saveProposal('promptSave')">Yes</button>
      </div>
+    <div class="modal-footer" *ngIf="showOrHideDataFlagsObj.isShowNotifyApprover">
+      <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeWarningModal()">Cancel</button>
+      <button type="button" class="btnSkin btnSkinPrimary" (click)="notifyApprover()">Notify</button>
+    </div>
    </div>
  </div>
 </div>
@@ -98,18 +116,24 @@ aria-hidden="true">
  <div class="modal-dialog" role="document">
    <div class="modal-content">
      <div class="modal-header">
-       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSaveSuccessModal">Success</h5>
+       <h5 class="modal-title" *ngIf="warningMsgObj.errorMsg != null">Error</h5>
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSaveSuccessModal || showOrHideDataFlagsObj.isShowNotifyApproverSuccess || showOrHideDataFlagsObj.isShowNotificationPISuccessModal">Success</h5>
        <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSubmitSuccessModal">Submit Proposal</h5>
        <button type="button" class="close" data-dismiss="modal" (click)="closeWarningModal()" aria-label="Close">
          <span aria-hidden="true">&times;</span>
        </button>
      </div>
+     <div class="modal-body" *ngIf="warningMsgObj.errorMsg != null">
+        <p>{{warningMsgObj.errorMsg}}</p>
+     </div>
      <div class="modal-body">
        <p *ngIf="showOrHideDataFlagsObj.isShowSaveSuccessModal">Proposal has been saved successfully</p>
        <p *ngIf="showOrHideDataFlagsObj.isShowSubmitSuccessModal">Proposal has been submitted successfully</p>
+       <p *ngIf="showOrHideDataFlagsObj.isShowNotifyApproverSuccess || showOrHideDataFlagsObj.isShowNotificationPISuccessModal">Notification mail has been sent successfully</p>
      </div>
      <div class="modal-footer">
-       <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">OK</button>
+       <button type="button" *ngIf="!showOrHideDataFlagsObj.isShowSaveSuccessModal" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">OK</button>
+       <button type="button" *ngIf="showOrHideDataFlagsObj.isShowSaveSuccessModal" class="btnSkin btnSkinPrimary" (click)="closeWarningModal();openNotifyApprover();" data-toggle="modal" data-target="#warning-modal">OK</button>
      </div>
    </div>
  </div>
@@ -398,18 +422,21 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
 <!-- APPROVE-DISAPPROVE MODAL -->
 <div class="modal fade mySkinDialog" id="approveDisapproveModal" tabindex="-1" role="dialog" aria-labelledby="skippedSchedulesTitle"
   aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document" *ngIf="isAttachmentIncomplete == false">
+  <div [ngClass]="(isAttachmentIncomplete||!showApproveDisapproveModal.isReadyToApprove)?'modal-dialog':'modal-dialog modal-lg'"role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="skippedSchedulesLongTitle">
-          {{modalAproveHeading}} <span>Proposal
+        <h5 class="modal-title" id="skippedSchedulesLongTitle" *ngIf="!isAttachmentIncomplete">
+          {{proposalDataBindObj.modalAproveHeading}} <span>Proposal
             #{{result?.proposal?.proposalId}}</span>
         </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="showAddAttachment = false">
+        <h5 class="modal-title" id="skippedSchedulesLongTitle" *ngIf="isAttachmentIncomplete">
+          <span>Warning!</span>
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeApproveDisapproveModal();">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" *ngIf="showApproveDisapproveModal.isReadyToApprove">
+      <div class="modal-body" *ngIf="showApproveDisapproveModal.isReadyToApprove && !isAttachmentIncomplete">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 viewMode resultCard">
           <div class="row">
             <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-6">
@@ -458,35 +485,122 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
       <div class="modal-body" *ngIf="!showApproveDisapproveModal.isReadyToApprove">
         <p>Cannot approve proposal. Pre-Reviews are not completed yet.</p>
       </div>
-      <div class="modal-footer" *ngIf="showApproveDisapproveModal.isReadyToApprove">
-        <button type="button" id="approve-close" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeAttachments()">Close</button>
-        <button type="button" id="approve-disapprove-btn" class="btnSkin btnSkinPrimary" (click)="approveDisapproveProposal()">{{modalAproveHeading}}</button>
-      </div>
-      <div class="modal-footer" *ngIf="!showApproveDisapproveModal.isReadyToApprove">
-        <button type="button" id="approve-close-btn" class="btnSkin btn-secondary" data-dismiss="modal" (click)="!showApproveDisapproveModal.showModal">Close</button>
-      </div>
-    </div>
-  </div>
-  <div class="modal-dialog modal modal-dialog-centered" role="document" *ngIf="isAttachmentIncomplete">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="skippedSchedulesLongTitle">
-          <span>Warning!</span>
-        </h5>
-        <button type="button" id="approve-incomplete-doc-close" class="close" data-dismiss="modal" aria-label="Close"
-          (click)="showAddAttachment = false">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+      <div class="modal-body" *ngIf="isAttachmentIncomplete" >
         <p>The proposal has incomplete document(s). Please notify PI to complete them.</p>
       </div>
-      <div class="modal-footer">
+
+      <div class="modal-footer" *ngIf="showApproveDisapproveModal.isReadyToApprove && !isAttachmentIncomplete">
+        <button type="button" id="approve-close" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeApproveDisapproveModal()">Close</button>
+        <button type="button" id="approve-disapprove-btn" class="btnSkin btnSkinPrimary" (click)="approveDisapproveProposal()">{{proposalDataBindObj.modalAproveHeading}}</button>
+      </div>
+      <div class="modal-footer" *ngIf="!showApproveDisapproveModal.isReadyToApprove">
+        <button type="button" id="approve-close-btn" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeApproveDisapproveModal()">Close</button>
+      </div>
+      <div class="modal-footer" *ngIf="isAttachmentIncomplete">
         <button type="button" id="approve-incomplete-close-btn" class="btnSkin btn-secondary" data-dismiss="modal"
-          (click)="closeAttachments()">Close</button>
+          (click)="closeApproveDisapproveModal()">Close</button>
         <button type="button" id="approve-notify" class="btnSkin btnSkinPrimary" data-dismiss="modal" data-toggle="modal"
           data-target="saveProposal" (click)="notifyAttachmentIncomplete()">Notify</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ROUTE LOG MODAL  -->
+<div class="modal fade mySkinDialog" tabindex="-1" id="routeLogModal" tabindex="-1" *ngIf="isShowRouteLog"
+  role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Route Log</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="isShowRouteLog = false">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="viewMode resultCard">
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Proposal #</label> <span>{{result?.proposal?.proposalId}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Status</label> <span>{{result?.proposal?.proposalStatus?.description}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>PI</label> <span>{{result?.proposal?.principalInvestigator}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Lead Unit</label> <span>{{result?.proposal?.homeUnitName}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Title</label> <span>{{result?.proposal?.title}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Submitted By</label> <span>{{result?.proposal?.submitUser}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
+              <label>Version</label>{{versionHistorySelected}}
+              <select class="committeeBox font" id="searchField" [(ngModel)]="versionHistorySelected" (change)="routeLogVersionChange()">
+                <option *ngFor="let version of result.workflowList" (value)="version.workflowSequence">{{version.workflowSequence}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="borderBox col-12" id="routeLogBody">
+          <div class="pullSide">
+            <table class="table table-responsive tableSkin tableSection" id="routeLogTable">
+              <thead>
+                <tr id="routelogHeader">
+                  <th width = "15%">Name</th>
+                  <th  width = "20%">Review Status</th>
+                  <th  width= "15%">Action Date</th>
+                  <th>Comments</th>
+                  <th  width = "15%">Attachments</th>
+                  <th  width = "10%">Action</th>
+                </tr>
+              </thead>
+              <tbody id="routelog-table">
+                <ng-container *ngFor="let detailMapIndex of workflowDetailsMap; let index =index">
+                  <tr>
+                    <td colspan="6" class="borderBoxHeading"><label>Stop {{index +1 }}</label></td>
+                  </tr>
+                  <tr *ngFor="let workflow of detailMapIndex; let i = index">
+                    <td>{{workflow?.approverPersonName}}</td>
+                    <td>{{workflow?.workflowStatus?.approveStatus}}</td>
+                    <td>{{workflow?.approvalDate | date:'MM/dd/yyyy'}}</td>
+                    <td colspan="8"><span *ngIf="!commentsApproverExpand[i] && workflow?.approvalComment?.length>30;else showFullGrantManagerComments"
+                        (click)="commentsApproverExpand[i] = !commentsApproverExpand[i]">{{workflow?.approvalComment
+                        | slice:0:20}}<span class="hand-cursor fibiDefaultColor italian">...Read
+                          more<i [ngClass]="commentsApproverExpand[i]?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
+                        </span>
+                      </span>
+                      <ng-template #showFullGrantManagerComments>{{workflow?.approvalComment
+                        }}<i *ngIf="workflow?.approvalComment?.length>30" (click)="commentsApproverExpand[i] = !commentsApproverExpand[i]"
+                          class="hand-cursor fibiDefaultColor italian"> Show Less<i [ngClass]="commentsApproverExpand[i]?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i></i></ng-template>
+                    </td>
+                    <td><span *ngIf="workflow?.workflowAttachments?.length == 0 && workflow?.workflowStatus?.approveStatusCode != 'T' && workflow?.workflowStatus?.approveStatusCode != 'W'"
+                        class="noDataExists">No attachments</span> <select class="committeeBoxNotEditable" *ngIf="workflow?.workflowAttachments?.length > 0"
+                        [(ngModel)]="selectedAttachmentStop[index][i]">
+                        <option *ngFor="let attachment of workflow.workflowAttachments">{{attachment.fileName}}</option>
+                      </select></td>
+                    <td *ngIf="workflow.approvalStopNumber">
+                      <ul class="actionButtonGroup" *ngIf="workflow?.workflowAttachments?.length > 0">
+                        <li><a href="#" (click)="downloadRouteAttachment($event, selectedAttachmentStop[index][i], workflow.workflowAttachments)"><i
+                              title="download this document" class="fa fa-download" aria-hidden="true"></i></a></li>
+                      </ul>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btnSkin btn-secondary" (click)="isShowRouteLog = false" data-dismiss="modal" data-toggle="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

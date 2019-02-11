@@ -178,22 +178,21 @@
         <td style="padding: 0px !important;">
           <ul class="actionButtonGroup">
             <li><a title="Open proposal {{proposal?.proposalId}}" class="pointer" id="open-proposal-btn" (click)="viewProposalById($event,proposal.proposalId)"><i
-                  class="fa fa-eye pointer action-btn-padding"></i></a></li>
-            <li style="font-size: 16px"><a title="Copy proposal {{proposal?.proposalId}}" class="pointer" id="copy-proposal-dashboard-btn"
-                (click)="copyProposal(proposal.proposalId)"><i class="fa fa-copy action-btn-padding"></i></a></li>
+                  class="fa fa-eye pointer"></i></a></li>
+            <li style="font-size: 16px"><a title="Copy proposal {{proposal?.proposalId}}" class="pointer" id="copy-proposal-dashboard-btn" data-toggle="modal" data-target="#denyPermissionModal"
+                (click)="tempryCopyProposal(proposal.proposalId)"><i class="fa fa-copy"></i></a></li>
+            <li *ngIf="proposalRequestObject.isUnitAdmin"><a title="Delete proposal {{proposal?.proposalId}}" class="pointer" data-toggle="modal" data-target="#denyPermissionModal" id="delete-proposal-dashbrd-btn"
+              (click)="temprySaveProposal(proposal.proposalId, i)"><i class="fa fa-trash"></i></a></li>
             <li><a title="View route log" class="pointer" data-toggle="modal" data-target="#routeLogModal-dashboard" id="routelog-dashboard-btn"
                 (click)="fetchRouteLog(proposal, i)" *ngIf="proposal?.applicationStatus == 'Approval In Progress' || proposal?.applicationStatus == 'Returned'"><i
-                  class="fa fa-history action-btn-padding"></i></a></li>
+                  class="fa fa-history"></i></a></li>
           </ul>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
-<div *ngIf="serviceRequestList?.length == 0" class="borderBox noDataOnChart noDataExists">There are no proposals for
-  your
-  request
-</div>
+<div *ngIf="serviceRequestList?.length == 0" class="borderBox noDataOnChart noDataExists">There are no proposals for your request</div>
 <!-- Pagination -->
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="serviceRequestList !== null && serviceRequestList?.length !== 0">
   <div class="text-right pagiSkin">
@@ -206,25 +205,35 @@
   </div>
 </div>
 <!-- NO CREATE PERMISSION MODAL -->
-<div class="modal fade show mySkinDialog modal-opacity" *ngIf="isShowNoCreateProposalModal" tabindex="-1" id="denyPermissionModal" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Warning...!</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>You don't have rights to create new proposal.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" id="no-create-permsn-btn"
-          (click)="isShowNoCreateProposalModal = false">Close</button>
+<div class="modal fade show mySkinDialog" *ngIf="isShowNoCreateProposalModal || isShowDeleteWarningModal || isShowCopyWarningModal" tabindex="-1" id="denyPermissionModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Warning...!</h5>
+          <button type="button" class="close" data-dismiss="modal" (click)="clearModalFlags()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p *ngIf="isShowNoCreateProposalModal">You don't have rights to create new proposal.</p>
+          <p *ngIf="isShowDeleteWarningModal">Are you sure you want to delete this item?</p>
+          <p *ngIf="isShowCopyWarningModal">Are you sure you want to copy this proposal?</p>
+        </div>
+        <div class="modal-footer" *ngIf="isShowNoCreateProposalModal">
+          <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" id="no-create-permsn-btn"
+          (click)="clearModalFlags()">Close</button>
+        </div>
+        <div class="modal-footer" *ngIf="isShowDeleteWarningModal">
+          <button type="button" class="btnSkin btn-secondary" (click)="clearModalFlags()" data-dismiss="modal" data-toggle="modal">No</button>
+          <button type="button" class="btnSkin btnSkinPrimary" (click)="deleteProposal();clearModalFlags()" data-dismiss="modal">Yes</button>
+        </div>
+        <div class="modal-footer" *ngIf="isShowCopyWarningModal">
+          <button type="button" class="btnSkin btn-secondary" (click)="clearModalFlags()" data-dismiss="modal" data-toggle="modal">No</button>
+          <button type="button" class="btnSkin btnSkinPrimary" (click)="copyProposal();clearModalFlags()" data-dismiss="modal">Yes</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 <!-- Route log modal-->
 <div class="modal fade show mySkinDialog" tabindex="-1" id="routeLogModal-dashboard" *ngIf="isRoutelogOpened" role="dialog" aria-hidden="true">

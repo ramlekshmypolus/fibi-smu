@@ -13,6 +13,7 @@ export class DeclarationComponent implements OnInit {
   @Input() result: any = {};
   @Input() showOrHideDataFlagsObj: any = {};
   @Input() warningMsgObj: any = {};
+  @Input() proposalDataBindObj: any = {};
 
   isShowDeleteSponsorModal = false;
   isSearchProtocolTitleActive = false;
@@ -100,6 +101,7 @@ export class DeclarationComponent implements OnInit {
       this.sponsorObject.endDate = this.fundingEndDate;
       this.sponsorObject.amount = this.sponsorAmount;
       this.result.proposal.proposalSponsors.push(this.sponsorObject);
+      this.proposalDataBindObj.dataChangeFlag = true;
       this.result.sponsors = null;
       this.selectedSponsorType = null;
       this.selectedSponsorName = null;
@@ -124,9 +126,11 @@ export class DeclarationComponent implements OnInit {
       this._proposalHomeService.deleteProposalSponsor(this.requestObject)
         .subscribe(data => {
           this.result.proposal.proposalSponsors.splice(this.index, 1);
+          this.proposalDataBindObj.dataChangeFlag = true;
         });
     } else {
       this.result.proposal.proposalSponsors.splice(this.index, 1);
+      this.proposalDataBindObj.dataChangeFlag = true;
     }
   }
 
@@ -193,8 +197,10 @@ export class DeclarationComponent implements OnInit {
         this._proposalHomeService.deleteIrbProtocol( this.requestObject  )
         .subscribe( data => { } );
         this.result.proposal.proposalIrbProtocols.splice( this.index, 1 );
+        this.proposalDataBindObj.dataChangeFlag = true;
     } else {
          this.result.proposal.proposalIrbProtocols.splice( this.index, 1 );
+         this.proposalDataBindObj.dataChangeFlag = true;
      }
     }
 }

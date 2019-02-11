@@ -70,7 +70,7 @@
         <td><label>Description:</label></td>
         <td colspan="8">
           <textarea id="area-of-research-desc" name="description" [(ngModel)]="result.proposal.researchDescription"
-            class="forTextAreaEntry scheduleBoxes" placeholder=""></textarea>
+          (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" class="forTextAreaEntry scheduleBoxes" placeholder=""></textarea>
         </td>
       </tr>
     </tbody>
@@ -93,10 +93,8 @@
         <p>Are you sure you want to delete this item?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" id="area-of-research-close-btn" class="btnSkin btn-secondary" data-dismiss="modal"
-          data-toggle="modal" (click)="isShowDeleteResearchArea = false">No</button>
-        <button type="button" id="area-of-research-delete" class="btnSkin btnSkinPrimary" (click)="deleteAreaOfResearch()"
-          data-dismiss="modal">Yes</button>
+        <button type="button" id="area-of-research-close-btn" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteResearchArea = false">No</button>
+        <button type="button" id="area-of-research-delete" class="btnSkin btnSkinPrimary" (click)="deleteAreaOfResearch()" data-dismiss="modal">Yes</button>
       </div>
     </div>
   </div>
