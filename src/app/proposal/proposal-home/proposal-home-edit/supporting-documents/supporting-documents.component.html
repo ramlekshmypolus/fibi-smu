@@ -31,9 +31,8 @@
           <span *ngIf="result?.proposal?.statusCode == 11">{{(attachment?.description?.length
             > 60)?(attachment?.description | slice:0:60)+'...':(attachment?.description)}}
           </span>
-          <textarea *ngIf="result?.proposal?.statusCode != 11"
-          id="desc" cols=2 rows="1" [(ngModel)]="attachment.description" (ngModelChange)="proposalDataChange()" placeholder=""
-          class="scheduleBoxes forTextAreaEntry">
+          <textarea *ngIf="result?.proposal?.statusCode != 11" id="desc" cols=2 rows="1"
+          [(ngModel)]="attachment.description" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" placeholder="" class="scheduleBoxes forTextAreaEntry">
           </textarea>
         </td>
         <td title="{{(attachment?.fileName?.length>60)?(attachment?.fileName):''}}">{{(attachment?.fileName?.length
@@ -43,7 +42,7 @@
             {{attachment?.narrativeStatus?.description}}
           </span>
           <select *ngIf="result?.proposal?.statusCode != 11"
-            class="committeeBox dateBox" [(ngModel)]="attachment.narrativeStatus.description">
+            class="committeeBox dateBox" [(ngModel)]="attachment.narrativeStatus.description" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true">
               <option
                 *ngFor="let attachStatus of this.result.narrativeStatus"
                 (value)="attachStatus.description">{{attachStatus?.description}}</option>

@@ -30,7 +30,11 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isShowSaveWarningModal: false,
     isShowSaveSuccessModal: false,
     isShowSubmitWarningModal: false,
-    isShowSubmitSuccessModal: false
+    isShowSubmitSuccessModal: false,
+    isShowSaveBeforeExitWarning: false,
+    isShowNotifyApprover: false,
+    isShowNotifyApproverSuccess: false,
+    isShowNotificationPISuccessModal: false
   };
 
   isShowMoreOptions = false;
@@ -38,6 +42,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   isPreReviewExist = false;
   isReviewMandatoryFilled = true;
   isAttachmentIncomplete = false;
+  isShowRouteLog = false;
 
   toast_message = '';
   clearField;
@@ -60,12 +65,17 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isReadyToApprove: false
   };
 
+  versionHistorySelected: number;
+  workflowDetailsMap: any = [];
+  selectedAttachmentStop: any = [];
+  commentsApproverExpand: any = {};
+
   private autoSave_subscription: ISubscription;
 
   constructor( private _route: ActivatedRoute, private _proposalService: ProposalService,
     private _router: Router, private _commonService: CommonService ) {
     this.proposalDataBindObj.dataChangeFlag = false;
-    this.autoSave_subscription = Observable.interval(1000 * 120).subscribe(x => {
+    this.autoSave_subscription = Observable.interval(1000 * 10).subscribe(x => {
       if (this.result.proposal.proposalId !== null && this.result.proposal.statusCode !== 11) {
           this.saveProposal('autoSave');
       }
@@ -92,8 +102,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
         } else {
             this.showOrHideDataFlagsObj.mode = 'edit';
         }
-        this.initialiseProposalFormElements();
     }
+    this.initialiseProposalFormElements();
   }
 
   showTab(currentTab) {
@@ -130,9 +140,13 @@ export class ProposalComponent implements OnInit, OnDestroy {
       null : this.result.proposalResearchTypes[0].description;
     this.proposalDataBindObj.selectedAreaType = this.result.proposalResearchTypes === null ?
       null : this.result.proposalResearchTypes[0].description;
-     if ( this.requestObject.actionType === 'R' ) {
+    if ( this.requestObject.actionType === 'R' ) {
       this.showOrHideDataFlagsObj.mode = 'edit';
-     }
+    }
+    this.proposalDataBindObj.selectedProposalType = ( this.result.proposal.proposalType != null ) ?
+                            this.result.proposal.proposalType.description : null;
+    this.proposalDataBindObj.selectedProposalCategory = ( this.result.proposal.activityType != null ) ?
+                            this.result.proposal.activityType.description : null;
     // set default grantCallType to Others if no grant call is associated with the proposal
     if (this.result.proposal.grantCallType == null) {
       this.result.proposal.grantCallType = this.result.defaultGrantCallType;
@@ -141,7 +155,6 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this.result.proposal.grantCallType = this.result.proposal.grantCall.grantCallType;
       this.result.proposal.grantTypeCode = this.result.proposal.grantCall.grantCallType.grantTypeCode;
     } else if (this.result.proposal.grantCall == null) { }
-    // this.updateRouteLogHeader();
   }
 
   // proposal details validation
@@ -181,20 +194,31 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   openGoBackModal() {
     if (this.proposalDataBindObj.dataChangeFlag) {
-      alert('data changed');
+      this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = true;
     } else {
       this._router.navigate(['/fibi/dashboard/proposalList']);
     }
   }
 
+  closeGoBackModal() {
+    this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
+    this._router.navigate(['/fibi/dashboard/proposalList']);
+  }
+
   saveProposal(saveType) {
     this.showOrHideDataFlagsObj.isShowSaveWarningModal = false;
-    this.showOrHideDataFlagsObj.isShowSaveSuccessModal = false;
+    // preserve showOrHideDataFlagsObj.isShowSaveSuccessModal value if autosave to show message in popup else make it false
+    this.showOrHideDataFlagsObj.isShowSaveSuccessModal = (saveType === 'autoSave') ?
+                                                          this.showOrHideDataFlagsObj.isShowSaveSuccessModal : false;
     this.proposalValidation();
     if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
+      this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
     } else {
       const TYPE = ( this.result.proposal.proposalId != null ) ? 'UPDATE' : 'SAVE';
+      if (TYPE === 'SAVE') {
+        this.result.proposal.createUser = localStorage.getItem('currentUser');
+      }
       this.result.proposal.createTimeStamp = new Date().getTime();
             this.result.proposal.updateUser = localStorage.getItem('currentUser');
             this.result.proposal.updateTimeStamp = new Date().getTime();
@@ -206,23 +230,12 @@ export class ProposalComponent implements OnInit, OnDestroy {
             this.updateAttachmentStatus();
             this._proposalService.saveProposal({'proposal': this.result.proposal,
               'updateType': TYPE, 'personId': localStorage.getItem( 'personId' )}).subscribe( data => {
-                this.result = data;
-                // if (this.result.proposal.statusCode === 2 && saveType !== 'autoSave') {
-                //   let isDocCompleted = false;
-                //   for (const DOCUMENT of this.result.proposal.proposalAttachments) {
-                //       if (DOCUMENT.narrativeStatusCode === 'C' ) {
-                //         isDocCompleted = true;
-                //       } else {
-                //         isDocCompleted = false;
-                //         break;
-                //       }
-                //   }
-                //   if (isDocCompleted) {
-                //     this.isNotifyApprover = true;
-                //   }
-                // }
+                // when route log is open and autosave happens version changes automatically, so update only proposal obj
+                let tempProposalData: any = {};
+                tempProposalData = data;
+                this.result.proposal = tempProposalData.proposal;
             },
-            err  => {},
+            err  => { this.warningMsgObj.errorMsg = 'Error in saving proposal'; },
             () => {
               if (saveType === 'autoSave') {
                 const toastId      = document.getElementById('toast-success-proposal');
@@ -233,11 +246,33 @@ export class ProposalComponent implements OnInit, OnDestroy {
                 }, 2000);
               } else if (saveType === 'partialSave') {
                 this.showTab('BUDGET');
+              } else if (saveType === 'promptSave') {
+                $('#warning-modal').modal('hide');
+                this._router.navigate(['/fibi/dashboard/proposalList']);
               } else {
                 this.showOrHideDataFlagsObj.isShowSaveSuccessModal = true;
                 document.getElementById('openSucessModal').click();
               }
+              this.proposalDataBindObj.dataChangeFlag = false;
           });
+    }
+  }
+
+  openNotifyApprover() {
+    $('#successModal').modal('hide');
+    if (this.result.proposal.statusCode === 2) {
+      let isDocCompleted = false;
+      for (const DOCUMENT of this.result.proposal.proposalAttachments) {
+          if (DOCUMENT.narrativeStatusCode === 'C' ) {
+            isDocCompleted = true;
+          } else {
+            isDocCompleted = false;
+            break;
+          }
+      }
+      if (isDocCompleted) {
+        this.showOrHideDataFlagsObj.isShowNotifyApprover = true;
+      }
     }
   }
 
@@ -255,8 +290,13 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = false;
     this.showOrHideDataFlagsObj.isShowSubmitSuccessModal = false;
     this.showOrHideDataFlagsObj.isShowSubmitWarningModal = false;
+    this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
+    this.showOrHideDataFlagsObj.isShowNotifyApprover = false;
+    this.showOrHideDataFlagsObj.isShowNotifyApproverSuccess = false;
+    this.showOrHideDataFlagsObj.isShowNotificationPISuccessModal = false;
     this.warningMsgObj.submitConfirmation = null;
     this.warningMsgObj.submitWarningMsg = null;
+    this.warningMsgObj.errorMsg = null;
   }
 
   copyProposal(event) {
@@ -299,8 +339,13 @@ export class ProposalComponent implements OnInit, OnDestroy {
       // this.updateRouteLogHeader();
       // this.isDeclarationSectionRequired = this.result.isDeclarationSectionRequired;
     },
-    err => {},
+    err => {
+      $('#warning-modal').modal('hide');
+      this.warningMsgObj.errorMsg = 'Error in submitting proposal';
+      document.getElementById('openSucessModal').click();
+      },
     () => {
+      $('#warning-modal').modal('hide');
       this.showOrHideDataFlagsObj.isShowSubmitSuccessModal = true;
       document.getElementById('openSucessModal').click();
       this.showOrHideDataFlagsObj.mode = 'view';
@@ -483,7 +528,12 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.result.proposal = temporaryObject.proposal;
     this.updatePreReviewAttachmentSelectbox();
     this.clearPreReviewDatas();
-    }, err => {}, () => { $('#completePreReviewModal').modal('hide'); });
+    }, err => {
+        $('#completePreReviewModal').modal('hide');
+        this.warningMsgObj.errorMsg = 'Error in approve/disapprove pre-review';
+        document.getElementById('openSucessModal').click();
+      },
+    () => { $('#completePreReviewModal').modal('hide'); });
   }
 
   clearPreReviewDatas() {
@@ -492,28 +542,26 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.isReviewMandatoryFilled = true;
   }
 
-  /* approve proposal */
-  approveProposal() {
-    this.checkPreReviewCompletion();
-    this.modalAproveHeading = 'Approve';
-    if (this.showApproveDisapproveModal.isReadyToApprove) {
-      this.requestObject = {};
-      this.approveDisapprovePlaceHolder = 'Comments on approving the proposal';
-      this.requestObject.actionType = 'A';
-      this.isAttachmentIncomplete = false;
-      if (this.result.finalApprover === true && this.result.isApproved === false) {
-        const attachments = this.result.proposal.proposalAttachments.find(attachment => attachment.narrativeStatus.code === 'I');
-        this.isAttachmentIncomplete = (attachments != null) ? true : false;
-      }
+ /* approve proposal */
+ approveProposal() {
+  this.checkPreReviewCompletion();
+  this.proposalDataBindObj.modalAproveHeading = 'Approve';
+  if (this.showApproveDisapproveModal.isReadyToApprove) {
+    this.requestObject = {};
+    this.requestObject.actionType = 'A';
+    this.isAttachmentIncomplete = false;
+    if (!this.result.finalApprover && this.result.isApproved === false) {
+      const attachments = this.result.proposal.proposalAttachments.find(attachment => attachment.narrativeStatus.code === 'I');
+      this.isAttachmentIncomplete = (attachments != null) ? true : false;
     }
   }
+}
 
   /* disapprove proposal */
   disapproveProposal() {
     this.showApproveDisapproveModal.isReadyToApprove = true;
     this.requestObject = {};
-    this.approveDisapprovePlaceHolder = 'Comments on disapproving the proposal';
-    this.modalAproveHeading = 'Disapprove';
+    this.proposalDataBindObj.modalAproveHeading = 'Disapprove';
     this.requestObject.actionType = 'R';
   }
 
@@ -527,8 +575,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
     }
   }
 
-   /* approves or disapproves proposal */
-   approveDisapproveProposal() {
+  /* approves or disapproves proposal */
+  approveDisapproveProposal() {
     this.requestObject.personId = localStorage.getItem('personId');
     this.requestObject.proposalId = this.result.proposal.proposalId;
     this.requestObject.isSuperUser = this.superUser;
@@ -547,21 +595,114 @@ export class ProposalComponent implements OnInit, OnDestroy {
       temp = data;
       this.result = temp;
       this.initialiseProposalFormElements();
-    }, err => {}, () => { $('#approveDisapproveModal').modal('hide'); });
+    },
+    err => {
+      $('#approveDisapproveModal').modal('hide');
+      this.warningMsgObj.errorMsg = 'Error in approve/disapprove proposal';
+      document.getElementById('openSucessModal').click();
+     },
+    () => {
+    $('#approveDisapproveModal').modal('hide');
+    this.proposalDataBindObj.modalAproveHeading = null; });
     this.approveComments = '';
     this.uploadedFile = [];
   }
 
-  // updateRouteLogHeader() {
-  //   if ( this.result.proposal != null && this.result.proposal.proposalPersons.length > 0 ) {
-  //       this.result.proposal.proposalPersons.forEach(( value, index ) => {
-  //           if ( value.proposalPersonRole.code === 'PI' ) {
-  //               this.proposalPIName = value.fullName;
-  //               this.proposalLeadUnit = value.leadUnitName;
-  //           }
-  //       } );
-  //   }
-  // }
+  openRouteLog() {
+    this.versionHistorySelected = this.result.workflow.workflowSequence;
+    this.routeLogVersionChange();
+    this.isShowRouteLog = true;
+  }
+
+  updateWorkflowStops() {
+    this.workflowDetailsMap = [];
+    if ( this.result.workflow != null && this.result.workflow.workflowDetails.length > 0 ) {
+        for (const KEY in this.result.workflow.workflowDetailMap) {
+          if (this.result.workflow.workflowDetailMap[KEY] !== null) {
+            const value = this.result.workflow.workflowDetailMap[KEY];
+            this.workflowDetailsMap.push(value);
+          }
+        }
+    }
+  }
+
+  routeLogVersionChange() {
+    for (const WORKFLOW of this.result.workflowList) {
+      if (WORKFLOW.workflowSequence.toString() === this.versionHistorySelected.toString()) {
+        this.workflowDetailsMap = [];
+        for (const KEY in WORKFLOW.workflowDetailMap) {
+          if (KEY != null) {
+          const value = WORKFLOW.workflowDetailMap[KEY];
+          this.workflowDetailsMap.push(value);
+          }
+        }
+      }
+    }
+    this.updateWorkflowattachments();
+  }
+
+  updateWorkflowattachments () {
+    this.workflowDetailsMap.forEach(( value, index ) => {
+      this.selectedAttachmentStop[index] = [];
+      value.forEach(( workFlowValue, valueIndex ) => {
+          if ( workFlowValue.workflowAttachments != null && workFlowValue.workflowAttachments.length > 0 ) {
+            this.selectedAttachmentStop[index][valueIndex] = workFlowValue.workflowAttachments[0].fileName;
+          }
+      });
+    });
+  }
+
+  downloadRouteAttachment( event, selectedFileName, selectedAttachArray: any[] ) {
+    event.preventDefault();
+    const attachment = selectedAttachArray.find(attachmentDetail => attachmentDetail.fileName === selectedFileName);
+    if ( attachment != null) {
+      this._commonService.downloadRoutelogAttachment( attachment.attachmentId ).subscribe(
+        data => {
+            const a = document.createElement( 'a' );
+            a.href = URL.createObjectURL( data );
+            a.download = attachment.fileName;
+            a.click();
+        } );
+    }
+  }
+
+  closeApproveDisapproveModal() {
+  this.approveComments = '';
+  this.uploadedFile = [];
+  // this.showApproveDisapproveModal.isReadyToApprove = false;
+  this.isAttachmentIncomplete = false;
+  }
+
+  notifyAttachmentIncomplete() {
+  this._proposalService.sendPIAttachmentNotification( this.result ).subscribe( data => {
+      let temp: string;
+      temp = data;
+  },
+  err  => {},
+  () => {
+      document.getElementById('openSucessModal').click();
+      this.showOrHideDataFlagsObj.isShowNotificationPISuccessModal = true;
+  } );
+  }
+
+  notifyApprover() {
+    this._proposalService.sendDocCompleteApproverNotification( this.result ).subscribe( data => {
+      let temp: string;
+      temp = data;
+      if ( temp === 'SUCCESS') {
+        this.showOrHideDataFlagsObj.isShowNotifyApproverSuccess = true;
+      }
+    },
+    err  => {
+      $('#warning-modal').modal('hide');
+      this.warningMsgObj.errorMsg = 'Error in notifying approver';
+      document.getElementById('openSucessModal').click(); },
+    () => {
+      this.showOrHideDataFlagsObj.isShowNotifyApprover = false;
+      $('#warning-modal').modal('hide');
+      document.getElementById('openSucessModal').click();
+    } );
+  }
 
   ngOnDestroy() {
     this.autoSave_subscription.unsubscribe();

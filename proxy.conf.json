@@ -223,6 +223,10 @@
 		"target":  "http://192.168.1.242:8080/fibi4",
 		"secure": false
 	},
+	"/copyGrantCall": {
+		"target":  "http://192.168.1.242:8080/fibi4",
+		"secure": false
+	},
 	"/createProposal": {
 		"target":  "http://192.168.1.242:8080/fibi4",
 		"secure": false
@@ -407,7 +411,7 @@
 		"target":  "http://192.168.1.242:8080/fibi4",
 		"secure": false
 	},
-	"/sendAttachmentNotification": {
+	"/sendAttachPINotification": {
 		"target":  "http://192.168.1.242:8080/fibi4",
 		"secure": false
     },
@@ -464,6 +468,10 @@
 		"secure": false
 	},
 	"/findBudgetCategory": {
+		"target":  "http://192.168.1.242:8080/fibi4",
+		"secure": false
+	},
+	"/deleteProposal": {
 		"target":  "http://192.168.1.242:8080/fibi4",
 		"secure": false
 	},

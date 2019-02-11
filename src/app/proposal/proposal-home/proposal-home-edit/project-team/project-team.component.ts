@@ -51,7 +51,8 @@ export class ProjectTeamComponent implements OnInit {
     this.elasticSearchOptions.contextField = 'full_name';
     this.elasticSearchOptions.debounceTime = 500;
     this.elasticSearchOptions.fields = {
-      full_name: {}
+      full_name: {},
+      prncpl_nm: {}
     };
   }
 
@@ -153,8 +154,7 @@ export class ProjectTeamComponent implements OnInit {
     // tslint:disable-next-line:no-construct
     this.clearField = new String('true');
     this.warningMsgObj.personWarningMsg = null;
-    if (this.selectedMemberObject != null &&
-      this.proposalDataBindObj.personRoleSelected !== null &&
+    if (this.selectedMemberObject != null && this.proposalDataBindObj.personRoleSelected !== null &&
       this.proposalDataBindObj.personRoleSelected !== 'null') {
       if (!this.isNonEmployeeFlag) {
         tempDeptObj.personId = this.selectedMemberObject.prncpl_id;
@@ -162,13 +162,13 @@ export class ProjectTeamComponent implements OnInit {
         tempDeptObj.emailAddress = this.selectedMemberObject.email_addr;
       } else {
         this.selectedMemberObject.first_name = (this.selectedMemberObject.first_name == null) ?
-          '' : this.selectedMemberObject.first_name;
+                                               '' : this.selectedMemberObject.first_name;
         this.selectedMemberObject.middle_name = (this.selectedMemberObject.middle_name == null) ?
-          '' : this.selectedMemberObject.middle_name;
+                                               '' : this.selectedMemberObject.middle_name;
         this.selectedMemberObject.last_name = (this.selectedMemberObject.last_name == null) ?
-          '' : this.selectedMemberObject.last_name;
+                                               '' : this.selectedMemberObject.last_name;
         this.selectedMemberObject.organization = (this.selectedMemberObject.organization == null) ?
-          '' : this.selectedMemberObject.organization;
+                                               '' : this.selectedMemberObject.organization;
         tempDeptObj.rolodexId = this.selectedMemberObject.rolodex_id;
         tempDeptObj.fullName = (this.selectedMemberObject.first_name == null || this.selectedMemberObject.first_name === '') &&
           (this.selectedMemberObject.middle_name == null || this.selectedMemberObject.middle_name === '') &&
@@ -232,6 +232,7 @@ export class ProjectTeamComponent implements OnInit {
           tempDeptObj.units = this.personDepartments;
         }
         this.result.proposal.proposalPersons.push(tempDeptObj);
+        this.proposalDataBindObj.dataChangeFlag = true;
         this.selectedMemberObject = null;
         this.memberTypeSelected = 'Employee';
         this.proposalDataBindObj.personRoleSelected = null;
@@ -262,10 +263,12 @@ export class ProjectTeamComponent implements OnInit {
     this.requestObject.proposalPersonId = this.tempSavePersonObject.proposalPersonId;
     if (this.tempSavePersonObject.proposalPersonId == null) {
       this.result.proposal.proposalPersons.splice(this.index, 1);
+      this.proposalDataBindObj.dataChangeFlag = true;
     } else {
       this._proposalHomeService.deleteProposalPerson(this.requestObject)
         .subscribe(data => {
           this.result.proposal.proposalPersons.splice(this.index, 1);
+          this.proposalDataBindObj.dataChangeFlag = true;
         });
     }
     this.memberTypeSelected = 'Employee';

@@ -153,6 +153,7 @@ export class SupportingDocumentsComponent implements OnInit {
     () => {
       this.clearAttachmentDetails();
       $('#addAttachment').modal('hide');
+      this.proposalDataBindObj.dataChangeFlag = true;
     } );
     }
   }
@@ -166,12 +167,13 @@ export class SupportingDocumentsComponent implements OnInit {
   deleteAttachments() {
     if (this.removeObjId == null) {
       this.result.proposal.proposalAttachments.splice(this.removeObjIndex, 1);
+      this.proposalDataBindObj.dataChangeFlag = true;
     } else {
       this._proposalHomeService.deleteProposalAttachment({'proposalId': this.result.proposal.proposalId,
         'attachmentId': this.removeObjId}).subscribe(data => {
         this.result.proposal.proposalAttachments.splice(this.removeObjIndex, 1);
+        this.proposalDataBindObj.dataChangeFlag = true;
       });
-
     }
   }
 

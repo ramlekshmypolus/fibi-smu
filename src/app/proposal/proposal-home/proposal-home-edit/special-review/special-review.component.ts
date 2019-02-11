@@ -14,6 +14,7 @@ export class SpecialReviewDetailsComponent implements OnInit {
   @Input() result: any = {};
   @Input() showOrHideDataFlagsObj: any = {};
   @Input() warningMsgObj: any = {};
+  @Input() proposalDataBindObj: any = {};
 
   isShowSpecialReviewModal = false;
   isShowDeleteSpecialReviewModal = false;
@@ -86,6 +87,7 @@ export class SpecialReviewDetailsComponent implements OnInit {
       this.specialReviewObject.updateTimeStamp = new Date().getTime();
       this.specialReviewObject.updateUser = localStorage.getItem('currentUser');
       this.result.proposal.propSpecialReviews.push(this.specialReviewObject);
+      this.proposalDataBindObj.dataChangeFlag = true;
       this.showOrHideDataFlagsObj.isSpecialReviewWidgetOpen = true;
       this.closeSpecialReview();
       $('#addSpecialReview').modal('hide');
@@ -122,10 +124,12 @@ export class SpecialReviewDetailsComponent implements OnInit {
         .subscribe(success => {
           let temp: any = {};
           temp = success;
+          this.result.proposal.propSpecialReviews.splice(this.index, 1);
+          this.proposalDataBindObj.dataChangeFlag = true;
         });
-      this.result.proposal.propSpecialReviews.splice(this.index, 1);
     } else {
       this.result.proposal.propSpecialReviews.splice(this.index, 1);
+      this.proposalDataBindObj.dataChangeFlag = true;
     }
   }
 
@@ -153,6 +157,7 @@ export class SpecialReviewDetailsComponent implements OnInit {
       this.result.proposal.propSpecialReviews.forEach((item, index) => {
         if (item.id === this.specialReviewObject.id) {
           this.result.proposal.propSpecialReviews[index] = Object.assign({}, this.specialReviewObject);
+          this.proposalDataBindObj.dataChangeFlag = true;
         }
       });
       this.closeSpecialReview();

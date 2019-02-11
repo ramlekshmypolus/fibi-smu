@@ -11,10 +11,13 @@ import { CommonService } from '../../common/services/common.service';
 export class GrantCallListComponent implements OnInit {
 
   isReverse = true;
+  isShowCopyWarningModal = false;
 
   serviceRequestList: any[] = null;
   result: any = {};
   grantCallRequestObject = this._commonService.getDashboardObject();
+
+  grantId: number;
 
   constructor( private _dashboardService: DashboardService, private _router: Router,
                private _commonService: CommonService ) { }
@@ -75,6 +78,21 @@ export class GrantCallListComponent implements OnInit {
   viewGrantById(event: any, grantId) {
     event.preventDefault();
     this._router.navigate(['fibi/grant'], { queryParams: { 'grantId': grantId } });
+  }
+
+  tempryCopyGrantCall(grantId) {
+    this.grantId = grantId;
+    this.isShowCopyWarningModal = true;
+  }
+
+  /** copies grant call and route to grant call page
+   * @param grantId
+   */
+  copyGrantCall(grantId) {
+    this._commonService.copyGrantCall({'grantCallId': this.grantId, 'userFullName': localStorage.getItem('currentUser')})
+    .subscribe((success: any) => {
+      this._router.navigate(['fibi/grant'], { queryParams: { 'grantId': success.grantCallId } });
+    });
   }
 
 }

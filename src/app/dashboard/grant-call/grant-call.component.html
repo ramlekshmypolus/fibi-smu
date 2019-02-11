@@ -71,11 +71,11 @@
         <td>{{grant?.grantCallStatusDesc}}</td>
         <td>
           <ul class="actionButtonGroup">
-            <li>
-              <a title="Open grant call {{grant?.grantCallId}}" id="open-grant-btn" (click)="viewGrantById($event,grant.grantCallId)"
-                class="pointer"><i class="fa fa-eye pointer"></i>
-              </a>
+            <li><a title="Open grant call {{grant?.grantCallId}}" id="open-grant-btn" (click)="viewGrantById($event,grant.grantCallId)"
+              class="pointer"><i class="fa fa-eye pointer"></i></a>
             </li>
+            <li style="font-size: 16px"><a title="Copy grant call {{grant?.grantCallId}}" class="pointer" id="copy-grant-dashboard-btn" data-toggle="modal" data-target="#dashboard-grant-warning-modal"
+              (click)="tempryCopyGrantCall(grant.grantCallId)"><i class="fa fa-copy action-btn-padding"></i></a></li>
           </ul>
         </td>
       </tr>
@@ -93,5 +93,23 @@
         [maxSize]="3" [rotate]="true" (pageChange)="loadDashboard();_commonService.pageScroll('pageScrollToTop')">
       </ngb-pagination>
     </nav>
+  </div>
+</div>
+<!-- WARNING MODAL -->
+<div class="modal fade show mySkinDialog" *ngIf="isShowCopyWarningModal" tabindex="-1" id="dashboard-grant-warning-modal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Warning...!</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="isShowCopyWarningModal = false" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"><p>Are you sure you want to copy this grant call?</p></div>
+      <div class="modal-footer">
+        <button type="button" class="btnSkin btn-secondary" (click)="isShowCopyWarningModal = false" data-dismiss="modal" data-toggle="modal">No</button>
+        <button type="button" class="btnSkin btnSkinPrimary" (click)="copyGrantCall();isShowCopyWarningModal = false" data-dismiss="modal">Yes</button>
+      </div>
+    </div>
   </div>
 </div>

@@ -15,6 +15,8 @@ export class ProposalListComponent implements OnInit {
   isShowResultCard = false;
   isShowAdvanceSearchOptions = false;
   isRoutelogOpened = false;
+  isShowDeleteWarningModal = false;
+  isShowCopyWarningModal = false;
   isAdmin: boolean;
 
   serviceRequestList: any[] = null;
@@ -30,6 +32,7 @@ export class ProposalListComponent implements OnInit {
   adminStatus: string;
   versionHistorySelected: number;
   proposalIndex: number;
+  proposalId: number;
 
   constructor( private _router: Router,
     private _dashboardService: DashboardService,
@@ -177,21 +180,6 @@ export class ProposalListComponent implements OnInit {
         });
   }
 
-  /** copy and open proposal
-   * @param proposalId
-   */
-  copyProposal(proposalId) {
-    const proposalVO = {
-        proposal: null,
-        proposalId: proposalId,
-        userFullName: localStorage.getItem('currentUser')
-    };
-    this._commonService.copyProposal(proposalVO).subscribe((success: any) => {
-        localStorage.setItem('currentTab', 'PROPOSAL_HOME');
-        this._router.navigate(['fibi/proposal'], { queryParams: { 'proposalId': success.proposal.proposalId } });
-    });
-  }
-
   /** fetch route log details of submitted proposals
    * @param proposal
    * @param proposalInde
@@ -258,4 +246,46 @@ export class ProposalListComponent implements OnInit {
   setCurrentProposalTab() {
     localStorage.setItem('currentTab', 'PROPOSAL_HOME');
   }
+
+  clearModalFlags() {
+    this.isShowNoCreateProposalModal = false;
+    this.isShowDeleteWarningModal = false;
+    this.isShowCopyWarningModal = false;
+  }
+
+  temprySaveProposal(proposalId, index) {
+    this.proposalId = proposalId;
+    this.proposalIndex = index;
+    this.isShowDeleteWarningModal = true;
+  }
+
+  deleteProposal() {
+    this._commonService.deleteProposal({'proposalId': this.proposalId}).subscribe((success: any) => {
+        if (success.message === 'Proposal deleted successfully') {
+            this.serviceRequestList.splice(this.proposalIndex, 1);
+        }
+    });
+  }
+
+
+  tempryCopyProposal(proposalId) {
+    this.proposalId = proposalId;
+    this.isShowCopyWarningModal = true;
+ }
+
+  /** copy and open proposal
+   * @param proposalId
+   */
+  copyProposal() {
+    const proposalVO = {
+        proposal: null,
+        proposalId: this.proposalId,
+        userFullName: localStorage.getItem('currentUser')
+    };
+    this._commonService.copyProposal(proposalVO).subscribe((success: any) => {
+        localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+        this._router.navigate(['fibi/proposal'], { queryParams: { 'proposalId': success.proposal.proposalId } });
+    });
+  }
+
 }

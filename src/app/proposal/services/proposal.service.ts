@@ -58,4 +58,12 @@ export class ProposalService {
     return this._http.post( this._commonService.baseUrl + '/approveOrRejectProposal', formData );
   }
 
+  sendDocCompleteApproverNotification(proposal) {
+    return this._http.post( this._commonService.baseUrl + '/sendAttachApproverNotification', proposal, {responseType: 'text'} );
+  }
+
+  sendPIAttachmentNotification(proposal) {
+    return this._http.post( this._commonService.baseUrl + '/sendAttachPINotification', proposal, {responseType: 'text'} );
+  }
+
 }

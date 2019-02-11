@@ -17,11 +17,11 @@
             <span>
               <div class="searchBox memberSearchBox">
                 <input type="text" placeholder="Search here for Grant Call Title"  [(ngModel)]="proposalDataBindObj.selectedGrantCall" (blur)="isSearchGrantCallActive = false"
-                  (focus)="isSearchGrantCallActive = true" class="member_search" (ngModelChange)="grantCallChangeFunction()" />
+                  (focus)="isSearchGrantCallActive = true" class="member_search" (ngModelChange)="grantCallChangeFunction();" />
                 <a href="#" class="searchButton" (click)="clearGrantCallSearchBox($event)"><i [ngClass]="grantCallIconClass"></i></a>
                 <div class="sb-seachresults" *ngIf="isSearchGrantCallActive">
                   <ul class="sb-results-dropdown-menu text-left">
-                    <li *ngFor="let result of result.grantCalls " (mousedown)="grantCallSelectFunction(result)"><span [innerHTML]="result.grantCallName"></span></li>
+                    <li *ngFor="let result of result.grantCalls " (mousedown)="grantCallSelectFunction(result);proposalDataBindObj.dataChangeFlag = true"><span [innerHTML]="result.grantCallName"></span></li>
                   </ul>
                 </div>
               </div>
@@ -94,7 +94,7 @@
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
               <label>Abstract:</label><br>
               <textarea name="abstract" id="proposalAbstract" maxlength="4000" placeholder="Please provide Lay Abstract or Scientic Abstract details here"
-                [(ngModel)]="result.proposal.abstractDescription" class="scheduleBoxes"></textarea>
+                [(ngModel)]="result.proposal.abstractDescription" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" class="scheduleBoxes"></textarea>
             </div>
           </div>
         </div>
@@ -103,11 +103,11 @@
   </div>
   <!-- Special Review-->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <app-special-review [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj"></app-special-review>
+    <app-special-review [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj" [proposalDataBindObj]="proposalDataBindObj"></app-special-review>
   </div>
   <!--Declaration details-->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
-    <app-declaration [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj"></app-declaration>
+    <app-declaration [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj" [proposalDataBindObj]="proposalDataBindObj"></app-declaration>
   </div> 
   <!-- Budget Details-->
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
