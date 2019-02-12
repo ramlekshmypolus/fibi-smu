@@ -475,36 +475,40 @@
 		"target":  "http://192.168.1.242:8080/fibi4",
 		"secure": false
 	},
+	"/changePassword": {
+		"target": "http://192.168.1.139:8080/fibi4",
+		"secure": false
+	},
 	"/getApplicableQuestionnaire": {
-		"target": "http://192.168.1.242:8080/fibi4",
+		"target": "http://192.168.1.139:8080/fibi4",
 		"secure": false
 	},
 	"/getQuestionnaire": {
-		"target": "http://192.168.1.242:8080/fibi4",
+		"target": "http://192.168.1.139:8080/fibi4",
 		"secure": false
 	},
 	"/saveQuestionnaire": {
-		"target": "http://192.168.1.242:8080/fibi4",
+		"target": "http://192.168.1.139:8080/fibi4",
 		"secure": false
 	},
 	"/editQuestionnaire": {
-      "target": "http://192.168.1.242:8080/fibi4",
+      "target": "http://192.168.1.139:8080/fibi4",
       "secure": false
     },
     "/showAllQuestionnaire": {
-      "target": "http://192.168.1.242:8080/fibi4",
+      "target": "http://192.168.1.139:8080/fibi4",
       "secure": false
     },
     "/configureQuestionnaire": {
-      "target": "http://192.168.1.242:8080/fibi4",
+      "target": "http://192.168.1.139:8080/fibi4",
       "secure": false
     },
     "/createQuestionnaire": {
-      "target": "http://192.168.1.242:8080/fibi4",
+      "target": "http://192.168.1.139:8080/fibi4",
       "secure": false
     },
     "/downloadQuesAttachment": {
-      "target": "http://192.168.1.242:8080/fibi4",
+      "target": "http://192.168.1.139:8080/fibi4",
       "secure": false
 	},
 	"/getCodeTableMetaData": {

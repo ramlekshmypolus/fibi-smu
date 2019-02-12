@@ -18,6 +18,7 @@ export class GrantComponent implements OnInit {
     isShowAreaOfResearch : true,
     isShowEligibility : true,
     isShowAttachmentList: true,
+    isDataChange: false,
     mode: ''
   };
 

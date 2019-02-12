@@ -27,7 +27,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
                             <label class="block-display"><span class="mandatory">*</span>Title:</label>
                             <input id="grant-title" type="text" placeholder=""
-                                class="dateBox committeeBox" [(ngModel)]="result.grantCall.grantCallName"/>
+                                class="dateBox committeeBox" [(ngModel)]="result.grantCall.grantCallName" (ngModelChange)="showDataFlagObj.isDataChange = true"/>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
                             <label class="block-display"><span class="mandatory">*</span>Type:</label>
@@ -41,22 +41,22 @@
                             <label class="block-display"><span class="mandatory">*</span>Opening Date:</label>
                             <span class="dateField">
                                 <input type="text" id="grant-opng-date" placeholder="mm/dd/yyyy"
-                                    [(ngModel)]="result.grantCall.openingDate" (keypress)="_commonService._keyPress($event, 'date')"
+                                    [(ngModel)]="result.grantCall.openingDate" (keypress)="_commonService._keyPress($event, 'date');showDataFlagObj.isDataChange = true"
                                     [owlDateTime]="openingDt" class="committeeBox dateWidth" />&nbsp;
                                 <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
                                     [owlDateTimeTrigger]="openingDt"></span>
-                                <owl-date-time #openingDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation()"></owl-date-time>
+                                <owl-date-time #openingDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation(); showDataFlagObj.isDataChange = true"></owl-date-time>
                             </span>
                         </div>
                         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2">
                             <label class="block-display"><span class="mandatory">*</span>Closing Date:</label>
                             <span class="dateField">
                                 <input type="text" id="grant-closing-date" placeholder="mm/dd/yyyy"
-                                    [(ngModel)]="result.grantCall.closingDate" (keypress)="_commonService._keyPress($event, 'date')"
+                                    [(ngModel)]="result.grantCall.closingDate" (keypress)="_commonService._keyPress($event, 'date'); showDataFlagObj.isDataChange = true"
                                     [owlDateTime]="closingDt" class="committeeBox dateWidth" />&nbsp;
                                 <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
                                     [owlDateTimeTrigger]="closingDt"></span>
-                                <owl-date-time #closingDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation()"></owl-date-time>
+                                <owl-date-time #closingDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation(); showDataFlagObj.isDataChange = true"></owl-date-time>
                             </span>
                         </div>
                     </div>
@@ -66,23 +66,23 @@
                     <div class="row">
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
                             <label class="block-display"><span class="mandatory">*</span>Description:</label>
-                            <textarea id="grant-desc" rows="2" placeholder="" [(ngModel)]="result.grantCall.description" class="forTextAreaEntry scheduleBoxes"></textarea>
+                            <textarea id="grant-desc" rows="2" placeholder="" [(ngModel)]="result.grantCall.description" (ngModelChange)="showDataFlagObj.isDataChange = true" class="forTextAreaEntry scheduleBoxes"></textarea>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
                             <label><span class="mandatory">*</span>Grant Theme</label>
-                            <textarea rows="2" id="grant-theme" placeholder="" maxlength="3999" [(ngModel)]="result.grantCall.grantTheme" class="forTextAreaEntry scheduleBoxes"></textarea>
+                            <textarea rows="2" id="grant-theme" placeholder="" maxlength="3999" [(ngModel)]="result.grantCall.grantTheme" (ngModelChange)="showDataFlagObj.isDataChange = true" class="forTextAreaEntry scheduleBoxes"></textarea>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
                             <label class="block-display"><span class="mandatory">*</span>Max Budget (SGD):</label>
                             <input id="budgetID" id="grant-budget" type="number" placeholder="" *ngIf="showDataFlagObj.isCurrencyFocusOn == false"
-                                [(ngModel)]="result.grantCall.maximumBudget" class="dateBox committeeBox" />
+                                [(ngModel)]="result.grantCall.maximumBudget" (ngModelChange)="showDataFlagObj.isDataChange = true" class="dateBox committeeBox" />
                             <span id="budgetAmount" *ngIf="showDataFlagObj.isCurrencyFocusOn == true" (click)="showDataFlagObj.isCurrencyFocusOn = false">{{result?.grantCall?.maximumBudget | currency:'USD'}}</span>
                         </div>
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
                             <ng-container class="block-display"><label>Quantum:</label><span class="mandatory" *ngIf="warningMsgObj.stringWarningText != null">( {{warningMsgObj.stringWarningText}} )</span></ng-container>
-                            <input id="grant-quantum" type="number" [(ngModel)]="result.grantCall.quantum"
+                            <input id="grant-quantum" type="number" [(ngModel)]="result.grantCall.quantum" (ngModelChange)="showDataFlagObj.isDataChange = true"
                                 placeholder="" class="dateBox committeeBox" (keypress)="stringInputRestriction($event)" />
                         </div>
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
@@ -90,25 +90,25 @@
                             <ng2-completer [clearUnselected]="true"
                                 [fillHighlighted]="false" [inputClass]="completerID" [(ngModel)]="result.grantCall.homeUnitName"
                                 placeholder="Search here for Lead Unit" [datasource]="homeUnits"
-                                [minSearchLength]="0" (selected)="homeUnitChangeFunction()">
+                                [minSearchLength]="0" (selected)="homeUnitChangeFunction(); showDataFlagObj.isDataChange = true">
                             </ng2-completer>
                         </div>
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3" *ngIf="result.grantCall.grantTypeCode === 2">
                             <label class="block-display"><span class="mandatory">*</span>External Weblink:</label>
-                            <input id="grant-weblink" class="dateBox committeeBox" type="text" placeholder="" [(ngModel)]="result.grantCall.externalUrl" />
+                            <input id="grant-weblink" class="dateBox committeeBox" type="text" placeholder="" [(ngModel)]="result.grantCall.externalUrl" (ngModelChange)="showDataFlagObj.isDataChange = true" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-4">
                             <label class="block-display">Proposal Procedure:</label>
                             <textarea id="grant-proposla-procedure" rows="2" placeholder="" maxlength="3999" 
-                            [(ngModel)]="result.grantCall.applicationProcedure" class="forTextAreaEntry scheduleBoxes">
+                            [(ngModel)]="result.grantCall.applicationProcedure" (ngModelChange)="showDataFlagObj.isDataChange = true" class="forTextAreaEntry scheduleBoxes">
                             </textarea>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
                             <label class="block-display">Other Information:</label>
                             <textarea id="grant-other-info" rows="2" placeholder="" maxlength="3999" 
-                            [(ngModel)]="result.grantCall.otherInformation" class="forTextAreaEntry scheduleBoxes">
+                            [(ngModel)]="result.grantCall.otherInformation" (ngModelChange)="showDataFlagObj.isDataChange = true" class="forTextAreaEntry scheduleBoxes">
                             </textarea>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                                     <ng2-completer [inputClass]="completerID" id="grant-keyword"
                                         [(ngModel)]="selectedKeyword" placeholder="Search here for Keyword"
                                         [datasource]="keywordsList" [minSearchLength]="0"
-                                        [clearUnselected]="true" [fillHighlighted]="false" (selected)="keywordChangeFunction()">
+                                        [clearUnselected]="true" [fillHighlighted]="false" (selected)="keywordChangeFunction(); showDataFlagObj.isDataChange = true;">
                                     </ng2-completer>
                                 </div>
                                 <div class="col-xl-10 col-lg-10 col-md-6 col-sm-12 col-10" style="padding-left: 0px">
@@ -150,28 +150,28 @@
                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-4">
                     <label class="block-display">Type:</label>
                     <select id="grant-sponsor-type" class="dateBox committeeBox"
-                        [(ngModel)]="selectedSponsorType" (change)="sponsorTypeChange($event.target.value)">
+                        [(ngModel)]="selectedSponsorType" (change)="sponsorTypeChange($event.target.value);showDataFlagObj.isDataChange = true;">
                         <option [value]=null>--Select--</option>
                         <option *ngFor="let type of result?.sponsorTypes" (value)="type">{{type.description}}</option>
                     </select>
                 </div>
                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-4"><label class="block-display">Name:</label>
                     <select id="grant-sponsor-name" class="dateBox committeeBox"
-                        [(ngModel)]="selectedSponsor" (change)="sponsorNameChange($event.target.value)">
+                        [(ngModel)]="selectedSponsor" (change)="sponsorNameChange($event.target.value);showDataFlagObj.isDataChange = true;">
                         <option [value]=null>--Select--</option>
                         <option *ngFor="let sponsor of result?.sponsors" (value)="sponsor">{{sponsor.sponsorName}}</option>
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"><label class="block-display">Research Type:</label>
                     <select id="grant-research-type" class="dateBox committeeBox"
-                        (change)="researchTypeChange($event.target.value)" [(ngModel)]="selectedActivityType">
+                        (change)="researchTypeChange($event.target.value);showDataFlagObj.isDataChange = true;" [(ngModel)]="selectedActivityType">
                         <option [value]=null>--Select--</option>
                         <option *ngFor="let type of result?.activityTypes" (value)="type">{{type.description}}</option>
                     </select>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"><label class="block-display">Funding Type:</label>
                     <select id="grant-funding-type" class="dateBox committeeBox"
-                        (change)="fundingTypeChange($event.target.value)" [(ngModel)]="selectedFundingType">
+                        (change)="fundingTypeChange($event.target.value);showDataFlagObj.isDataChange = true;" [(ngModel)]="selectedFundingType">
                         <option [value]=null>--Select--</option>
                         <option *ngFor="let type of this.result?.fundingSourceTypes" (value)="type">
                             {{type.description}}
@@ -217,7 +217,7 @@
                 <label class="block-display">Phone:</label>
                 <div class="row">
                     <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
-                        <input type="number" id="POC-phone" class="dateBox" [ngClass]="{'committeeBoxNotEditable':isSMUPersonCheck.checked , 'committeeBox': !isSMUPersonCheck.checked}" 
+                        <input type="text" id="POC-phone" class="dateBox" [ngClass]="{'committeeBoxNotEditable':isSMUPersonCheck.checked , 'committeeBox': !isSMUPersonCheck.checked}" 
                             (keypress)="stringInputRestriction($event)" [(ngModel)]="pointOfContactObject.mobile"
                             [disabled]="isSMUPersonCheck.checked">
                     </div>

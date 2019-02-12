@@ -37,15 +37,17 @@
                   *ngIf="( showOrHideDataFlagsObj.mode =='view' && (result?.isApprover === true && result?.isApproved == false) ) ||  (showOrHideDataFlagsObj.mode =='view' && superUser == 'true' && result?.proposal?.statusCode !== 11 ) "
                   (click)="approveProposal()">Approve</button>
 
-                <button *ngIf="result?.proposal?.proposalId"  title="More Actions" class="btn more-btn" (click)="isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
-                <ul class="more-options-box" *ngIf="isShowMoreOptions">
-                  <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11 || result?.proposal?.proposalStatus?.statusCode == 3" data-toggle="modal" data-target="#routeLogModal"
-                      (click)="isShowMoreOptions = !isShowMoreOptions;openRouteLog();"><i class="fa fa-history" aria-hidden="true" ></i>Route Log</a></li>
-                  <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
-                  <li><a class="dropdown-item" href="" (click)="isShowMoreOptions = !isShowMoreOptions;updatePreReviewAttachmentSelectbox();" data-target="#completePreReviewModal" data-toggle="modal" *ngIf="result.proposal?.isPreReviewer == true"><i class="fa fa-check" aria-hidden="true"></i>Complete Pre-review</a></li>
-                  <li><a class="dropdown-item" href="" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId && showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'"><i class="fa fa-copy" aria-hidden="true"></i>Copy Proposal</a></li>
-                  <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId  && showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'" (click)="printProposal($event);isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-print" aria-hidden="true"></i>Print Proposal</a></li>
-                </ul>
+                <span #moreOptionsBtn>
+                  <button *ngIf="result?.proposal?.proposalId" title="More Actions" class="btn more-btn" (click)="isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
+                  <ul class="more-options-box" *ngIf="isShowMoreOptions">
+                    <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11 || result?.proposal?.proposalStatus?.statusCode == 3" data-toggle="modal" data-target="#routeLogModal"
+                        (click)="isShowMoreOptions = !isShowMoreOptions;openRouteLog();"><i class="fa fa-history" aria-hidden="true" ></i>Route Log</a></li>
+                    <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
+                    <li><a class="dropdown-item" href="" (click)="isShowMoreOptions = !isShowMoreOptions;updatePreReviewAttachmentSelectbox();" data-target="#completePreReviewModal" data-toggle="modal" *ngIf="result.proposal?.isPreReviewer == true"><i class="fa fa-check" aria-hidden="true"></i>Complete Pre-review</a></li>
+                    <li><a class="dropdown-item" href="" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId && showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'"><i class="fa fa-copy" aria-hidden="true"></i>Copy Proposal</a></li>
+                    <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event);isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-print" aria-hidden="true"></i>Print Proposal</a></li>
+                  </ul>
+              </span>
               </div>
             </div>
           </div>
@@ -519,7 +521,7 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
         </button>
       </div>
       <div class="modal-body">
-        <div class="viewMode resultCard">
+        <div class="viewMode resultCard routelog-result-card">
           <div class="row">
             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
               <label>Proposal #</label> <span>{{result?.proposal?.proposalId}}</span>
@@ -540,7 +542,7 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
               <label>Submitted By</label> <span>{{result?.proposal?.submitUser}}</span>
             </div>
             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
-              <label>Version</label>{{versionHistorySelected}}
+              <label>Version</label>
               <select class="committeeBox font" id="searchField" [(ngModel)]="versionHistorySelected" (change)="routeLogVersionChange()">
                 <option *ngFor="let version of result.workflowList" (value)="version.workflowSequence">{{version.workflowSequence}}</option>
               </select>
