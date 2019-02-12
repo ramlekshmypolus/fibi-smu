@@ -1,3 +1,28 @@
-<p>
-  questionnaire works!
-</p>
+<app-proposal-overview [result]="result"></app-proposal-overview>
+<ng-container *ngFor='let questionnaireIndex of questionnaire; let i= index'>
+  <ng-container *ngIf="questionnaireIndex.QUESTIONNAIRE_ANS_HEADER_ID !== null || questionnaireIndex.RULE_ID == null || (questionnaireIndex.RULE_ID !== null && isHumanSubjectQuestionnaire == true)">
+    <div *ngIf="proposalData.proposalStatus != undefined && proposalData.proposalStatus != null" >
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+            <div class="borderBox" [ngClass]="isQuestionaireWdgtOpen[i]?'':'pb-0'">
+              <h4 class="borderBoxHeading">
+                <div class="row">
+                  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8" [ngClass]="isQuestionaireWdgtOpen?'':'mb-0'">
+                    {{questionnaireIndex.QUESTIONNAIRE}}
+                    <span id="qsnre-complete-msg" *ngIf="questionnaireIndex.QUESTIONNAIRE_COMPLETED_FLAG == 'Y'"> (Complete)</span>
+                    <span id="qsnre-incomplete-msg" *ngIf="questionnaireIndex.QUESTIONNAIRE_COMPLETED_FLAG == 'N' || questionnaireIndex.QUESTIONNAIRE_COMPLETED_FLAG == null"> (Incomplete)</span>
+                  </div>
+                  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 text-right colorBlack">
+                    <button id="overviewExpndBtn" class="addBtn hoverColor" (click)="isQuestionaireWdgtOpen[i] = !isQuestionaireWdgtOpen[i]" >
+                      <i class="" [ngClass]="isQuestionaireWdgtOpen[i]?'fa fa-angle-double-up':'fa fa-angle-double-down'"></i>
+                    </button>
+                  </div>
+                </div>
+              </h4>
+          <app-view-questionnaire *ngIf="isQuestionaireWdgtOpen[i]" [questionnaireData]="questionnaireIndex" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [proposalData]="result"></app-view-questionnaire>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

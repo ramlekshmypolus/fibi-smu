@@ -77,7 +77,7 @@ export class GrantEditComponent implements OnInit {
 
   /** check whether status is draft, if yes show warning else navigate to dashboard */
   openGoBackModal() {
-    if ( this.result.grantCall.grantStatusCode === 1 ) { // status == Draft
+    if ( this.result.grantCall.grantStatusCode === 1 && this.showDataFlagObj.isDataChange) { // status == Draft
         this.modalHideAndShowObj.isShowConfirmGoBack = true;
     } else {
         this._router.navigate( ['fibi/dashboard/grantCall'] );
@@ -86,6 +86,7 @@ export class GrantEditComponent implements OnInit {
 
   /** assigns selected grant call to result object */
   grantCallTypeChange() {
+    this.showDataFlagObj.isDataChange = true;
     if (this.selectedGrantCallType === 'null') {
         this.result.grantCall.grantCallType = null;
         this.result.grantCall.grantTypeCode = null;
@@ -270,6 +271,7 @@ export class GrantEditComponent implements OnInit {
                   this.pointOfContactObject.personId = '';
                   this.pointOfContactObject.isEmployee = this.isPOC_EmployeeChecked === true ? true : false;
                   this.result.grantCall.grantCallContacts.push( this.pointOfContactObject );
+                  this.showDataFlagObj.isDataChange = true;
                   this.pointOfContactObject = {};
               }
         } else {
@@ -302,6 +304,7 @@ export class GrantEditComponent implements OnInit {
         tempObj.updateTimestamp = new Date().getTime();
         tempObj.updateUser = localStorage.getItem('currentUser');
         this.result.grantCall.grantCallResearchAreas.push(tempObj);
+        this.showDataFlagObj.isDataChange = true;
       }
     }
     this.selectedArea = null;
@@ -332,6 +335,7 @@ export class GrantEditComponent implements OnInit {
         tempObj.updateTimestamp = new Date().getTime();
         tempObj.updateUser = localStorage.getItem('currentUser');
         this.result.grantCall.grantCallEligibilities.push(tempObj);
+        this.showDataFlagObj.isDataChange = true;
     }
   }
   this.selectedEligibilityCriteria = null;
@@ -401,6 +405,7 @@ export class GrantEditComponent implements OnInit {
         });
       }
     }
+    this.showDataFlagObj.isDataChange = true;
   }
 
   backToList( e ) {
@@ -475,6 +480,7 @@ export class GrantEditComponent implements OnInit {
         this.showDataFlagObj.isShowAttachmentList = true;
         this.modalHideAndShowObj.isShowAddAttachment = false;
         this.clearAttachmentDetails();
+        this.showDataFlagObj.isDataChange = true;
         $('#addAttachment').modal('hide');
       });
     }
@@ -523,6 +529,7 @@ export class GrantEditComponent implements OnInit {
       },
       error => {},
       () => {
+        this.showDataFlagObj.isDataChange = false;
         document.getElementById('openSaveModal').click();
       });
     }

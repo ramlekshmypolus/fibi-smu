@@ -19,10 +19,12 @@ import { DashboardService } from './dashboard/dashboard.service';
 import { DashboardConfigurationService } from './common/dashboard-configuration-service';
 import { CommonService } from './common/services/common.service';
 import { ResearchSummaryConfigService } from './common/services/research-summary-config.service';
+import { ChangePasswordService } from './change-password/change-password.service';
 
 import { AuthGuard } from './common/services/auth-guard.service';
 import { AppHttpInterceptor } from './common/services/http-interceptor';
 import { AppRouterComponent } from './common/app-router/app-router.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule( {
     declarations: [
@@ -32,6 +34,7 @@ import { AppRouterComponent } from './common/app-router/app-router.component';
         AppComponent,
         LoginComponent,
         SessionTimeoutComponent,
+        ChangePasswordComponent
     ],
     imports: [
         BrowserModule,
@@ -55,7 +58,8 @@ import { AppRouterComponent } from './common/app-router/app-router.component';
         CommonService,
         DashboardService,
         DashboardConfigurationService,
-        ResearchSummaryConfigService
+        ResearchSummaryConfigService,
+        ChangePasswordService
     ],
     bootstrap: [AppComponent]
 } )

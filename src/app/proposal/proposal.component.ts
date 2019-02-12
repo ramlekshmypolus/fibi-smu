@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
@@ -14,6 +14,8 @@ declare var $: any;
   styleUrls: ['./proposal.component.css']
 })
 export class ProposalComponent implements OnInit, OnDestroy {
+
+  @ViewChild( 'moreOptionsBtn' ) moreOptions: ElementRef;
 
   result: any = {};
   showOrHideDataFlagsObj = {
@@ -34,7 +36,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isShowSaveBeforeExitWarning: false,
     isShowNotifyApprover: false,
     isShowNotifyApproverSuccess: false,
-    isShowNotificationPISuccessModal: false
+    isShowNotificationPISuccessModal: false,
+    isAttachmentEditable: false
   };
 
   isShowMoreOptions = false;
@@ -74,8 +77,9 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   constructor( private _route: ActivatedRoute, private _proposalService: ProposalService,
     private _router: Router, private _commonService: CommonService ) {
+    document.addEventListener( 'mouseup', this.offClickHandler.bind( this ) );
     this.proposalDataBindObj.dataChangeFlag = false;
-    this.autoSave_subscription = Observable.interval(1000 * 10).subscribe(x => {
+    this.autoSave_subscription = Observable.interval(1000 * 300).subscribe(x => {
       if (this.result.proposal.proposalId !== null && this.result.proposal.statusCode !== 11) {
           this.saveProposal('autoSave');
       }
@@ -127,6 +131,12 @@ export class ProposalComponent implements OnInit, OnDestroy {
     }
   }
 
+  offClickHandler( event: any ) {
+    if ( !this.moreOptions.nativeElement.contains( event.target ) ) {
+        this.isShowMoreOptions = false;
+    }
+  }
+
   initialiseProposalFormElements() {
     this.proposalDataBindObj.proposalStartDate = this.result.proposal.startDate === null ?
       null : new Date(this.result.proposal.startDate);
@@ -155,6 +165,16 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this.result.proposal.grantCallType = this.result.proposal.grantCall.grantCallType;
       this.result.proposal.grantTypeCode = this.result.proposal.grantCall.grantCallType.grantTypeCode;
     } else if (this.result.proposal.grantCall == null) { }
+    if (this.result.proposal.proposalStatus.statusCode !== 11) {
+        this.showOrHideDataFlagsObj.isAttachmentEditable = (this.result.isProposalPerson === true ||
+          localStorage.getItem('currentUser') === this.result.proposal.createUser ||
+          localStorage.getItem('isAdmin') === 'true' ) ? true : false;
+      if (this.result.proposal.proposalStatus.statusCode === 3 || this.result.proposal.proposalStatus.statusCode === 1) {
+        this.showOrHideDataFlagsObj.mode = (this.result.isProposalPerson === true ||
+          localStorage.getItem('currentUser') === this.result.proposal.createUser ||
+          localStorage.getItem('isAdmin') === 'true' ) ? 'edit' : 'view';
+      }
+    } else { this.showOrHideDataFlagsObj.isAttachmentEditable = false; }
   }
 
   // proposal details validation
@@ -207,6 +227,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   saveProposal(saveType) {
     this.showOrHideDataFlagsObj.isShowSaveWarningModal = false;
+    this.warningMsgObj.errorMsg = null;
     // preserve showOrHideDataFlagsObj.isShowSaveSuccessModal value if autosave to show message in popup else make it false
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = (saveType === 'autoSave') ?
                                                           this.showOrHideDataFlagsObj.isShowSaveSuccessModal : false;
@@ -325,6 +346,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   submitProposal() {
+    this.warningMsgObj.errorMsg = null;
     this.result.proposal.updateTimeStamp = new Date().getTime();
     this.result.proposal.updateUser = localStorage.getItem('currentUser');
     this.result.proposal.submitUser = localStorage.getItem('currentUser');
@@ -335,9 +357,6 @@ export class ProposalComponent implements OnInit, OnDestroy {
       tempryProposalObj = data;
       this.result = tempryProposalObj;
       this.result.workflow = tempryProposalObj.workflow;
-      // this.updateWorkflowStops();
-      // this.updateRouteLogHeader();
-      // this.isDeclarationSectionRequired = this.result.isDeclarationSectionRequired;
     },
     err => {
       $('#warning-modal').modal('hide');
@@ -521,6 +540,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   approveDisapprovePreReview(actionType) {
+    this.warningMsgObj.errorMsg = null;
     this._proposalService.approveOrDisapprovePreReview( {'proposal': this.result.proposal,
       'actionType': actionType, 'personId': localStorage.getItem( 'personId' )} ).subscribe( success => {
     let temporaryObject: any = {};
@@ -577,6 +597,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   /* approves or disapproves proposal */
   approveDisapproveProposal() {
+    this.warningMsgObj.errorMsg = null;
     this.requestObject.personId = localStorage.getItem('personId');
     this.requestObject.proposalId = this.result.proposal.proposalId;
     this.requestObject.isSuperUser = this.superUser;
@@ -686,6 +707,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   notifyApprover() {
+    this.warningMsgObj.errorMsg = null;
     this._proposalService.sendDocCompleteApproverNotification( this.result ).subscribe( data => {
       let temp: string;
       temp = data;

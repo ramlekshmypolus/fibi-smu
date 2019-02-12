@@ -63,6 +63,8 @@ export class ProjectTeamComponent implements OnInit {
 
   /* calls elastic search according to member type selected */
   memberTypeChanged() {
+    this.clearField = 'true';
+    this.selectedMemberObject = null;
     if (this.memberTypeSelected === 'Employee') {
       this.isNonEmployeeFlag = false;
       this.elasticSearchOptions.index = 'fibiperson';
@@ -187,12 +189,13 @@ export class ProjectTeamComponent implements OnInit {
           if (PERSON.proposalPersonRole.description === 'Principal Investigator' &&
             tempDeptObj.proposalPersonRole.description === 'Principal Investigator') {
             this.warningMsgObj.personWarningMsg = '* You have already added a Principal Investigator';
+            this.selectedMemberObject = null;
+            this.clearField = 'false';
             this.proposalDataBindObj.personRoleSelected = null;
             break;
           } if (PERSON.fullName === tempDeptObj.fullName) {
             this.warningMsgObj.personWarningMsg = '* You have already added ' + tempDeptObj.fullName;
             this.selectedMemberObject = null;
-            this.proposalDataBindObj.personRoleSelected = null;
             break;
           }
         }

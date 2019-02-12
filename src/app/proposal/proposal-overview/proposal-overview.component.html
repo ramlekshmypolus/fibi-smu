@@ -1,0 +1,57 @@
+<div class="row content-top">
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <div class="borderBox" [ngClass]="isOverviewWidgetOpen?'':'pb-0'">
+      <h4 class="borderBoxHeading">
+        <div class="row">
+          <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8" [ngClass]="isOverviewWidgetOpen?'':'mb-0'">Proposal Overview</div>
+          <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 text-right colorBlack">
+            <span style="margin-right: 120px">
+              <label style="margin-right: 10px">Status: </label>{{result?.proposal?.proposalStatus?.description}}
+            </span>
+              <button id="overviewExpndBtn" class="addBtn hoverColor" (click)="isOverviewWidgetOpen = !isOverviewWidgetOpen"
+                      title="{{isOverviewWidgetOpen ? 'Collapse Proposal Overview' : 'Expand Proposal Overview'}}">
+                <i class="" [ngClass]="isOverviewWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"></i>
+              </button>
+          </div>
+        </div>
+      </h4>
+      <div class="pullSide" *ngIf="isOverviewWidgetOpen">
+        <div class="topGrid gridSkin">
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+              <label>Proposal #:</label><br>
+              <span>{{result?.proposal?.proposalId}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+                  <label class="greenLabel">Category:</label><br>
+                  <span>{{result?.proposal?.activityType?.description}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+                <label class="greenLabel">Type:</label><br>
+              <span>{{result?.proposal?.proposalType?.description}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+              <label>Sponsor:</label><br>
+              <span>{{result?.proposal?.sponsorName}}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
+                <label>Title:</label><br>
+                <span title="{{(result?.proposal?.title?.length > 240)?(result?.proposal?.title):''}}">
+                    {{(result?.proposal?.title?.length > 240)?(result?.proposal?.title | slice:0:240)+'...':result?.proposal?.title}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+                <label>Proposed Start Date:</label><br>
+                <span>{{result?.proposal?.startDate | date: 'MM/dd/yyyy'}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+                <label>Proposed End Date:</label><br>
+                <span>{{result?.proposal?.endDate | date: 'MM/dd/yyyy'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

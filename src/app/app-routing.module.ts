@@ -4,6 +4,7 @@ import { PreloadAllModules } from '@angular/router';
 import { AuthGuard } from './common/services/auth-guard.service';
 import { LoginComponent } from './login/login.component';
 import { AppRouterComponent } from './common/app-router/app-router.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -18,7 +19,9 @@ const routes: Routes = [
       { path: 'questionnaire', loadChildren: 'app/questionnaire-create/create.module#CreateModule',
         canActivate: [AuthGuard]},
       { path: 'codetable', loadChildren: 'app/codetable/codetable.module#CodetableModule',
-        canActivate: [AuthGuard]}
+        canActivate: [AuthGuard]},
+      { path: 'changePassword', component: ChangePasswordComponent,
+      canActivate: [AuthGuard]}
     ]
   },
 
