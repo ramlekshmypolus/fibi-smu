@@ -16,7 +16,6 @@ export class QuestionnaireComponent implements OnInit {
   isHumanSubjectQuestionnaire = false;
   isQuestionaireWdgtOpen = [];
 
-  proposalObject: any = {};
   questionnaireData:  any = {};
   proposalId: string;
   proposalData: any;
@@ -27,7 +26,6 @@ export class QuestionnaireComponent implements OnInit {
     module_item_key: '',
     module_sub_item_key: 0
   };
-  proposalVO: any = {};
 
   constructor( private _questionnaireService: QuestionnaireService) { }
 
@@ -45,8 +43,8 @@ export class QuestionnaireComponent implements OnInit {
     if (proposalObject.proposalStatus !== undefined || proposalObject.proposalStatus != null) {
       if (proposalObject.proposalStatus.statusCode === 1 || proposalObject.proposalStatus.statusCode === 3) {
         if (proposalObject.isPreReviewer === true) {
-            this.showOrHideDataFlagsObj.mode = (this.proposalVO.isProposalPerson === true || localStorage.getItem('currentUser') ===
-            this.proposalVO.proposal.createUser || localStorage.getItem('isAdmin') === 'true') ? 'edit' : 'view';
+            this.showOrHideDataFlagsObj.mode = (proposalObject.isProposalPerson === true || localStorage.getItem('currentUser') ===
+            proposalObject.createUser || localStorage.getItem('isAdmin') === 'true') ? 'edit' : 'view';
         } else {
             this.showOrHideDataFlagsObj.mode = 'edit';
         }
@@ -68,7 +66,7 @@ export class QuestionnaireComponent implements OnInit {
   /**loads number of questionnaires
    */
   loadApplicableQuestionnaire() {
-    this.requestObject.module_item_key = this.proposalId;
+    this.requestObject.module_item_key = this.proposalData.proposalId;
     this._questionnaireService.getApplicableQuestionnaire(this.requestObject).subscribe(data => {
         this.questionnaireData = data;
         this.questionnaire = this.questionnaireData.applicableQuestionnaire;

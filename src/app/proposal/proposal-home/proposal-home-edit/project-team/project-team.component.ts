@@ -189,7 +189,6 @@ export class ProjectTeamComponent implements OnInit {
           if (PERSON.proposalPersonRole.description === 'Principal Investigator' &&
             tempDeptObj.proposalPersonRole.description === 'Principal Investigator') {
             this.warningMsgObj.personWarningMsg = '* You have already added a Principal Investigator';
-            this.selectedMemberObject = null;
             this.clearField = 'false';
             this.proposalDataBindObj.personRoleSelected = null;
             break;
@@ -203,17 +202,8 @@ export class ProjectTeamComponent implements OnInit {
       if (this.warningMsgObj.personWarningMsg === null && !this.warningMsgObj.isPercentageValueErrorMsg) {
         tempDeptObj.updateTimeStamp = (new Date()).getTime();
         tempDeptObj.updateUser = localStorage.getItem('currentUser');
-        if (this.result.proposal.proposalPersons == null) {
-          this.result.proposal.proposalPersons = [];
-        }
-        if (this.percentageEffort == null) {
-          tempDeptObj.percentageOfEffort = 0;
-        } else {
-          tempDeptObj.percentageOfEffort = this.percentageEffort;
-          this.percentageEffort = null;
-        }
-        if (this.personDepartments.length === 0) {
-          if (this.result.departments === null) {
+        tempDeptObj.percentageOfEffort = this.percentageEffort == null ? 0 : this.percentageEffort;
+        if (this.personDepartments.length === 0 && this.result.departments === null) {
             this._proposalHomeService.fetchDepartment(this.selectedMemberObject.unit_number).subscribe(data => {
               let temp: any = {};
               temp = data;
@@ -230,7 +220,6 @@ export class ProjectTeamComponent implements OnInit {
               this.result.departments = null;
               this.personDepartments = [];
             });
-          }
         } else {
           tempDeptObj.units = this.personDepartments;
         }
@@ -239,6 +228,7 @@ export class ProjectTeamComponent implements OnInit {
         this.selectedMemberObject = null;
         this.memberTypeSelected = 'Employee';
         this.proposalDataBindObj.personRoleSelected = null;
+        this.percentageEffort = null;
         this.departmentSelected = null;
         this.result.departments = null;
         this.personDepartments = [];

@@ -188,41 +188,42 @@
       </tr>
     </table>
   </div>
-  <!--Project Team Details-->
-  <div class="borderBox col-12">
-    <h4 class="borderBoxHeading">Project Team</h4>
-    <button id="projectExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectTeamWidgetOpen = !showOrHideDataFlagsObj.isProjectTeamWidgetOpen" *ngIf="(result?.proposal?.proposalPersons?.length > 0)">
-      <i [ngClass]="showOrHideDataFlagsObj.isProjectTeamWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
-    </button>
-    <div class="pullSide">
-      <div class="topGrid gridSkin" *ngIf="showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
-        <div *ngIf="result?.proposal?.proposalPersons?.length == 0">
-          <div class="noDataExists">There are no
-            investigators added in this proposal</div>
+    <!--Project Team Details-->
+    <div class="borderBox col-12">
+        <h4 class="borderBoxHeading">Project Team</h4>
+        <button id="projectExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectTeamWidgetOpen = !showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
+          <i [ngClass]="showOrHideDataFlagsObj.isProjectTeamWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
+        </button>
+        <div class="pullSide">
+          <div class="topGrid gridSkin" *ngIf="showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
+            <table class="table tableSkin grid2">
+              <tbody *ngIf="result?.proposal?.proposalPersons?.length > 0">
+                <tr>
+                  <th colspan="2">Name</th>
+                  <th>Role</th>
+                  <th colspan="2">% of Effort</th>
+                  <th colspan="2">Department</th>
+                </tr>
+                <tr *ngFor="let person of result?.proposal?.proposalPersons; let i = index">
+                  <td colspan="2">{{person?.fullName}}</td>
+                  <td>{{person?.proposalPersonRole?.description}}</td>
+                  <td colspan="2">{{person?.percentageOfEffort}}</td>
+                  <td colspan="2">
+                    <span *ngFor="let dept of person?.units" title="{{dept.unit.unitDetail}}" class="fileChips" style="word-break: break-all; width:20%"><span>{{(dept.unit.unitName.length
+                        > 10)?(dept.unit.unitName|
+                        slice:0:10)+'...':(dept?.unit?.unitName)}}</span></span>
+                  </td>
+                </tr>
+              </tbody>
+              <tr *ngIf="result?.proposal?.proposalPersons?.length == 0">
+                <td colspan="5">
+                  <div class="noDataExists">There are no investigators added in this proposal</div>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <table class="table tableSkin grid2">
-          <tbody *ngIf="result?.proposal?.proposalPersons?.length > 0">
-            <tr>
-              <th colspan="2">Name</th>
-              <th>Role</th>
-              <th colspan="2">% of Effort</th>
-              <th colspan="2">Department</th>
-            </tr>
-            <tr *ngFor="let person of result?.proposal?.proposalPersons; let i = index">
-              <td colspan="2">{{person?.fullName}}</td>
-              <td>{{person?.proposalPersonRole?.description}}</td>
-              <td colspan="2">{{person?.percentageOfEffort}}</td>
-              <td colspan="2">
-                <span *ngFor="let dept of person?.units" title="{{dept.unit.unitDetail}}" class="fileChips" style="word-break: break-all; width:20%"><span>{{(dept.unit.unitName.length
-                    > 10)?(dept.unit.unitName|
-                    slice:0:10)+'...':(dept?.unit?.unitName)}}</span></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-    </div>
-  </div>
   <!-- Project Description -->
   <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isProjectDescWdgtOpen?'normalPadd':'lowPadd'">
     <h4 class="borderBoxHeading">Project Description</h4>
