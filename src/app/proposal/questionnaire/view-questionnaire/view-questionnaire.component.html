@@ -1,222 +1,237 @@
-<div class="pullSide" *ngIf="questionnaire.questions != undefined && questionnaire.questions != null">
-    <div class="topGrid gridSkin">
-      <div class="row">
-        <div class="card-body collapse-card-body">
-          <ng-container *ngFor='let question of questionnaire.questions; let indexQuestion = index'>
-            <ul [ngSwitch]="true" class="list">
-              <li *ngSwitchCase="question.ANSWER_TYPE == 'Text'">
-                <div *ngIf="question.SHOW_QUESTION == true">
-                  <label class="questionfont">{{question.QUESTION}}
-                    <span>
-                      <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
-                    </span>
-                  </label>
-                  <div *ngFor=" let number of  getArray(question.NO_OF_ANSWERS); let i = index">
-                    <input type="text" class="qst-input-width" [(ngModel)]="question.ANSWERS[i+1]" (ngModelChange)="showChildQuestions(question)" name="name" />
-                  </div>
-                  <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-                      <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                        <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
-                          <i class="fa fa-times"></i>
-                        </button>
-                        <div class="qst-helpMsg">
-                          <label [innerHTML]="helpMsg[indexQuestion]"></label>
-                        </div>
-                      </div>
-                    </div>
-                    <hr>
-                </div>
-              </li>
-              <li *ngSwitchCase="question.ANSWER_TYPE == 'Radio' || question.ANSWER_TYPE == 'Y/N'|| question.ANSWER_TYPE == 'Y/N/NA'">
-                <div *ngIf="question.SHOW_QUESTION == true">
-                  <p class="questionfont">{{question.QUESTION}}
-                    <span>
-                      <i  (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
-                    </span>
-                  </p>
-                  <div *ngFor=" let option of questionnaire.options" class="radio-inline ">
-                    <span *ngIf="question.QUESTION_ID == option.QUESTION_ID">
-                      <input type="radio" name="{{option.QUESTION_ID}}" [value]="option.OPTION_LABEL" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question)"
-                        required/> {{option.OPTION_LABEL}}
-                    </span>
-                  </div>
-                  <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-                    <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                      <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
-                        <i class="fa fa-times"></i>
-                      </button>
-                      <div class="qst-helpMsg">
-                        <label [innerHTML]="helpMsg[indexQuestion]"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <hr>
-                </div>
-              </li>
-              <li *ngSwitchCase="question.ANSWER_TYPE == 'Checkbox'">
-                <div *ngIf="question.SHOW_QUESTION == true">
-                  <p class="questionfont">{{question.QUESTION}}
-                    <span>
-                      <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
-                    </span>
-                  </p>
-                  <div class="checkbox-inline" *ngFor=" let option of questionnaire.options">
-                    <span *ngIf="question.QUESTION_ID == option.QUESTION_ID">
-                      <input type="checkbox" required [(ngModel)]="question.ANSWERS[option.OPTION_LABEL]" (change)="showChildQuestions(question)"
-                      /> {{option.OPTION_LABEL}}
-                    </span>
-                  </div>
-                  <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-                      <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                        <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
-                          <i class="fa fa-times"></i>
-                        </button>
-                        <div class="qst-helpMsg">
-                          <label [innerHTML]="helpMsg[indexQuestion]"></label>
-                        </div>
-                      </div>
-                    </div>
-                    <hr>
-                </div>
-              </li>
-              <li *ngSwitchCase="question.ANSWER_TYPE == 'Attachment'">
-                <div *ngIf="question.SHOW_QUESTION == true">
-                  <p class="questionfont">{{question.QUESTION}}
-                    <span>
-                      <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
-                    </span>
-                  </p>
-                  <a class="qst-attachment-addlink" data-toggle="modal" data-target="#AttachmentModal" (click)="attachmentIndex = indexQuestion">Add Attachment :
-                  </a>
-                  <span *ngIf="question.ANSWERS[1]" class="qst-attachment-label">
-                    <label><b>{{ question.ANSWERS[1] }}</b></label>
-                    <button class="qst-attachment-cls-btn" (click)="removeDulplicateFile(question.QUESTION_ID, indexQuestion)">
-                      <i class="fa fa-times"></i>
-                    </button>
-                    <button *ngIf="question.ATTACHMENT_ID!=null" class="qst-attachment-cls-btn" (click)="downloadAttachment(question.ATTACHMENT_ID, question.ANSWERS[1])" >
-                      <i class="fa fa-download"></i>
-                    </button>
-                </span>
-                  <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-                      <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                        <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
-                          <i class="fa fa-times"></i>
-                        </button>
-                        <div class="qst-helpMsg">
-                          <label [innerHTML]="helpMsg[indexQuestion]"></label>
-                        </div>
-                      </div>
-                    </div>
-                    <hr>
-                </div>
-              </li>
-              <li *ngSwitchCase="question.ANSWER_TYPE == 'Textarea'">
-                <div *ngIf="question.SHOW_QUESTION == true">
-                  <p class="questionfont">{{question.QUESTION}}
-                    <span>
-                      <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
-                    </span>
-                  </p>
-                  <textarea name="name" class="qst-input-width" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question)"> </textarea>
-                  <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-                      <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                        <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
-                          <i class="fa fa-times"></i>
-                        </button>
-                        <div class="qst-helpMsg">
-                          <label [innerHTML]="helpMsg[indexQuestion]"></label>
-                        </div>
-                      </div>
-                    </div>
-                    <hr>
-                  </div>
-              </li>
-              <li *ngSwitchCase="question.ANSWER_TYPE == 'Date'">
-                <div *ngIf="question.SHOW_QUESTION == true">
-                  <p class="questionfont">{{question.QUESTION}}
-                      <span>
-                          <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
-                        </span>
-                  </p>
-                  <div>
-                    <div class="qst-date-dv">
-                    <input [owlDateTimeTrigger]="dt3" [(ngModel)]="question.ANSWERS[1]" [attr.readonly]=true placeholder="{{question.ANSWERS[1]}}"
-                      (ngModelChange)="showChildQuestions(question)" [owlDateTime]="dt3">
-                      <span class="trigger qst-date-i" [owlDateTimeTrigger]="dt3">
-                          <i class="fas fa-calendar-alt"></i>
-                      </span>
-                    <owl-date-time [pickerType]="'calendar'" #dt3 (afterPickerClosed)="setDateFormat(indexQuestion)"></owl-date-time>
-                </div>
-                  </div>
-                <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-                    <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                      <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
-                        <i class="fa fa-times"></i>
-                      </button>
-                      <div class="qst-helpMsg">
-                        <label [innerHTML]="helpMsg[indexQuestion]"></label>
-                      </div>
-                    </div>
-                  </div>
-                <hr>
-                </div>
-              </li>
-            </ul>
-           </ng-container>
+<div class="col-md-12 users-list-tbl pl-0" *ngIf="questionnaire.questions != undefined && questionnaire.questions != null">
+  <div class="qst-list-padding">
+    <ng-container *ngFor='let question of questionnaire.questions; let indexQuestion = index'>
+    <ul [ngSwitch]="true" class="qst-list">
+      <li *ngSwitchCase="question.ANSWER_TYPE == 'Text'">
+        <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
+          <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
+            <div class="col-12 col-sm-12 col-md-12 pl-0">
+              <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
+            </div>
           </div>
-        </div>
-      </div>
-    <div class="col-12 text-right">
-      <button class="btnSkin btnSkinPrimary" *ngIf="showOrHideDataFlagsObj.mode !== 'view'" (click)="saveQuestionnaire()" id="save">Save</button>
-    </div>
-  </div>
-  
-    <!-- attachment modal -->
-    
-    <div class="modal fade" id="AttachmentModal" tabindex="-1" role="dialog" aria-labelledby="AttachmentModal" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="AttachmentModalTitle">Add Attachment</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+          <p class="question-font">{{question.QUESTION}}
+            <span>
+              <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+          </p>
+          <div *ngFor=" let number of  getArray(question.NO_OF_ANSWERS); let i = index">
+            <input type="text" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[i+1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();" name="name" />
           </div>
-          <div class="modal-body">
-            <div class="col-12">
-              <div class="drop-zone" appDragNdrop (filesDropEvent)="addFileToTempFiles($event)">
-                <div class="text-wrapper file">
-                  <input type="file" id="selectedFile" class="qst-disp-none" (change)="addFileToTempFiles($event.target.files[0])" />
-                  <input type="button" class="btn btn-primary" value="Browse..." onclick="document.getElementById('selectedFile').click()"
-                  />
-                  <div class="qst-atmt-mgl">Drop your file here!</div>
+          <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                  <i class="fa fa-times"></i>
+                </button>
+                <div class="qst-helpMsg">
+                  <label [innerHTML]="helpMsg[indexQuestion]"></label>
                 </div>
               </div>
             </div>
-            <div class="upload-table">
-              <table class="table">
-                <thead class="qst-table-head">
-                  <th>Name</th>
-                  <th>Type</th>
-                </thead>
-                <tbody class="upload-name-style">
-                  <tr *ngFor="let item of tempFiles; let i=index" class="qst-atmt-list">
-                    <td>
-                      <span>{{ item.fileName }}</span>
-                    </td>
-                    <td>
-                      <span>{{ item.type }}</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="modal-footer">
-              <button type="button" (click)=" addFiletoArray()" data-dismiss="modal" class="btn btn-primary">Save</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <hr>
+        </div>
+      </li>
+      <li *ngSwitchCase="question.ANSWER_TYPE == 'Radio' || question.ANSWER_TYPE == 'Y/N'|| question.ANSWER_TYPE == 'Y/N/NA'">
+        <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
+          <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
+            <div class="col-12 col-sm-12 col-md-12 pl-0">
+              <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
             </div>
           </div>
+          <p class="question-font">{{question.QUESTION}}
+            <span><i  (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i></span>
+          </p>
+          <div *ngFor=" let option of questionnaire.options" class="answer-options">
+            <span *ngIf="question.QUESTION_ID == option.QUESTION_ID">
+              <input type="radio" [disabled]="showOrHideDataFlagsObj.mode=='view'" name="{{option.QUESTION_ID}}" [value]="option.OPTION_LABEL" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();"
+                required/> {{option.OPTION_LABEL}}
+            </span>
+          </div>
+          <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+            <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+              <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                <i class="fa fa-times"></i>
+              </button>
+              <div class="qst-helpMsg">
+                <label [innerHTML]="helpMsg[indexQuestion]"></label>
+              </div>
+            </div>
+          </div>
+          <hr>
+        </div>
+      </li>
+      <li *ngSwitchCase="question.ANSWER_TYPE == 'Checkbox'">
+        <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
+          <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
+            <div class="col-12 col-sm-12 col-md-12 pl-0">
+              <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
+            </div>
+          </div>
+          <p class="question-font">{{question.QUESTION}}
+            <span>
+              <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+          </p>
+          <div class="answer-options" *ngFor=" let option of questionnaire.options">
+            <span *ngIf="question.QUESTION_ID == option.QUESTION_ID">
+              <input type="checkbox" [disabled]="showOrHideDataFlagsObj.mode=='view'" required [(ngModel)]="question.ANSWERS[option.OPTION_LABEL]" (change)="showChildQuestions(question);saveOnComplete();"
+              /> {{option.OPTION_LABEL}}
+            </span>
+          </div>
+          <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                  <i class="fa fa-times"></i>
+                </button>
+                <div class="qst-helpMsg">
+                  <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                </div>
+              </div>
+            </div>
+            <hr>
+        </div>
+      </li>
+      <li *ngSwitchCase="question.ANSWER_TYPE == 'Attachment'">
+        <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
+          <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
+            <div class="col-12 col-sm-12 col-md-12 pl-0">
+              <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
+            </div>
+          </div>
+          <p class="question-font">{{question.QUESTION}}
+            <span>
+              <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+          </p>
+          <a class="qst-attachment-addlink" (click)="setIndex(indexQuestion)" data-toggle="modal" data-target="#AttachmentModal">Add Attachment :</a>
+          <span *ngIf="question.ANSWERS[1]" class="qst-attachment-label">
+            <label><b>{{ question.ANSWERS[1] }}</b></label>
+            <button class="qst-attachment-cls-btn" (click)="removeDulplicateFile(question.QUESTION_ID, indexQuestion)">
+              <i class="fa fa-times"></i>
+            </button>
+            <button *ngIf="question.ATTACHMENT_ID!=null" class="qst-attachment-cls-btn" (click)="downloadAttachment(question.ATTACHMENT_ID, question.ANSWERS[1])" >
+              <i class="fa fa-download"></i>
+            </button>
+        </span>
+          <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                  <i class="fa fa-times"></i>
+                </button>
+                <div class="qst-helpMsg">
+                  <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                </div>
+              </div>
+            </div>
+            <hr>
+        </div>
+      </li>
+      <li *ngSwitchCase="question.ANSWER_TYPE == 'Textarea'">
+        <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
+          <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
+            <div class="col-12 col-sm-12 col-md-12 pl-0">
+              <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
+            </div>
+          </div>
+          <p class="question-font">{{question.QUESTION}}
+            <span>
+              <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+          </p>
+          <textarea name="name" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();"> </textarea>
+          <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                  <i class="fa fa-times"></i>
+                </button>
+                <div class="qst-helpMsg">
+                  <label [innerHTML]="helpMsg[indexQuestion]"></label>
+                </div>
+              </div>
+            </div>
+            <hr>
+          </div>
+      </li>
+      <li *ngSwitchCase="question.ANSWER_TYPE == 'Date'">
+        <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
+          <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
+            <div class="col-12 col-sm-12 col-md-12 pl-0">
+              <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
+            </div>
+          </div>
+          <p class="question-font">{{question.QUESTION}}
+            <span>
+              <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+          </p>
+          <div>
+            <div class="qst-date-dv">
+              <input [owlDateTimeTrigger]="dt3" [(ngModel)]="question.ANSWERS[1]" [attr.readonly]=true placeholder="{{question.ANSWERS[1]}}"
+                (ngModelChange)="showChildQuestions(question);saveOnComplete();" [owlDateTime]="dt3">
+                <span class="trigger qst-date-i" [owlDateTimeTrigger]="dt3" [disabled]="showOrHideDataFlagsObj.mode=='view'">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+              <owl-date-time [pickerType]="'calendar'" #dt3 (afterPickerClosed)="setDateFormat(indexQuestion)"></owl-date-time>
+            </div>
+          </div>
+        <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
+            <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
+              <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+                <i class="fa fa-times"></i>
+              </button>
+              <div class="qst-helpMsg">
+                <label [innerHTML]="helpMsg[indexQuestion]"></label>
+              </div>
+            </div>
+          </div>
+        <hr>
+        </div>
+      </li>
+    </ul>
+  </ng-container>
+  <div class="row mt-2">
+    <div class="col-12">
+      <div class="col-12 text-right">
+        <button class="btnSkin btnSkinPrimary" *ngIf="showOrHideDataFlagsObj.mode !== 'view'" (click)="saveQuestionnaire()" id="save">Save</button>
+      </div>
+    </div>
+  </div>
+  </div> 
+</div>
+
+<!-- attachment modal -->
+<div class="modal fade" id="AttachmentModal" tabindex="-1" role="dialog" aria-labelledby="AttachmentModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="AttachmentModalTitle">Add Attachment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12">
+            <app-file-drop [multiple]="true" (filesDropEvent)="addFileToTempFiles($event)"></app-file-drop>
+        </div>
+        <div class="upload-table">
+          <table class="table">
+            <thead class="qst-table-head">
+              <th>Name</th>
+              <th>Type</th>
+            </thead>
+            <tbody class="upload-name-style">{{tempFiles[0]}}
+              <tr *ngFor="let item of tempFiles;let i = index" class="qst-atmt-list">
+                <td><span>{{ item.fileName }}</span></td>
+                <td><span>{{ item.type }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btnSkin btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" (click)="addFiletoArray()" data-dismiss="modal" class="btnSkin btnSkinPrimary">Save</button>
         </div>
       </div>
     </div>
-    <div id="toast-success">Saved Sucessfully</div>
+  </div>
+</div>
+<div id="toast-success-id">Saved Sucessfully</div>

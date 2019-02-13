@@ -27,6 +27,8 @@ export class ViewQuestionnaireComponent implements OnInit {
   showHelpMsg = [];
   helpMsg     = [];
 
+  QuestionnaireCompletionFlag = 'N';
+
   ngOnInit() {
     if (this.questionnaireData.hasOwnProperty('QUESTIONNAIRE_ANS_HEADER_ID') &&
         this.questionnaireData.QUESTIONNAIRE_ANS_HEADER_ID != null) {
@@ -39,7 +41,7 @@ export class ViewQuestionnaireComponent implements OnInit {
       this.result.module_item_code = 3;
       this.result.module_sub_item_code = 0;
       this.result.module_sub_item_key = 0;
-      this.result.module_item_key = this.proposalData.proposalId;
+      this.result.module_item_key = this.proposalData.proposal.proposalId;
       // save issue handled
       this.result.action_user_id = localStorage.getItem('personId');
       this.result.action_person_name = localStorage.getItem('currentUser');
@@ -272,7 +274,7 @@ export class ViewQuestionnaireComponent implements OnInit {
    * add file to temporarylist
    */
   addFileToTempFiles(file) {
-    (<HTMLInputElement>document.getElementById('selectedFile')).value = '';
+    //(<HTMLInputElement>document.getElementById('selectedFile')).value = '';
     if (file) {
       this.tempFiles = [];
       this.tempFiles.push({ attachment : file,
@@ -282,11 +284,19 @@ export class ViewQuestionnaireComponent implements OnInit {
     }
   }
   saveQuestionnaire() {
-    const toastId = document.getElementById('toast-success');
+    this.QuestionnaireCompletionFlag = 'Y';
+    this.checkQuestionaireCompletion();
+    this.result.questionnaire_complete_flag = this.QuestionnaireCompletionFlag;
+    const toastId = document.getElementById('toast-success-id');
     this._questionnaireService.saveQuestionnaire(this.result, this.filesArray).subscribe(
       data => {
         this.result = data;
         this.questionnaire = this.result.questionnaire;
+        if (this.result.hasOwnProperty('questionnaire_answer_header_id') && this.result.questionnaire_answer_header_id != null) {
+          this.requestObject.questionnaire_answer_header_id = this.result.questionnaire_answer_header_id;
+          this.questionnaireData.QUESTIONNAIRE_ANS_HEADER_ID = this.result.questionnaire_answer_header_id;
+          this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG = this.QuestionnaireCompletionFlag;
+        }
         this.showToast(toastId);
     });
   }
@@ -330,5 +340,28 @@ export class ViewQuestionnaireComponent implements OnInit {
           console.log('OK');
           document.body.removeChild(document.getElementById('attachment'));
       });
+  }
+
+  setIndex(index) {
+    this.attachmentIndex = index;
+  }
+
+  saveOnComplete() {
+    this.QuestionnaireCompletionFlag = 'Y';
+    this.checkQuestionaireCompletion();
+    if (this.QuestionnaireCompletionFlag === 'Y') {
+       this.saveQuestionnaire();
+     }
+  }
+  /**checks whether the questionnaire is complete and sets the flag */
+  checkQuestionaireCompletion() {
+    this.questionnaire.questions.forEach(question => {
+      // '' and null checked bcz new questionnaire returns ''
+      if ((question.ANSWERS[1] === '' || question.ANSWERS[1] == null) && question.SHOW_QUESTION === true) {
+        this.QuestionnaireCompletionFlag = 'N';
+        this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG = this.QuestionnaireCompletionFlag;
+        this.result.questionnaire_complete_flag = 'N';
+      }
+    });
   }
 }

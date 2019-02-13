@@ -292,6 +292,11 @@ input[type=number]::-webkit-outer-spin-button {
 	margin-bottom: 0px;
 }
 
+#routeLogTable>tbody>tr>td {
+	vertical-align: initial !important;
+	word-break:break-all;
+}
+
 #routeLogBody {
 	padding-bottom: 0px;
 	margin-bottom: 0px;
@@ -978,16 +983,17 @@ table.tableSection th, table.tableSection td {
 #toast-success-proposal {
 	visibility: hidden;
 	min-width: 250px;
-	margin-left: -100px;
+	/* margin-left: -100px; */
+	margin-left: 60%;
 	color:#26a69a;
 	background-color: #fff;
 	text-align: center;
 	border-radius: 2px;
 	padding: 16px;
-	position: fixed;
+	/* position: fixed;
 	z-index: 999;
 	left: 50%;
-	top: 10%;
+	top: 25%; */
 	font-size: 0.80em;
 	/*box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);*/
 }
@@ -1009,6 +1015,10 @@ table.tableSection th, table.tableSection td {
 	overflow: hidden;
     width: 100%;
     float: left;
+}
+.fit-content {
+	width: fit-content;
+	margin: 5px 0px 15px;
 }
 /** for more actions **/
 .more-btn {
@@ -1066,6 +1076,7 @@ table.tableSection th, table.tableSection td {
 	float: right;
 	font-size: 20px;
 	margin-top: -4px;
+	margin-right: 6px;
 }
 .back-btn :hover {
 	color: #00BCD4 !important;
@@ -1074,7 +1085,11 @@ table.tableSection th, table.tableSection td {
 	top: 10px;
 	bottom: 15px;
 }
-
+.card-style {
+	background-color: #f7f1f1;
+    padding: 5px;
+    border-left: 2px solid #26A69A;
+}
 /** change password **/
 .box-mt {
 	margin-top: 20px;
@@ -1109,4 +1124,31 @@ table.tableSection th, table.tableSection td {
   .pl-list>li {
 	margin-top: 10px;
   }
-  
+  /** styles for proposal questionnaire **/
+  .prop-quest-category {
+	color: #676666!important;
+    margin: 0!important;
+    font-size: 0.86em!important;
+    font-weight: bold !important;
+    background-color: #dcfbf8;
+    padding: 10px 10px;
+    width: 100%;
+    border-left: 3px solid #26a69a;
+  }
+.question-font {
+	margin-top: 10px;
+	font-size: 0.85em;
+	font-weight: 500;
+	margin-bottom: 0.1em !important;
+}
+.answer-options>span {
+	font-size: 0.84em;
+	font-weight: 400;
+}
+.qst-list-padding>ul {
+	padding-left: 10px;
+	margin-bottom: 0px !important;
+}
+.show-qst>hr {
+	margin: 5px 0 0 0 !important;
+}
