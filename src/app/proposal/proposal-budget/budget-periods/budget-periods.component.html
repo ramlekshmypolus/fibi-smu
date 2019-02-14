@@ -1,0 +1,388 @@
+
+  <div>
+    <span class="filter nav nav-tabs" *ngIf="showOrHideDataFlagsObj.mode !== 'view'">
+      <span>
+        <input type="checkbox" [checked]="result?.proposal?.budgetHeader?.isAutoCalc" (change)="onAutoCalcChange(selectedPeriod)"/>
+      </span>
+      <span id="auto-calculate" class="font hoverColor">Auto Calculate</span>
+      <a href="" class="addPeriod font hoverColor" title="Add New Period"  data-toggle="modal" data-target="#budgetActionsModal"
+         *ngIf="!selectedPeriodTab.isPeriodAndTotal && !selectedPeriodTab.isCumulative" (click)="openActionModal('ADD')">Add Period</a>
+      <a href="" class="copyPeriod font hoverColor" title="Copy Period"  data-toggle="modal" data-target="#budgetActionsModal" 
+         *ngIf="!selectedPeriodTab.isPeriodAndTotal && !selectedPeriodTab.isCumulative && selectedPeriod !== 1 " (click)="openActionModal('COPY')">Copy Period</a>
+      <a href="" class="generatePeriod font hoverColor" title="Generate All Periods"  data-toggle="modal" data-target="#budgetActionsModal" (click)="openActionModal('GENERATE')"
+         *ngIf="!selectedPeriodTab.isPeriodAndTotal && !selectedPeriodTab.isCumulative && selectedPeriod === 1 && result?.proposal?.budgetHeader?.budgetPeriods?.length>1">Generate All Periods</a>
+    </span>
+    <div class="tabs">
+      <ul class="nav nav-tabs" role="tablist" >
+        <li role="presentation" [ngClass]="selectedPeriodTab.isPeriodAndTotal?'activeTab':'inActiveTab'">
+          <a href="" role="tab" data-toggle="tab" (click)="changeTab('PERIOD_AND_TOTAL',0)">Periods &amp; Total</a>
+        </li>
+        <li *ngFor="let period of result?.proposal?.budgetHeader?.budgetPeriods; let i=index" role="presentation" [ngClass]="selectedPeriod == period.budgetPeriod?'activeTab':'inActiveTab'">
+          <a href="" role="tab" data-toggle="tab" (click)="changeTab('PERIODS',period.budgetPeriod)">Period {{period.budgetPeriod}}</a>
+        </li>
+        <!-- <li role="presentation" [ngClass]="selectedPeriodTab.isCumulative?'activeTab':'inActiveTab'">
+                <a href="" role="tab" data-toggle="tab">Cumulative</a>
+        </li> -->
+      </ul>
+      <div *ngIf="selectedPeriodTab.isPeriodAndTotal && !selectedPeriodTab.isPeriod && selectedPeriod === 0" class="tab-content">
+        <div class="topGrid gridSkin">
+          <div class="row">
+            <table class="tableStyle">
+              <thead>
+                <tr>
+                  <th>Period #</th>
+                  <th>Period Start Date</th>
+                  <th>Period End Date</th>
+                  <th>Direct Cost</th>
+                  <th>Indirect Cost</th>
+                  <th>Subcontract Cost</th>
+                  <th>Total Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let period of result?.proposal?.budgetHeader?.budgetPeriods">
+                  <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-number" disabled [value]="period?.budgetPeriod"/></td>
+                  <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-start" disabled [value]="period?.startDate | date:'MM/dd/yyyy'"/></td>
+                  <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-end" disabled [value]="period?.endDate | date:'MM/dd/yyyy'"/></td>
+                  <td>
+                    <input *ngIf="showOrHideDataFlagsObj.mode != 'view'" type="number" step="any" placeholder="" class="dateBox committeeBox" id="lineItemBudget" [(ngModel)]= "period.totalDirectCost"
+                           (ngModelChange)="setPeriodAndTotalDirectCost(period.totalDirectCost, period.budgetPeriod)" [attr.disabled]="showOrHideDataFlagsObj.isPeriodsTotalDisabled? '' : null" appDecimalLimit/>
+                    <input *ngIf="showOrHideDataFlagsObj.mode =='view'" type="text" placeholder="" class="dateBox committeeBox" id="lineItemBudget" disabled [value]="period.totalDirectCost"/>
+                  </td>
+                  <td>
+                    <input *ngIf="showOrHideDataFlagsObj.mode != 'view'" type="number" step="any" placeholder="" class="dateBox committeeBox" id="lineItemBudget" [(ngModel)]="period.totalIndirectCost"
+                           (ngModelChange)="setPeriodAndTotalIndirectCost(period.totalIndirectCost, period.budgetPeriod)" [attr.disabled]="showOrHideDataFlagsObj.isPeriodsTotalDisabled? '' : null" appDecimalLimit/>
+                    <input *ngIf="showOrHideDataFlagsObj.mode =='view'" type="text" placeholder="" class="dateBox committeeBox" id="lineItemBudget" disabled [value]="period.totalIndirectCost"/>
+                  </td>
+                  <td>
+                    <input *ngIf="showOrHideDataFlagsObj.mode != 'view'" type="number" step="any" placeholder="" class="dateBox committeeBox" id="lineItemBudget" [(ngModel)]="period.subcontractCost"
+                            (ngModelChange)="setPeriodAndTotalSubcontractCost(period.subcontractCost, period.budgetPeriod)" [attr.disabled]="showOrHideDataFlagsObj.isPeriodsTotalDisabled? '' : null" appDecimalLimit/>
+                    <input *ngIf="showOrHideDataFlagsObj.mode =='view'" type="text" placeholder="" class="dateBox committeeBox" id="lineItemBudget" disabled [value]="period.subcontractCost"/>
+                    </td>
+                  <td>
+                    <input type="number" step="any" placeholder="" class="dateBox committeeBox" id="lineItemBudget" [(ngModel)]="period.totalCost" disabled/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2"></td>
+                  <td class="totalText"> <span>Total:</span></td>
+                  <td class="totalText"><span>{{result.proposal.budgetHeader.totalDirectCost| currency:'USD':'symbol-narrow':'1.2-2'}}</span></td>
+                  <td class="totalText"><span>{{result.proposal.budgetHeader.totalIndirectCost| currency:'USD':'symbol-narrow':'1.2-2'}}</span></td>
+                  <td class="totalText"><span>{{result.proposal.budgetHeader.totalSubcontractCost| currency:'USD':'symbol-narrow':'1.2-2'}}</span></td>
+                  <td class="totalText"><span>{{result.proposal.budgetHeader.totalCost| currency:'USD':'symbol-narrow':'1.2-2'}}</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  
+      <div id="divForIteration" *ngFor="let period of result?.proposal?.budgetHeader?.budgetPeriods; let k=index">
+        <div *ngIf="selectedPeriod == period.budgetPeriod && !selectedPeriodTab.isPeriodAndTotal && selectedPeriodTab.isPeriod==true">
+          <div class="tab-content" style="position: relative" *ngIf="showOrHideDataFlagsObj.mode!='view'">
+            <a class="delete-period font hoverColor hand-cursor"  title="Delete Period" data-toggle="modal" data-target="#budgetActionsModal"
+            (click)="openActionModal('DELETE_PERIOD')">
+              <i style="padding: 5px" class="fa fa-trash hand-cursor hoverColor"></i>Delete Period
+            </a>
+          </div>
+          <div class="tabContent-dup">
+            <div class="topGrid gridSkin">
+              <div class="row">
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+                  <label class="block-display">
+                    <span class="mandatory" *ngIf="showOrHideDataFlagsObj.mode!='view'">*</span>Start Date:
+                  </label>
+                  <span  class="dateField" *ngIf="showOrHideDataFlagsObj.mode!='view'">
+                    <input type="text" placeholder="MM/dd/YYYY" (keypress)="_commonService._keyPress($event, 'date')"
+                      [owlDateTime]="periodstart" class="budgetDate-width committeeBox"
+                      [ngClass]="budgetPeriodsDateObj.isStartError?'lineItem-mandatory':''"
+                      [(ngModel)]="period.startDate" (ngModelChange)="validatePeriodStartDate(period.startDate, period.endDate, period.budgetPeriod-1)"/>
+                    <i class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="periodstart"></i>
+                    <owl-date-time #periodstart [pickerType]="'calendar'"></owl-date-time>
+                  </span>
+                  <span *ngIf="budgetPeriodsDateObj.isStartError" class="mandatory block-display">{{budgetPeriodsDateObj.startErrorMessage}}</span>
+                  <input type="text" disabled placeholder="" class="committeeBox" *ngIf="showOrHideDataFlagsObj.mode=='view'" [value]="period.startDate | date:'MM/dd/yyyy'"/>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+                  <label class="block-display">
+                    <span class="mandatory" *ngIf="showOrHideDataFlagsObj.mode!='view'">*</span>End Date:
+                  </label>
+                  <span  class="dateField" *ngIf="showOrHideDataFlagsObj.mode!='view'">
+                    <input type="text" placeholder="MM/dd/YYYY" (keypress)="_commonService._keyPress($event, 'date')"
+                      [owlDateTime]="periodend" class="budgetDate-width committeeBox"
+                      [ngClass]="budgetPeriodsDateObj.isEndError?'lineItem-mandatory':''"
+                      [(ngModel)]="period.endDate" (ngModelChange)="validatePeriodEndDate(period.endDate, period.startDate, period.budgetPeriod-1)"/>
+                    <i class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="periodend"></i>
+                    <owl-date-time #periodend [pickerType]="'calendar'"></owl-date-time>
+                  </span>
+                  <span *ngIf="budgetPeriodsDateObj.isEndError" class="mandatory block-display">{{budgetPeriodsDateObj.endErrorMessage}}</span>
+                  <input type="text" disabled placeholder="" class="committeeBox" *ngIf="showOrHideDataFlagsObj.mode=='view'" [value]="period.endDate | date:'MM/dd/yyyy'"/>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+                  <label>Direct Cost:</label>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.totalDirectCost != null" [value]="period.totalDirectCost | currency:'USD'"/>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.totalDirectCost == null" value="$0.00"/>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+                  <label>Indirect Cost:</label>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.totalIndirectCost != null" [value]="period.totalIndirectCost | currency:'USD'"/>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.totalIndirectCost == null" value="$0.00"/>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+                  <label>Subcontract Cost:</label>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.subcontractCost != null" [value]="period.subcontractCost | currency:'USD'"/>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.subcontractCost == null" value="$0.00"/>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+                  <label>Total Cost:</label>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.totalCost != null" [value]="period.totalCost | currency:'USD'"/>
+                  <input type="text" disabled placeholder="" class="dateBox committeeBox" *ngIf="period?.totalCost == null" value="$0.00"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content"></div>
+          <div>
+            <table class="tableStyle">
+              <thead>
+                <tr>
+                  <th>Cost Element</th>
+                  <th>Budget Category</th>
+                  <th>Line Item Description</th>
+                  <th>Line Item Cost</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="showOrHideDataFlagsObj.mode!='view'">
+                  <td>
+                    <div>
+                      <div class="searchBox memberSearchBox">
+                        <input type="text" placeholder="Search here for Cost Element" [(ngModel)]="selectedCostElement" (blur)="searchActive.costElement = false"
+                          (keyup)="searchActive.costElement = true"  (ngModelChange)="fetchCostElements()"
+                          [ngClass]="isInvalidLineItem.costElement?'lineItem-mandatory':''" class="member_search" />
+                        <a href="#" class="searchButton" (click)="clearSearchBox($event, 'costElement')"><i [ngClass]="iconClass.costElement"></i></a>
+                        <div class="sb-seachresults" *ngIf="searchActive.costElement">
+                          <ul class="sb-results-dropdown-menu text-left">
+                            <li *ngFor="let result of costElements " (mousedown)=" costElementChange(result)">
+                              <span [innerHTML]="result.costElementDetail"></span></li>
+                          </ul>
+                        </div>
+                      </div> 
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <div class="searchBox memberSearchBox" *ngIf="showOrHideDataFlagsObj.mode!='view'">
+                        <input type="text" placeholder="Search here for Budget Category" [(ngModel)]="selectedBudgetCategory" (blur)="checkBudgetCategoryValidity()"
+                          (focus)="searchActive.budgetCategory = true" (ngModelChange)="fetchBudgetCategory($event, 'budgetCategory')" 
+                          [ngClass]="isInvalidLineItem.category?'lineItem-mandatory':''"  class="member_search"/>
+                        <a href="#" class="searchButton" (click)="clearSearchBox($event, 'budgetCategory')"><i [ngClass]="iconClass.budgetCategory"></i></a>
+                        <div class="sb-seachresults" *ngIf="searchActive.budgetCategory">
+                          <ul class="sb-results-dropdown-menu text-left">
+                            <li *ngFor="let result of budgetCategories" (mousedown)="budgetCategoryChange(result)"><span
+                                [innerHTML]="result.description"></span></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <input *ngIf="showOrHideDataFlagsObj.mode!='view'" type="text" placeholder="" class="dateBox committeeBox"
+                           [(ngModel)]="budgetDetail.lineItemDescription" />
+                  </td>
+                  <td>
+                    <input *ngIf="showOrHideDataFlagsObj.mode!='view'" type="number" step="any" placeholder="" class="dateBox committeeBox" 
+                           [(ngModel)]="budgetDetail.lineItemCost" appDecimalLimit [ngClass]="isInvalidLineItem.cost?'lineItem-mandatory':''"/>
+                  </td>
+                  <td *ngIf="showOrHideDataFlagsObj.mode!='view'">
+                    <i class="fa fa-check hand-cursor hoverColor" title="Add line Item" (click)="addBudgetDetail(period.budgetPeriod)"></i>
+                    <button id="projectExpandBtn" title="{{isPersonnelOpen ? 'Close Personnel' : 'Add Personnel'}}" class="personAddBtn font hoverColor"
+                            (click)="isPersonnelOpen = !isPersonnelOpen" *ngIf="budgetDetail?.budgetCategory?.budgetCategoryTypeCode == 'P'">
+                      <i [ngClass]="isPersonnelOpen?'fa fa-user-times':'fa fa-user-plus'" class="fa-large"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="showOrHideDataFlagsObj.mode!='view' && isPersonnelOpen == true">
+                  <td class="text-right">
+                    <div class="budgetMembersearchBox memberSearchBox name-person-searchbox">
+                      <label class="label-color">Type:</label>
+                      <select class="personType" [(ngModel)]="personnelTypeSelected" (change)="personnelTypeChanged()">
+                        <option *ngFor="let type of personnelTypes" [value]="type.value">{{type.name}}</option>
+                      </select>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="searchBox memberSearchBox" *ngIf="personnelTypeSelected == 'E' || personnelTypeSelected == 'N'">
+                      <label class="label-color">Name:</label>
+                      <app-elastic class="ib-display" [placeHolder]="placeHolderText" (selectedResult)="selectedPersonnel($event)"
+                        [options]="elasticSearchOptions" [clearField]="clearField"></app-elastic>
+                    </div>
+                    <div class="searchBox memberSearchBox" *ngIf="personnelTypeSelected == 'T'">
+                      <label class="label-color">Name:</label>
+                      <ng2-completer *ngIf="showOrHideDataFlagsObj.mode!='view'" [inputClass]="completerID"
+                        [(ngModel)]="personnelSearchText" placeholder="Search a to be named" class="ib-display font"
+                        [datasource]="tbnPersonsList" [minSearchLength]="1" [clearUnselected]="true"
+                        [fillHighlighted]="false" (selected)="tbnChangeFunction()">
+                      </ng2-completer>
+                    </div>
+                    <div class="budgetMembersearchBox memberSearchBox name-person-searchbox position-relative" *ngIf="personnelTypeSelected == 'P'">
+                      <label class="label-color">Name:</label>
+                      <select class="personType" [(ngModel)]="personnelSearchText" (change)="personnelNameChange()">
+                        <option [value] = null>--Select--</option>
+                        <option *ngFor="let name of result?.proposal?.proposalPersons" [value]="name.fullName">{{name.fullName}}</option>
+                      </select>
+                    </div>
+                  </td> 
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr *ngFor="let lineItem of period.budgetDetails; let j=index;">
+                  <ng-container *ngIf="lineItem.budgetPeriod === selectedPeriod">
+                    <td>
+                      <input type="text" placeholder="" class="dateBox committeeBox" id="lineItemBudget" disabled [value]="lineItem?.costElement?.costElementDetail"/>
+                      <div *ngIf="isLineItemPersonnelOpen[j] == true">
+                        <div class="budgetMembersearchBox memberSearchBox addedpersonnel-margin">
+                          <label class="label-color inline-block-display">Type:</label>
+                          <input  *ngIf="lineItem.personType !== null && lineItem.tbnId == null" type="text" placeholder="" class="dateBox person-type-input" id="lineItemBudget" disabled [value]="lineItem.personType == 'E'?'Employee':lineItem.personType == 'P'?'Proposal Persons':'Non-Employee'"/>
+                          <input  *ngIf="lineItem.personType == 'T' && lineItem.tbnId !== null" type="text" placeholder="" class="dateBox person-type-input" id="lineItemBudget" disabled [value]="lineItem.personType == 'T'?'To Be Named':''"/>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <input type="text" class="dateBox committeeBox" id="lineItemBudget" disabled [value]="lineItem?.budgetCategory?.description"/>
+                      <div *ngIf="isLineItemPersonnelOpen[j] == true">
+                        <div class="budgetMembersearchBox memberSearchBox addedpersonnel-margin">
+                          <label class="label-color inline-block-display">Name:</label>
+                          <input *ngIf="lineItem.personType !== null && lineItem.tbnId == null" type="text" placeholder="" 
+                                class="dateBox person-name-input" id="person-name" disabled [value]="lineItem.fullName"/>
+                          <input *ngIf="lineItem.personType == 'T' && lineItem.tbnId !== null"type="text" placeholder="" 
+                                class="dateBox person-name-input" id="tbn-name" disabled [value]="lineItem.tbnPerson.personName"/>
+                        </div>
+                      </div>
+                    </td>
+                    <td [ngClass]="isLineItemPersonnelOpen[j]?'position-relative':''">
+                      <input *ngIf="showOrHideDataFlagsObj.mode!='view'" type="text" class="dateBox committeeBox"
+                             [ngClass]="isLineItemPersonnelOpen[j]?'position-person-inpur-box':''" 
+                             [(ngModel)]="lineItem.lineItemDescription" [disabled]="lineItem?.isSystemGeneratedCostElement==true"/>
+                      <input *ngIf="showOrHideDataFlagsObj.mode =='view'" type="text" placeholder="" class="dateBox committeeBox"
+                            [ngClass]="isLineItemPersonnelOpen[j]?'position-person-inpur-box':''" id="lineitem-description" disabled
+                            [value]="lineItem.lineItemDescription"/>
+                    </td>
+                    <td [ngClass]="isLineItemPersonnelOpen[j]?'position-relative':''">
+                      <input type="number" step="any" *ngIf="showOrHideDataFlagsObj.mode!='view'" class="dateBox committeeBox"
+                             [ngClass]="isLineItemPersonnelOpen[j]?'position-person-inpur-box':''"
+                             [(ngModel)]="lineItem.lineItemCost" (ngModelChange)="calculatePeriodTotalCost(lineItem.budgetPeriod)"
+                             [disabled]="lineItem?.isSystemGeneratedCostElement==true && result?.proposal?.budgetHeader?.isAutoCalc" appDecimalLimit/>
+                      <input *ngIf="showOrHideDataFlagsObj.mode =='view'" type="text" placeholder="" class="dateBox committeeBox"
+                             [ngClass]="isLineItemPersonnelOpen[j]?'position-person-inpur-box':''"
+                             id="lineitem-cost" disabled [value]="lineItem.lineItemCost"/>
+                    </td>
+                    <td *ngIf="showOrHideDataFlagsObj.mode!='view'" [ngClass]="isLineItemPersonnelOpen[j]?'position-relative':''">
+                      <span [ngClass]="isLineItemPersonnelOpen[j]?'icons-align':''">
+                        <i *ngIf="lineItem?.isSystemGeneratedCostElement!=true" class="fa fa-trash hand-cursor hoverColor" title="Delete line Item" data-toggle="modal" data-target="#budgetActionsModal" (click)="setLineItemObj(lineItem, period.budgetPeriodId, period.budgetPeriod, j)"></i>
+                        <i *ngIf="lineItem?.isSystemGeneratedCostElement!=true && lineItem.budgetDetailId != null" class="fa fa-eye hand-cursor hoverColor" title="View line-item rates" data-toggle="modal" data-target="#showRatesCalc" (click)="showRatesCalcAmount(period.budgetPeriod, j)"></i>
+                        <button  class="personAddBtn font hoverColor" (click)="this.isLineItemPersonnelOpen[j] = !this.isLineItemPersonnelOpen[j]" *ngIf="lineItem?.budgetCategory?.budgetCategoryTypeCode == 'P'">
+                          <i [ngClass]="isLineItemPersonnelOpen[j]?'fa fa-user-times':'fa fa-user-plus'" class="fa-large"></i>
+                        </button>
+                      </span>
+                    </td>
+                    <td *ngIf="showOrHideDataFlagsObj.mode=='view'" [ngClass]="isLineItemPersonnelOpen[j]?'position-relative':''">
+                      <span [ngClass]="isLineItemPersonnelOpen[j]?'icons-align':''">
+                        <i *ngIf="lineItem?.isSystemGeneratedCostElement!=true && lineItem.budgetDetailId != null" class="fa fa-eye hand-cursor hoverColor" title="View rates calculation" data-toggle="modal" data-target="#showRatesCalc" (click)="showRatesCalcAmount(period.budgetPeriod, j)"></i>
+                        <button  class="personAddBtn font hoverColor" (click)="this.isLineItemPersonnelOpen[j] = !this.isLineItemPersonnelOpen[j]" *ngIf="lineItem?.budgetCategory?.budgetCategoryTypeCode == 'P'">
+                          <i [ngClass]="isLineItemPersonnelOpen[j]?'fa fa-user-times':'fa fa-user-plus'" class="fa-large"></i>
+                        </button>
+                      </span>
+                    </td>
+                  </ng-container>
+                </tr>
+                <td *ngIf="showOrHideDataFlagsObj.mode == 'view' && period.budgetDetails.length <= 0" colspan='4'>
+                  <span class="noDataExists regularFont">No cost elements added for this period</span>
+                </td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="mandatory regularFont">{{isInvalidLineItem.message}}</span>
+    </div>
+  </div>
+
+<!-- ACTIONS MODAL -->
+<div class="modal fade mySkinDialog" tabindex="-1" id="budgetActionsModal"
+tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="budgetActionsModalTitle"
+aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header">
+       <h5 class="modal-title">{{actionsModalObj.modalHeading}}</h5>
+       <button type="button" class="close" data-dismiss="modal"aria-label="Close" (click)="clearModalActions()">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body">
+        <p>{{actionsModalObj.modalMessage}}</p>
+     </div>
+     <div class="modal-footer" *ngIf="!actionsModalObj.isWarning">
+       <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" (click)="clearModalActions()">Cancel</button>
+       <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="performBudgetAction()">OK</button>
+     </div>
+     <div class="modal-footer" *ngIf="actionsModalObj.isWarning">
+        <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="clearModalActions()">OK</button>
+     </div>
+   </div>
+ </div>
+</div>
+
+<!-- SHOW RATES CALCULATION MODAL -->
+<div class="modal fade mySkinDialog" *ngIf="actionsModalObj.showlineItemRate" tabindex="-1"
+     id="showRatesCalc" tabindex="-1" role="dialog"
+     aria-labelledby="showRatesTitle" aria-hidden="true">
+  <div class="modal-dialog" [ngClass]="[actionsModalObj.isNoRatesAppplied?'modal-md':'modal-lg', !actionsModalObj.isNoRatesAppplied?'modal-dialog-centered':'']" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Applied Rates</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="!actionsModalObj.showlineItemRate">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="!actionsModalObj.isNoRatesAppplied">
+        <div class="tabs">
+          <table id="ratesTable" class="tableStyle tableSection">
+            <thead><tr>
+              <th><span class="text">Class</span></th>
+              <th><span class="text">Type</span></th>
+              <th><span class="text">Rate (%)</span></th>
+              <th><span class="text">Rate Cost</span></th>
+            </tr></thead>
+            <tbody id="mytest">
+              <tr *ngFor="let detailCalcAmount of result?.proposal?.budgetHeader?.budgetPeriods[rateObj.periodNo]?.budgetDetails[rateObj.index]?.budgetDetailCalcAmounts">
+                <td>{{detailCalcAmount?.rateClass?.description}}</td>
+                <td>{{detailCalcAmount?.rateTypeDescription}}</td>
+                <td>{{detailCalcAmount?.applicableRate}}</td>
+                <td>{{detailCalcAmount?.calculatedCost | currency:'USD'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-body" *ngIf="actionsModalObj.isNoRatesAppplied">
+        <p>There are no applied rates for selected line-item.</p>
+      </div>
+      <div class="modal-footer">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6" *ngIf="!actionsModalObj.isNoRatesAppplied">
+          <input type="checkbox" [disabled]="showOrHideDataFlagsObj.mode ==='view'" [(ngModel)]='isApplyInflation' (ngModelChange)="changeApplyInflation()"/>
+          <label><span class="font">Apply Inflation Rate </span></label>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+          <button type="button" class="btnSkin btnSkinPrimary rate-float" data-dismiss="modal" (click)="!actionsModalObj.showlineItemRate">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
