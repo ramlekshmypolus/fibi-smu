@@ -1,0 +1,82 @@
+<div class="row content-type">
+  <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+    <div class="borderBox" [ngClass]="isBudgetOverviewWidgetOpen?'':'pb-0'">
+      <h4 class="borderBoxHeading" [ngClass]="isBudgetOverviewWidgetOpen?'':'mb-0'">Budget Overview</h4>
+      <button id="budgetExpndBtn" class="addBtn font hoverColor" title="{{isBudgetOverviewWidgetOpen ? 'Collapse Budget Overview' : 'Expand Budget Overview'}}"
+              (click)="isBudgetOverviewWidgetOpen = !isBudgetOverviewWidgetOpen" >
+        <i class="fa-large" [ngClass]="isBudgetOverviewWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"></i>
+      </button>
+      <div class="pullSide" *ngIf="isBudgetOverviewWidgetOpen">
+        <div class="topGrid gridSkin">
+          <div class="row">
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+              <label class="block-display"><span class="mandatory" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">*</span>Budget Start:</label>
+              <span class="dateField" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">
+                <input type="text" placeholder="mm/dd/yyyy" class="committeeBox budgetDate-width"
+                        [owlDateTime]="budgetstart"  (keypress)="_commonService._keyPress($event, 'date')"
+                        [ngClass]="budgetOverviewDateObj.isStartError?'lineItem-mandatory':''"
+                        [(ngModel)]="budgetOverviewDateObj.budgetStartDate" (ngModelChange)="validateBudgetStartDate(budgetOverviewDateObj.budgetStartDate)"/>
+                <i  *ngIf="showOrHideDataFlagsObj?.mode !== 'view'" class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="budgetstart"></i>
+                <owl-date-time #budgetstart [pickerType]="'calendar'"></owl-date-time>
+              </span>
+              <span *ngIf="budgetOverviewDateObj.isStartError" class="mandatory block-display">{{budgetOverviewDateObj.startDateMessage}}</span>
+              <span *ngIf="showOrHideDataFlagsObj?.mode === 'view'">{{budgetOverviewDateObj.budgetStartDate | date:'MM/dd/yyyy'}}</span>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+              <label class="block-display"><span class="mandatory" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">*</span>Budget End:</label>
+              <span  class="dateField" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">
+                <input type="text" placeholder="mm/dd/yyyy" class="budgetDate-width committeeBox"
+                        [owlDateTime]="budgetend" (keypress)="_commonService._keyPress($event, 'date')"
+                        [ngClass]="budgetOverviewDateObj.isEndError?'lineItem-mandatory':''"
+                        [(ngModel)]="budgetOverviewDateObj.budgetEndDate" (ngModelChange)="validateBudgetEndDate(budgetOverviewDateObj.budgetEndDate)"/>
+                <i  *ngIf="showOrHideDataFlagsObj?.mode !== 'view'" class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="budgetend"></i>
+                <owl-date-time #budgetend [pickerType]="'calendar'"></owl-date-time>
+              </span>
+              <span *ngIf="budgetOverviewDateObj.isEndError" class="mandatory block-display">{{budgetOverviewDateObj.endDateMessage}}</span>
+              <span *ngIf="showOrHideDataFlagsObj?.mode === 'view'">{{budgetOverviewDateObj.budgetEndDate | date:'MM/dd/yyyy'}}</span>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+              <label class="block-display">Direct Cost:</label>
+              <span *ngIf="result?.proposal?.budgetHeader?.totalDirectCost != null">{{result?.proposal?.budgetHeader?.totalDirectCost | currency:'USD'}}</span>
+              <span *ngIf="result?.proposal?.budgetHeader?.totalDirectCost == null">$0.00</span>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+              <label class="block-display">Indirect Cost:</label>
+              <span *ngIf="result?.proposal?.budgetHeader?.totalIndirectCost != null">{{result?.proposal?.budgetHeader?.totalIndirectCost | currency:'USD'}}</span>
+              <span *ngIf="result?.proposal?.budgetHeader?.totalIndirectCost == null">$0.00</span>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+              <label class="block-display">Subcontract Cost:</label>
+              <span *ngIf="result?.proposal?.budgetHeader?.totalSubcontractCost != null">{{result?.proposal?.budgetHeader?.totalSubcontractCost | currency:'USD'}}</span>
+              <span *ngIf="result?.proposal?.budgetHeader?.totalSubcontractCost == null">$0.00</span>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+                <label class="block-display">Total Cost:</label>
+                <span *ngIf="result?.proposal?.budgetHeader?.totalCost != null">{{result?.proposal?.budgetHeader?.totalCost | currency:'USD'}}</span>
+                <span *ngIf="result?.proposal?.budgetHeader?.totalCost == null">$0.00</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
+              <label class="block-display">OH Base:</label>
+              <span>{{result?.proposal?.budgetHeader?.rateType?.description}}</span>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
+              <label class="block-display">Last Updated:</label>
+              <span>on {{result?.proposal?.budgetHeader?.updateTimeStamp | date: 'MM/dd/yyyy'}} by {{result?.proposal?.budgetHeader?.updateUserName}}</span>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6"></div>
+          </div>
+          <div class="row">
+            <div  class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+              <label>Description:</label>
+              <textarea  *ngIf="mode!='view'" name="details" class=" forTextAreaEntry scheduleBoxes dateBox"
+              [(ngModel)] = "result.proposal.budgetHeader.comments" maxlength="4000"></textarea>
+              <span *ngIf="showOrHideDataFlagsObj?.mode ==='view'">{{result?.proposal?.budgetHeader?.comments}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

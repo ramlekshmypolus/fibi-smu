@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { ProposalService } from './services/proposal.service';
 import { CommonService } from '../common/services/common.service';
+import { ProposalBudgetService } from './proposal-budget/proposal-budget.service';
 import { QuestionnaireService } from './questionnaire/questionnaire.service';
 
 declare var $: any;
@@ -39,6 +40,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isShowNotifyApproverSuccess: false,
     isShowNotificationPISuccessModal: false,
     isAttachmentEditable: false,
+    isPeriodsTotalDisabled: false
   };
 
   isShowMoreOptions = false;
@@ -77,10 +79,17 @@ export class ProposalComponent implements OnInit, OnDestroy {
   selectedAttachmentStop: any = [];
   commentsApproverExpand: any = {};
 
+  budgetOverviewDateObj: any = {};
+  budgetPeriodsDateObj: any = {};
+  selectedRateClassType = '';
+  isShowRatesOpen = false;
+  isApplyRates = false;
+
   private autoSave_subscription: ISubscription;
 
   constructor( private _route: ActivatedRoute, private _proposalService: ProposalService,
-    private _router: Router, private _commonService: CommonService, private _questionnaireService: QuestionnaireService ) {
+               private _router: Router, private _commonService: CommonService, private _proposalBudgetService: ProposalBudgetService,
+               private _questionnaireService: QuestionnaireService ) {
     document.addEventListener( 'mouseup', this.offClickHandler.bind( this ) );
     this.proposalDataBindObj.dataChangeFlag = false;
     this.autoSave_subscription = Observable.interval(1000 * 1000).subscribe(x => {
@@ -122,8 +131,11 @@ export class ProposalComponent implements OnInit, OnDestroy {
         'userFullName': localStorage.getItem('userFullname'), 'proposal': this.result.proposal})
           .subscribe( data => {
             let tempryProposalObj: any = {};
+            /*no full update: for getting objects in VO that dosen't get returned in craeteBudget call */
             tempryProposalObj = data;
             this.result.proposal = tempryProposalObj.proposal;
+            this.result.sysGeneratedCostElements = tempryProposalObj.sysGeneratedCostElements;
+            this.result.tbnPersons = tempryProposalObj.tbnPersons;
             this.showOrHideDataFlagsObj.currentTab = currentTab;
             localStorage.setItem('currentTab', currentTab);
           });
@@ -243,6 +255,9 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = (saveType === 'autoSave') ?
                                                           this.showOrHideDataFlagsObj.isShowSaveSuccessModal : false;
     this.proposalValidation();
+    if (this.result.proposal.proposalId) {
+      this.setProposalBudgetDetails();
+    }
     if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
       document.getElementById('openWarningModal').click();
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
@@ -780,6 +795,95 @@ export class ProposalComponent implements OnInit, OnDestroy {
       document.getElementById('openSucessModal').click();
     } );
   }
+
+  setProposalBudgetDetails() {
+    if (this.budgetOverviewDateObj.isStartError || this.budgetOverviewDateObj.isEndError ||
+        this.budgetOverviewDateObj.budgetStartDate == null || this.budgetOverviewDateObj.budgetEndDate == null) {
+      this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
+      this.mandatoryObj.field = 'budgetDates';
+    } else {
+      this.result.proposal.budgetHeader.startDate = new Date(this.budgetOverviewDateObj.budgetStartDate).getTime();
+      this.result.proposal.budgetHeader.endDate = new Date(this.budgetOverviewDateObj.budgetEndDate).getTime();
+    }
+    const periodWithoutDate = this.result.proposal.budgetHeader.budgetPeriods.find(
+                              period => period.startDate == null || period.endDate == null);
+    if (periodWithoutDate != null || this.budgetPeriodsDateObj.isStartError || this.budgetPeriodsDateObj.isEndError) {
+      this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
+      this.mandatoryObj.field = 'periodDates';
+    }
+    this.timeStampToPeriodDates();
+  }
+
+  timeStampToPeriodDates() {
+    for (let period = 0; period < this.result.proposal.budgetHeader.budgetPeriods.length; period++) {
+      this.result.proposal.budgetHeader.budgetPeriods[period].startDate =
+          this.result.proposal.budgetHeader.budgetPeriods[period].startDate === null ?
+          null : new Date(this.result.proposal.budgetHeader.budgetPeriods[period].startDate);
+      this.result.proposal.budgetHeader.budgetPeriods[period].endDate =
+          this.result.proposal.budgetHeader.budgetPeriods[period].endDate === null ?
+          null : new Date(this.result.proposal.budgetHeader.budgetPeriods[period].endDate);
+    }
+  }
+
+  /* changeApplicableRate(rateObj, changedRate) {
+    this.isApplyRates = true;
+    for (const rate of this.result.proposal.budgetHeader.proposalRates) {
+      if (rate.proposalRateId === rateObj.proposalRateId) {
+        rate.applicableRate = changedRate;
+      }
+    }
+  }*/
+
+  applyRates(event) {
+      event.preventDefault();
+      const requestObj = {
+        userName: localStorage.getItem( 'currentUser' ),
+        userFullName: localStorage.getItem( 'userFullname' ),
+        proposal: this.result.proposal
+      };
+      this._proposalBudgetService.applyRates ( requestObj ).subscribe( (data: any) => {
+          this.result.proposal = data.proposal;
+          this.timeStampToPeriodDates();
+      });
+  }
+
+  resetBudgetRates() {
+      const requestObj = {
+        userName: localStorage.getItem( 'currentUser' ),
+        userFullName: localStorage.getItem( 'userFullname' ),
+        proposal: this.result.proposal
+      };
+      this._proposalBudgetService.resetBudgetRates ( requestObj ).subscribe( (data: any) => {
+          this.result.proposal = data.proposal;
+          this.timeStampToPeriodDates();
+      });
+  }
+
+  getSyncBudgetRates() {
+      const requestObj = {
+        userName: localStorage.getItem( 'currentUser' ),
+        userFullName: localStorage.getItem( 'userFullname' ),
+        proposal: this.result.proposal
+      };
+      this._proposalBudgetService.getSyncBudgetRates ( requestObj ).subscribe( (data: any) => {
+        this.result.proposal = data.proposal;
+        this.timeStampToPeriodDates();
+      });
+    }
+
+    printBudget(event) {
+      event.preventDefault();
+      let data1: any;
+      this._proposalBudgetService.printBudget(this.result.proposalId).subscribe(
+        data => {
+          data1 = data;
+          const printBudgetElement = document.createElement( 'a' );
+          document.body.appendChild(printBudgetElement);
+          printBudgetElement.href = URL.createObjectURL( data );
+          printBudgetElement.download = this.result.proposal.title;
+          printBudgetElement.click();
+      });
+    }
 
   ngOnDestroy() {
     this.autoSave_subscription.unsubscribe();

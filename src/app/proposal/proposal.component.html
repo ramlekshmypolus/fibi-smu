@@ -40,12 +40,15 @@
                 <span #moreOptionsBtn>
                   <button *ngIf="result?.proposal?.proposalId" title="More Actions" class="btn more-btn" (click)="isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
                   <ul class="more-options-box" *ngIf="isShowMoreOptions">
-                    <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11 || result?.proposal?.proposalStatus?.statusCode == 3" data-toggle="modal" data-target="#routeLogModal"
+                    <li title="View routelog"><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11 || result?.proposal?.proposalStatus?.statusCode == 3" data-toggle="modal" data-target="#routeLogModal"
                         (click)="isShowMoreOptions = !isShowMoreOptions;openRouteLog();"><i class="fa fa-history" aria-hidden="true" ></i>Route Log</a></li>
-                    <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
-                    <li><a class="dropdown-item" href="" (click)="isShowMoreOptions = !isShowMoreOptions;updatePreReviewAttachmentSelectbox();" data-target="#completePreReviewModal" data-toggle="modal" *ngIf="result.proposal?.isPreReviewer == true"><i class="fa fa-check" aria-hidden="true"></i>Complete Pre-review</a></li>
-                    <li><a class="dropdown-item" href="" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId && showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME'"><i class="fa fa-copy" aria-hidden="true"></i>Copy Proposal</a></li>
-                    <li><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event);isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-print" aria-hidden="true"></i>Print Proposal</a></li>
+                    <li title="Pre-review"><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
+                    <li title="Complete Pre-review"><a class="dropdown-item" href="" (click)="isShowMoreOptions = !isShowMoreOptions;updatePreReviewAttachmentSelectbox();" data-target="#completePreReviewModal" data-toggle="modal" *ngIf="result.proposal?.isPreReviewer == true"><i class="fa fa-check" aria-hidden="true"></i>Complete Pre-review</a></li>
+                    <li title="Copy Proposal"><a class="dropdown-item" href="" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId && showOrHideDataFlagsObj.currentTab === 'PROPOSAL_HOME'"><i class="fa fa-copy" aria-hidden="true"></i>Copy Proposal</a></li>
+                    <li title="Print Proposal"><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printProposal($event);isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-print" aria-hidden="true"></i>Print Proposal</a></li>
+                    <li title="View Rates"><a class="dropdown-item" href="" data-toggle="modal" data-target="#showRatesModal" (click)="isShowRates = true; selectedRateClassType = result.rateClassTypes[0]; isShowMoreOptions = !isShowMoreOptions" *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET'"><i class="fa fa-percent" aria-hidden="true"></i>Rates</a></li>
+                    <li title="Calculate Budget"><a class="dropdown-item" href="" *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET' && result?.proposal?.budgetHeader?.isAutoCalc" (click)="isShowMoreOptions = !isShowMoreOptions; applyRates($event)"><i class="fa fa-calculator" aria-hidden="true"></i>Calculate</a></li>
+                    <li title="Print Budget"><a class="dropdown-item" href="" (click)="isShowMoreOptions = !isShowMoreOptions; printBudget($event)" *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET'"><i class="fa fa-print" aria-hidden="true"></i>Print Budget</a></li>
                   </ul>
               </span>
               </div>
@@ -53,7 +56,7 @@
           </div>
         </div>
         <app-proposal-home *ngIf="showOrHideDataFlagsObj.currentTab == 'PROPOSAL_HOME' && result.proposal != null" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [warningMsgObj]="warningMsgObj" [proposalDataBindObj]="proposalDataBindObj" [mandatoryObj]="mandatoryObj"></app-proposal-home>
-        <app-proposal-budget *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET' && result.proposal != null" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-proposal-budget>
+        <app-proposal-budget *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET'" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj" [budgetOverviewDateObj]="budgetOverviewDateObj" [budgetPeriodsDateObj]="budgetPeriodsDateObj"></app-proposal-budget>
         <app-questionnaire *ngIf="showOrHideDataFlagsObj.currentTab == 'QUESTIONNAIRE' && result.proposal != null" [result]="result" [showOrHideDataFlagsObj]="showOrHideDataFlagsObj"></app-questionnaire>
       </div>
     </section>
@@ -618,6 +621,61 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
         <button type="button" class="btnSkin btn-secondary" (click)="isShowRouteLog = false" data-dismiss="modal" data-toggle="modal">Close</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- SHOW RATES MODAL -->
+<div class="modal fade mySkinDialog" *ngIf="isShowRates" id="showRatesModal" tabindex="-1"
+    tabindex="-1" role="dialog" aria-labelledby="showRatesTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+	  <div class="modal-content">
+		  <div class="modal-header">
+			  <h5 class="modal-title">Rates</h5>
+			  <button type="button" class="close" data-dismiss="modal" (click)="!isShowRates">
+				  <span aria-hidden="true">&times;</span>
+			  </button>
+		  </div>
+		  <div class="modal-body">
+			  <div class="tabs">
+			    <ul class="nav nav-tabs" role="tablist" >
+            <li *ngFor="let rateClassType of result?.rateClassTypes" role="presentation" [ngClass]="selectedRateClassType == rateClassType?'activeTab':'inActiveTab'">
+              <a href="" role="tab" data-toggle="tab" (click)="selectedRateClassType=rateClassType">
+                {{rateClassType}}
+              </a>
+            </li>
+			    </ul>
+			    <div class="tab-content"></div>
+			    <table id="ratesTable" class="tableStyle tableSection">
+					  <thead><tr>
+              <th><span class="text">Rate Type</span></th>
+              <th><span class="text">Fiscal Year</span></th>
+              <th><span class="text">Start Date</span></th>
+              <th><span class="text">Institute Rate</span></th>
+              <th><span class="text">Applicable Rate</span></th>
+					  </tr></thead>
+					  <tbody id="mytest" *ngIf="result?.proposal?.budgetHeader?.proposalRates?.length > 0">
+						  <tr *ngFor="let rate of result?.proposal?.budgetHeader?.proposalRates">
+							  <ng-container *ngIf="rate.rateClass.description == selectedRateClassType">
+								  <td>{{rate.rateType.description}}</td>
+								  <td>{{rate.fiscalYear}}</td>
+								  <td>{{rate.startDate | date: 'MM/dd/yyyy'}}</td>
+								  <td>{{rate.instituteRate}}</td>
+								  <td>
+                    <input type="text" [(ngModel)]="rate.applicableRate" (ngModelChange)="isApplyRates=true" [disabled]="showOrHideDataFlagsObj.mode === 'view'" class="dateBox committeeBox"/>
+                  </td>
+							  </ng-container>
+						  </tr>
+					  </tbody>
+				  </table>
+				</div>
+		  </div>
+		  <div class="modal-footer">
+			  <button type="button" *ngIf="isApplyRates" [disabled]="showOrHideDataFlagsObj.mode==='view'" class="btnSkin btnSkinPrimary" title="Apply rates" (click)="applyRates($event)">Apply Rates</button>
+			  <button type="button" class="btnSkin btnSkinPrimary"  [disabled]="showOrHideDataFlagsObj.mode==='view'" title="Sync Rates" (click)="getSyncBudgetRates()">Sync Rates</button>
+			  <button type="button" class="btnSkin btnSkinPrimary" [disabled]="showOrHideDataFlagsObj.mode==='view'" title="Reset Rates" (click)="resetBudgetRates()">Reset</button>
+			  <button type="button" class="btnSkin btnSkinPrimary" data-dismiss="modal">Close</button>
+		  </div>
+	  </div>
   </div>
 </div>
 
