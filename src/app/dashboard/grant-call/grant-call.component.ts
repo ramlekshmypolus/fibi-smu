@@ -20,7 +20,7 @@ export class GrantCallListComponent implements OnInit {
   grantId: number;
 
   constructor( private _dashboardService: DashboardService, private _router: Router,
-               private _commonService: CommonService ) { }
+               public _commonService: CommonService ) { }
 
   ngOnInit() {
     this.grantCallRequestObject.tabIndex = 'GRANT';

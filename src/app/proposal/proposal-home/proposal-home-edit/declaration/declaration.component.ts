@@ -33,7 +33,7 @@ export class DeclarationComponent implements OnInit {
   requestObject: any = {};
   index: number;
 
-  constructor(private _commonService: CommonService,
+  constructor(public _commonService: CommonService,
     private _grantService: GrantService,
     private _proposalHomeService: ProposalHomeService) { }
 

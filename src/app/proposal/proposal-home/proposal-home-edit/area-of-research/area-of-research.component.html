@@ -9,7 +9,7 @@
   <table class="table tableSkin grid2">
     <tr id="area-of-research-add-row" *ngIf="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
       <td class="text-right"><label>Type:</label></td>
-      <td style="width: 15%"> <select class="committeeBox" id="area-of-research-type" [(ngModel)]="proposalDataBindObj.selectedResearchType"
+      <td style="width: 15%"> <select class="committeeBox" id="prop-area-of-research-type" [(ngModel)]="proposalDataBindObj.selectedResearchType"
           (change)="researchTypeChange($event.target.value)">
           <option *ngFor="let type of result?.proposalResearchTypes" (value)="type">{{type.description}}</option>
         </select>
@@ -18,7 +18,7 @@
       <td>
         <div>
           <div class="searchBox memberSearchBox">
-            <input type="text" id="area-of-research" [placeholder]="(proposalDataBindObj.selectedResearchType== 'Area of Research')?'Search here for Area of Research':'Search here for Area of Excellence'"
+            <input type="text" id="prop-area-of-research" [placeholder]="(proposalDataBindObj.selectedResearchType== 'Area of Research')?'Search here for Area of Research':'Search here for Area of Excellence'"
               [(ngModel)]="selectedAreaOfResearch" (blur)="isSearchResearchTypeActive = false" (focus)="isSearchResearchTypeActive = true"
               class="member_search" (ngModelChange)="researchAreaTypeChange(proposalDataBindObj.selectedResearchType)" />
             <a href="#" class="searchButton" (click)="clearResearchTypeSearchBox($event)"><i [ngClass]="researchAreaTypeIconClass"></i></a>
@@ -38,7 +38,7 @@
         </div>
       </td>
       <td class="text-right">
-        <button class="btnSkin btnSkinPrimary" (click)="addAreaOfResearch()">Add</button>
+        <button class="btnSkin btnSkinPrimary" id="prop-add-area-of-research-btn" (click)="addAreaOfResearch()">Add</button>
       </td>
     </tr>
     <tr *ngIf="warningMsgObj.areaOfResearchWarningMsg != null">
@@ -60,7 +60,7 @@
         <td colspan="2" *ngIf="researchArea.proposalExcellenceArea? researchArea.proposalExcellenceArea.description: researchArea.researchArea.description;let description; ">{{description}}</td>
         <td>
           <ul class="actionButtonGroup">
-            <li><a href="#" id="area-of-research-delete-btn" data-toggle="modal" data-target="#deleteResearchArea"
+            <li><a href="#" id="prop-area-of-research-delete-btn" data-toggle="modal" data-target="#deleteResearchArea"
                 (click)="temprySaveAreaOfResearch($event,researchArea,i)"><i class="fa fa-trash-o" aria-hidden="true"
                   title="Click here to delete this Research Area"></i></a></li>
           </ul>
@@ -69,7 +69,7 @@
       <tr>
         <td><label>Description:</label></td>
         <td colspan="8">
-          <textarea id="area-of-research-desc" name="description" [(ngModel)]="result.proposal.researchDescription"
+          <textarea id="prop-area-of-research-desc" name="description" [(ngModel)]="result.proposal.researchDescription"
           (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" class="forTextAreaEntry scheduleBoxes" placeholder=""></textarea>
         </td>
       </tr>
@@ -84,8 +84,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete</h5>
-
-        <button type="button" id="area-of-research-close" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" id="prop-area-of-research-dismiss" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -93,8 +92,8 @@
         <p>Are you sure you want to delete this item?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" id="area-of-research-close-btn" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteResearchArea = false">No</button>
-        <button type="button" id="area-of-research-delete" class="btnSkin btnSkinPrimary" (click)="deleteAreaOfResearch()" data-dismiss="modal">Yes</button>
+        <button type="button" id="prop-area-of-research-close-btn" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteResearchArea = false">No</button>
+        <button type="button" id="prop-area-of-research-delete" class="btnSkin btnSkinPrimary" (click)="deleteAreaOfResearch()" data-dismiss="modal">Yes</button>
       </div>
     </div>
   </div>

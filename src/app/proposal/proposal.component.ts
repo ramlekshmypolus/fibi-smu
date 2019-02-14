@@ -40,6 +40,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isShowNotifyApproverSuccess: false,
     isShowNotificationPISuccessModal: false,
     isAttachmentEditable: false,
+    isSaveOnTabSwitch: false,
     isPeriodsTotalDisabled: false
   };
 
@@ -50,14 +51,18 @@ export class ProposalComponent implements OnInit, OnDestroy {
   isAttachmentIncomplete = false;
   isShowRouteLog = false;
   isQuestionnaireComplete = false;
+  isShowRatesOpen = false;
+  isApplyRates = false;
 
   toast_message = '';
+  rate_toast_message = '';
   clearField;
   superUser = localStorage.getItem( 'superUser');
   approveDisapprovePlaceHolder: string;
   modalAproveHeading: string;
   approveComments: string;
-  temSavecurrentTab: string;
+  tempSavecurrentTab: string;
+  selectedRateClassType = '';
 
   selectedReviewAttachment = [];
   isReviewTypeOpen = [];
@@ -78,21 +83,17 @@ export class ProposalComponent implements OnInit, OnDestroy {
   workflowDetailsMap: any = [];
   selectedAttachmentStop: any = [];
   commentsApproverExpand: any = {};
-
   budgetOverviewDateObj: any = {};
   budgetPeriodsDateObj: any = {};
-  selectedRateClassType = '';
-  isShowRatesOpen = false;
-  isApplyRates = false;
 
   private autoSave_subscription: ISubscription;
 
   constructor( private _route: ActivatedRoute, private _proposalService: ProposalService,
-               private _router: Router, private _commonService: CommonService, private _proposalBudgetService: ProposalBudgetService,
-               private _questionnaireService: QuestionnaireService ) {
+    private _router: Router, private _commonService: CommonService, private _questionnaireService: QuestionnaireService,
+    private _proposalBudgetService: ProposalBudgetService) {
     document.addEventListener( 'mouseup', this.offClickHandler.bind( this ) );
     this.proposalDataBindObj.dataChangeFlag = false;
-    this.autoSave_subscription = Observable.interval(1000 * 1000).subscribe(x => {
+    this.autoSave_subscription = Observable.interval(1000 * 120).subscribe(x => {
       if (this.result.proposal.proposalId !== null && this.result.proposal.statusCode !== 11) {
           this.saveProposal('autoSave');
       }
@@ -124,14 +125,14 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   showTab(currentTab) {
-    this.temSavecurrentTab = currentTab;
+    this.tempSavecurrentTab = currentTab;
     if (currentTab === 'BUDGET' && this.result.proposal.budgetHeader == null) {
       if (this.result.proposal.proposalId != null ) {
         this._proposalService.createProposalBudget({'userName': localStorage.getItem('currentUser'),
         'userFullName': localStorage.getItem('userFullname'), 'proposal': this.result.proposal})
           .subscribe( data => {
             let tempryProposalObj: any = {};
-            /*no full update: for getting objects in VO that dosen't get returned in craeteBudget call */
+			/*no full update: for getting objects in VO that dosen't get returned in craeteBudget call */
             tempryProposalObj = data;
             this.result.proposal = tempryProposalObj.proposal;
             this.result.sysGeneratedCostElements = tempryProposalObj.sysGeneratedCostElements;
@@ -145,9 +146,13 @@ export class ProposalComponent implements OnInit, OnDestroy {
     } else if (currentTab === 'QUESTIONNAIRE' && this.result.proposal.proposalId == null) {
         this.saveProposal('partialSave');
     } else {
-        this.showOrHideDataFlagsObj.currentTab = currentTab;
-        localStorage.setItem('currentTab', currentTab);
-    }
+        if (this.proposalDataBindObj.dataChangeFlag) {
+          this.showOrHideDataFlagsObj.isSaveOnTabSwitch = true;
+        } else {
+          this.showOrHideDataFlagsObj.currentTab = currentTab;
+          localStorage.setItem('currentTab', currentTab);
+        }
+      }
   }
 
   offClickHandler( event: any ) {
@@ -298,16 +303,18 @@ export class ProposalComponent implements OnInit, OnDestroy {
                 toastId.className = toastId.className.replace('show', '');
                 }, 2000);
               } else if (saveType === 'partialSave') {
-                this.showTab(this.temSavecurrentTab);
+                this.showTab(this.tempSavecurrentTab);
               } else if (saveType === 'promptSave') {
                 $('#saveAndExitModal').modal('hide');
                 this._router.navigate(['/fibi/dashboard/proposalList']);
               } else if (saveType === 'saveOnTabSwitch') {
                 $('#warning-modal').modal('hide');
-                this.showTab(this.temSavecurrentTab);
+                this.showTab(this.tempSavecurrentTab);
               } else {
                 this.showOrHideDataFlagsObj.isShowSaveSuccessModal = true;
                 document.getElementById('openSucessModal').click();
+              } if (this.result.proposal.proposalId) {
+                this.timeStampToPeriodDates();
               }
           });
     }
@@ -343,6 +350,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   closeWarningModal() {
     $('#warning-modal').modal('hide');
     $('#successModal').modal('hide');
+    $('#saveAndExitModal').modal('hide');
     this.showOrHideDataFlagsObj.isShowSaveWarningModal = false;
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = false;
     this.showOrHideDataFlagsObj.isShowSubmitSuccessModal = false;
@@ -351,9 +359,22 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.showOrHideDataFlagsObj.isShowNotifyApprover = false;
     this.showOrHideDataFlagsObj.isShowNotifyApproverSuccess = false;
     this.showOrHideDataFlagsObj.isShowNotificationPISuccessModal = false;
+    this.showOrHideDataFlagsObj.isSaveOnTabSwitch = false;
     this.warningMsgObj.submitConfirmation = null;
     this.warningMsgObj.submitWarningMsg = null;
     this.warningMsgObj.errorMsg = null;
+  }
+
+  closeSaveAndExitModal() {
+    this.proposalValidation();
+    if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
+      document.getElementById('openWarningModal').click();
+      this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
+      this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
+    } else {
+      this.proposalDataBindObj.dataChangeFlag = false;
+      this.showTab(this.tempSavecurrentTab);
+    }
   }
 
   copyProposal(event) {
@@ -639,7 +660,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.requestObject = {};
     this.requestObject.actionType = 'A';
     this.isAttachmentIncomplete = false;
-    if (!this.result.finalApprover && this.result.isApproved === false) {
+    if (this.result.finalApprover && this.result.isApproved === false) {
       const attachments = this.result.proposal.proposalAttachments.find(attachment => attachment.narrativeStatus.code === 'I');
       this.isAttachmentIncomplete = (attachments != null) ? true : false;
     }
@@ -825,15 +846,6 @@ export class ProposalComponent implements OnInit, OnDestroy {
     }
   }
 
-  /* changeApplicableRate(rateObj, changedRate) {
-    this.isApplyRates = true;
-    for (const rate of this.result.proposal.budgetHeader.proposalRates) {
-      if (rate.proposalRateId === rateObj.proposalRateId) {
-        rate.applicableRate = changedRate;
-      }
-    }
-  }*/
-
   applyRates(event) {
       event.preventDefault();
       const requestObj = {
@@ -844,6 +856,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this._proposalBudgetService.applyRates ( requestObj ).subscribe( (data: any) => {
           this.result.proposal = data.proposal;
           this.timeStampToPeriodDates();
+          this.showToast();
       });
   }
 
@@ -856,6 +869,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this._proposalBudgetService.resetBudgetRates ( requestObj ).subscribe( (data: any) => {
           this.result.proposal = data.proposal;
           this.timeStampToPeriodDates();
+          this.showToast();
       });
   }
 
@@ -868,22 +882,32 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this._proposalBudgetService.getSyncBudgetRates ( requestObj ).subscribe( (data: any) => {
         this.result.proposal = data.proposal;
         this.timeStampToPeriodDates();
+        this.showToast();
       });
     }
 
-    printBudget(event) {
-      event.preventDefault();
-      let data1: any;
-      this._proposalBudgetService.printBudget(this.result.proposalId).subscribe(
-        data => {
-          data1 = data;
-          const printBudgetElement = document.createElement( 'a' );
-          document.body.appendChild(printBudgetElement);
-          printBudgetElement.href = URL.createObjectURL( data );
-          printBudgetElement.download = this.result.proposal.title;
-          printBudgetElement.click();
-      });
-    }
+  printBudget(event) {
+    event.preventDefault();
+    let data1: any;
+    this._proposalBudgetService.printBudget(this.result.proposal.proposalId).subscribe(
+    data => {
+      data1 = data;
+      const printBudgetElement = document.createElement( 'a' );
+      document.body.appendChild(printBudgetElement);
+      printBudgetElement.href = URL.createObjectURL( data );
+      printBudgetElement.download = this.result.proposal.title;
+      printBudgetElement.click();
+    });
+   }
+
+   showToast() {
+    const toastId = document.getElementById('rate-toast-success');
+    this.rate_toast_message = 'Rates updated successfully';
+    toastId.className = 'show';
+    setTimeout(function () {
+    toastId.className = toastId.className.replace('show', '');
+    }, 2000);
+  }
 
   ngOnDestroy() {
     this.autoSave_subscription.unsubscribe();

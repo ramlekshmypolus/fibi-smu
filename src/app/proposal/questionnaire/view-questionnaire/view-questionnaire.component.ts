@@ -287,7 +287,7 @@ export class ViewQuestionnaireComponent implements OnInit {
     this.QuestionnaireCompletionFlag = 'Y';
     this.checkQuestionaireCompletion();
     this.result.questionnaire_complete_flag = this.QuestionnaireCompletionFlag;
-    const toastId = document.getElementById('toast-success-id');
+    const toastId = document.getElementById('prop-save-questionnaire-success');
     this._questionnaireService.saveQuestionnaire(this.result, this.filesArray).subscribe(
       data => {
         this.result = data;

@@ -19,7 +19,7 @@ export class ScheduleComponent implements OnInit {
   requestObject = this._commonService.getDashboardObject();
 
   constructor( private _dashboardService: DashboardService, private _router: Router,
-              private _commonService: CommonService) { }
+              public _commonService: CommonService) { }
 
   ngOnInit() {
     this.requestObject.tabIndex = 'SCHEDULE';

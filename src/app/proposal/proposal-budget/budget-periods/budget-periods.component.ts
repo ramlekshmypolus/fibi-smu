@@ -515,7 +515,7 @@ export class BudgetPeriodsComponent implements OnInit {
     this.elasticSearchOptions.index = !this.nonEmployeeFlag ? 'fibiperson' : 'fibirolodex';
     this.elasticSearchOptions.type  = !this.nonEmployeeFlag ? 'person' : 'rolodex';
     this.elasticSearchOptions.contextField = !this.nonEmployeeFlag ? 'full_name' : 'first_name';
-    this.elasticSearchOptions.fields = !this.nonEmployeeFlag ? {full_name: {}} :
+    this.elasticSearchOptions.fields = !this.nonEmployeeFlag ? {full_name: {}, prncpl_nm: {}} :
                                         {first_name: {}, middle_name: {}, last_name: {}, organization: {}};
   }
 

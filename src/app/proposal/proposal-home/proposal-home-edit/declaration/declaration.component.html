@@ -10,33 +10,33 @@
       <table class="table tableSkin grid2">
         <tr id="addFundingSupportRow">
           <td><label class="block-display">Type of Funding Agency :</label>
-            <select id="declaration-funding-type" [(ngModel)]="selectedSponsorType" class="committeeBox" (change)="sponsorTypeChange($event.target.value)">
+            <select id="prop-declaration-funding-type" [(ngModel)]="selectedSponsorType" class="committeeBox" (change)="sponsorTypeChange($event.target.value)">
               <option [value]=null>--Select--</option>
               <option *ngFor="let type of result.sponsorTypes" (value)="type">{{type.description}}</option>
             </select>
           </td>
           <td><label class="block-display">Name of Funding Agency:</label>
-            <select id="declaration-sponsor-name" [(ngModel)]="selectedSponsorName" (change)="sponsorNameChange($event.target.value)"
+            <select id="prop-declaration-sponsor-name" [(ngModel)]="selectedSponsorName" (change)="sponsorNameChange($event.target.value)"
               class="committeeBox">
               <option [value]=null>--Select--</option>
               <option *ngFor="let sponsor of result.sponsors" (value)="sponsor">{{sponsor?.sponsorName}}</option>
             </select></td>
           <td><label>Start Date:</label>
-            <span class="dateField"><input id="declaration-start-date" [owlDateTime]="startDt" placeholder="mm/dd/yyyy"
+            <span class="dateField"><input id="prop-declaration-start-date" [owlDateTime]="startDt" placeholder="mm/dd/yyyy"
            [(ngModel)]="fundingStartDate" class="dateWidth committeeBox dateBox" (keypress)="_commonService._keyPress($event, 'date')" />
-              <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="startDt"></i>
+              <i class="fa fa-calendar fa-large hand-cursor insidePicker" id="prop-declaration-start-date-icon" [owlDateTimeTrigger]="startDt"></i>
               <owl-date-time #startDt [pickerType]="'calendar'" (afterPickerClosed)="sponsorDateValidation()"></owl-date-time>
             </span>
           </td>
           <td><label>End Date:</label>
-            <span class="dateField"><input id="declaration-end-date" [owlDateTime]="endDt"
+            <span class="dateField"><input id="prop-declaration-end-date" [owlDateTime]="endDt"
                 placeholder="mm/dd/yyyy" [(ngModel)]="fundingEndDate" class="dateWidth committeeBox dateBox" (keypress)="_commonService._keyPress($event, 'date')" />
-              <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="endDt"></i>
+              <i class="fa fa-calendar fa-large hand-cursor insidePicker" id="prop-declaration-end-date-icon" [owlDateTimeTrigger]="endDt"></i>
               <owl-date-time #endDt [pickerType]="'calendar'" (afterPickerClosed)="sponsorDateValidation()"></owl-date-time>
             </span>
           </td>
           <td><label class="block-display">Amount</label>
-            <input type="number" id="declaration-amount" class="committeeBox" [(ngModel)]="sponsorAmount" /></td>
+            <input type="number" id="prop-declaration-amount" class="committeeBox" [(ngModel)]="sponsorAmount" /></td>
           <td><br>
             <button class="btnSkin btnSkinPrimary" id="declaration-add-btn" (click)="addSponsor()">Add</button>
           </td>
@@ -60,7 +60,7 @@
             <td>{{proposalSponsor?.amount | currency:'USD':true}}</td>
             <td>
               <ul class="actionButtonGroup">
-                <li><a href="#" id="declaration-delete-btn" data-toggle="modal" data-target="#deleteSponsor" (click)="temprySaveSponsorObject(proposalSponsor,i)"><i
+                <li><a href="#" id="prop-declaration-delete-btn" data-toggle="modal" data-target="#deleteSponsor" (click)="temprySaveSponsorObject(proposalSponsor,i)"><i
                       class="fa fa-trash-o" aria-hidden="true" title="Click here to delete this Sponsor"></i></a></li>
               </ul>
             </td>
@@ -79,7 +79,7 @@
           </div>
           <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ">
             <div class= "searchBox memberSearchBox">
-              <input type="text" id="declaration-irb-protocol-title" placeholder="" [(ngModel)]="selectedProtocol" (blur)="isSearchProtocolTitleActive = false"
+              <input type="text" id="prop-declaration-irb-protocol-title" placeholder="" [(ngModel)]="selectedProtocol" (blur)="isSearchProtocolTitleActive = false"
                 (focus)="isSearchProtocolTitleActive = true" class="member_search" (ngModelChange)="protocolTitleChangeFunction()" />
               <a href="#" class="searchButton" (click)="clearProtocolSearchBox($event)"><i [ngClass]="protocolIconClass"></i></a>
               <div class="sb-seachresults" *ngIf="isSearchProtocolTitleActive">
@@ -112,7 +112,7 @@
                       <td>{{protocol?.protocol?.expirationDate | date:'MM/dd/yyyy'}}</td>
                       <td>
                         <ul class="actionButtonGroup">
-                          <li><a href="#" id="declaration-delete-btn" data-toggle="modal" data-target="#deleteIRB" (click)="temprySaveIRBProtocolDetails($event,protocol,i)"><i class="fa fa-trash-o"
+                          <li><a href="#" id="prop-declaration-delete-btn" data-toggle="modal" data-target="#deleteIRB" (click)="temprySaveIRBProtocolDetails($event,protocol,i)"><i class="fa fa-trash-o"
                                 aria-hidden="true" title="Click here to delete {{protocol?.protocol?.title}}"></i></a></li>
                         </ul>
                       </td>
@@ -130,8 +130,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete</h5>
-
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" id="prop-dlt-sponsor-dismiss" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -139,8 +138,8 @@
         <p>Are you sure you want to delete this item?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteSponsorModal = false">No</button>
-        <button type="button" class="btnSkin btnSkinPrimary" (click)="deleteSponsor()" data-dismiss="modal">Yes</button>
+        <button type="button" class="btnSkin btn-secondary" id="prop-dlt-sponsor-no-btn" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteSponsorModal = false">No</button>
+        <button type="button" class="btnSkin btnSkinPrimary" id="prop-dlt-sponsor-yes-btn" (click)="deleteSponsor()" data-dismiss="modal">Yes</button>
       </div>
     </div>
   </div>
@@ -153,8 +152,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Delete</h5>
-
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" id="prop-dlt-irb-dismiss" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -162,8 +160,8 @@
           <p>Are you sure you want to delete this item?</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteIRBDetails = false">No</button>
-          <button type="button" class="btnSkin btnSkinPrimary" (click)="deleteIRBProtocolDetails()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btnSkin btn-secondary" id="prop-dlt-irb-no-btn" data-dismiss="modal" data-toggle="modal" (click)="isShowDeleteIRBDetails = false">No</button>
+          <button type="button" class="btnSkin btnSkinPrimary" id="prop-dlt-irb-yes-btn" (click)="deleteIRBProtocolDetails()" data-dismiss="modal">Yes</button>
         </div>
       </div>
     </div>

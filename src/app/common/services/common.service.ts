@@ -4,22 +4,32 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 @Injectable()
 export class CommonService {
 
-  baseUrl = '';
+  // baseUrl = 'http://192.168.1.139:8080/fibi4';
+   baseUrl = '';
+  // baseUrl = 'https://demo.fibiweb.com/fibi4';
+  // baseUrl = 'https://polus.fibiweb.com/fibi4';
 
-  elasticIndexUrl = 'http://192.168.1.76:9200/';
+   elasticIndexUrl = 'http://192.168.1.76:9200/';
+  // elasticIndexUrl = 'http://52.20.110.7:9200/';
+  // elasticIndexUrl = 'https://demo.fibiweb.com:4445/';
+  // elasticIndexUrl = 'https://polus.fibiweb.com:4445/';
+  // elasticIndexUrl = 'https://demo.fibiweb.com/elastic/';
 
-  // outputPath = 'http://polus.fibiweb.com/kc-dev';
-  outputPath = 'http://192.168.1.139:8080/kc-dev';
+   outputPath = 'http://192.168.1.139:8080/kc-dev';
+  // outputPath = 'https://demo.fibiweb.com/kc-dev';
+  // outputPath = 'https://polus.fibiweb.com/kc-dev';
 
-  // outputPathAB = 'http://polus.fibiweb.com/AwardBudgetTool';
   outputPathAB = 'http://192.168.1.139:8080/AwardBudgetTool';
+  // outputPathAB = 'https://demo.fibiweb.com/AwardBudgetTool';
+  // outputPathAB = 'https://polus.fibiweb.com/AwardBudgetTool';
 
-  outputPathOST = 'http://192.168.1.139:8080/osr';
-  // outputPathOST = 'http://polus.fibiweb.com/osr';
+  outputPathOST = 'http://192.168.1.139:8080/sst';
+  // outputPathOST = 'https://demo.fibiweb.com/sst';
+  // outputPathOST = 'https://polus.fibiweb.com/sst';
 
   IRBOutputPath = 'http://192.168.1.139:8080/fibi-irb/dashboard#/irb/dashboard';
-  // IRBOutputPath = 'http://polus.fibiweb.com/fibi-irb/dashboard#/irb/dashboard';
-
+  // IRBOutputPath = 'https://demo.fibiweb.com/fibi-irb/dashboard#/irb/dashboard';
+  // IRBOutputPath = 'https://polus.fibiweb.com/fibi-irb/dashboard#/irb/dashboard';
 
   dashboardRequestObject = {
     property1: '',

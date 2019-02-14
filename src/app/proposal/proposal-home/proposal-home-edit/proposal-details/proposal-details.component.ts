@@ -28,7 +28,7 @@ export class ProposalDetailsComponent implements OnInit {
   sponsorIconClass  = 'fa fa-search fa-med';
   keywordIconClass = 'fa fa-search fa-med';
 
-  constructor( private _proposalHomeService: ProposalHomeService, private _commonService: CommonService ) { }
+  constructor( private _proposalHomeService: ProposalHomeService, public _commonService: CommonService ) { }
 
   ngOnInit() {
     this.leadUnitIconClass = this.result.proposal.homeUnitName ? 'fa fa-times fa-med' : 'fa fa-search fa-med';

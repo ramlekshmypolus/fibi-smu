@@ -2,7 +2,6 @@ import { Component, AfterViewInit, ViewChild, ViewChildren, Renderer, ElementRef
 import { Router } from '@angular/router';
 
 import { LoginService } from './login.service';
-import { CommonService } from '../common/services/common.service';
 
 @Component( {
     selector: 'app-login',
@@ -22,9 +21,7 @@ export class LoginComponent implements AfterViewInit, OnInit{
     @ViewChildren('input') usernameInput;
     @ViewChild('input') input: ElementRef;
 
-    constructor( private loginService: LoginService, private router: Router,
-                private renderer: Renderer, private _commonService : CommonService) {
-    }
+    constructor( private loginService: LoginService, private router: Router, private renderer: Renderer) {}
 
     ngOnInit() {
         if (localStorage.getItem('authToken')) {

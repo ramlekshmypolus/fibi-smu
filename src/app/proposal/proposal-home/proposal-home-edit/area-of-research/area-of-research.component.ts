@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { CommonService } from '../../../../common/services/common.service';
 import { ProposalHomeService } from '../../proposal-home.service';
 
 @Component({
@@ -25,7 +24,7 @@ export class AreaOfResearchDetailsComponent implements OnInit {
   tempraryAreaObject: any = {};
   requestObj: any = {};
 
-  constructor(private _commonService: CommonService, private _proposalHomeService: ProposalHomeService) { }
+  constructor(private _proposalHomeService: ProposalHomeService) { }
 
   ngOnInit() {
     this.proposalDataBindObj.selectedResearchType = this.result.proposalResearchTypes[0].description;

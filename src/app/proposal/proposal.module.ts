@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Ng2CompleterModule } from 'ng2-completer';
 import { ProposalRoutingModule } from './proposal-routing.module';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { Ng2CompleterModule } from 'ng2-completer';
 
 import { ProposalComponent } from './proposal.component';
 import { ProposalHomeComponent } from './proposal-home/proposal-home.component';
@@ -31,6 +31,7 @@ import { ViewQuestionnaireComponent } from './questionnaire/view-questionnaire/v
 @NgModule({
   imports: [
     CommonModule,
+    Ng2CompleterModule,
     ProposalRoutingModule,
     FormsModule,
     SharedModule
@@ -45,14 +46,14 @@ import { ViewQuestionnaireComponent } from './questionnaire/view-questionnaire/v
     BudgetPeriodsComponent,
     ProposalBudgetComponent,
     QuestionnaireComponent,
+    ViewQuestionnaireComponent,
     ProposalDetailsComponent,
     SpecialReviewDetailsComponent,
     ProposalHomeEditComponent,
     AreaOfResearchDetailsComponent,
     SupportingDocumentsComponent,
     ProjectTeamComponent,
-    DeclarationComponent,
-    ViewQuestionnaireComponent
+    DeclarationComponent
   ],
   providers: [ProposalService, ProposalHomeService, GrantService, ProposalBudgetService, QuestionnaireService]
 })
