@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-
 import { ProposalComponent } from '../../proposal.component';
 
 @Component({
@@ -15,7 +14,7 @@ export class ProposalViewComponent implements OnInit {
 
   isAbsDescReadMore = false;
 
-  constructor( private _proposalComponent: ProposalComponent) { }
+  constructor( public _proposalComponent: ProposalComponent) { }
 
   ngOnInit() {}
 

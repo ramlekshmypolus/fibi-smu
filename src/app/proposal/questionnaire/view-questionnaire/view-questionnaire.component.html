@@ -1,11 +1,11 @@
-<div class="col-md-12 users-list-tbl pl-0" *ngIf="questionnaire.questions != undefined && questionnaire.questions != null">
+<div class="col-md-12 users-list-tbl" *ngIf="questionnaire.questions != undefined && questionnaire.questions != null">
   <div class="qst-list-padding">
     <ng-container *ngFor='let question of questionnaire.questions; let indexQuestion = index'>
     <ul [ngSwitch]="true" class="qst-list">
       <li *ngSwitchCase="question.ANSWER_TYPE == 'Text'">
         <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
           <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
-            <div class="col-12 col-sm-12 col-md-12 pl-0">
+            <div class="col-12 col-sm-12 col-md-12">
               <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
             </div>
           </div>
@@ -18,8 +18,8 @@
             <input type="text" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[i+1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();" name="name" />
           </div>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+              <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
+                <button class="qst-closeResultCard qst-help-close-btn" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
                   <i class="fa fa-times"></i>
                 </button>
                 <div class="qst-helpMsg">
@@ -33,7 +33,7 @@
       <li *ngSwitchCase="question.ANSWER_TYPE == 'Radio' || question.ANSWER_TYPE == 'Y/N'|| question.ANSWER_TYPE == 'Y/N/NA'">
         <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
           <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
-            <div class="col-12 col-sm-12 col-md-12 pl-0">
+            <div class="col-12 col-sm-12 col-md-12">
               <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
             </div>
           </div>
@@ -47,8 +47,8 @@
             </span>
           </div>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-            <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-              <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+            <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
+              <button class="qst-closeResultCard qst-help-close-btn" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
                 <i class="fa fa-times"></i>
               </button>
               <div class="qst-helpMsg">
@@ -62,7 +62,7 @@
       <li *ngSwitchCase="question.ANSWER_TYPE == 'Checkbox'">
         <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
           <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
-            <div class="col-12 col-sm-12 col-md-12 pl-0">
+            <div class="col-12 col-sm-12 col-md-12">
               <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
             </div>
           </div>
@@ -78,8 +78,8 @@
             </span>
           </div>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+              <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
+                <button class="qst-closeResultCard qst-help-close-btn" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
                   <i class="fa fa-times"></i>
                 </button>
                 <div class="qst-helpMsg">
@@ -93,7 +93,7 @@
       <li *ngSwitchCase="question.ANSWER_TYPE == 'Attachment'">
         <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
           <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
-            <div class="col-12 col-sm-12 col-md-12 pl-0">
+            <div class="col-12 col-sm-12 col-md-12">
               <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
             </div>
           </div>
@@ -113,8 +113,8 @@
             </button>
         </span>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+              <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
+                <button class="qst-closeResultCard qst-help-close-btn" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
                   <i class="fa fa-times"></i>
                 </button>
                 <div class="qst-helpMsg">
@@ -128,7 +128,7 @@
       <li *ngSwitchCase="question.ANSWER_TYPE == 'Textarea'">
         <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
           <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
-            <div class="col-12 col-sm-12 col-md-12 pl-0">
+            <div class="col-12 col-sm-12 col-md-12">
               <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
             </div>
           </div>
@@ -139,8 +139,8 @@
           </p>
           <textarea name="name" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();"> </textarea>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-              <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-                <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+              <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
+                <button class="qst-closeResultCard qst-help-close-btn" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
                   <i class="fa fa-times"></i>
                 </button>
                 <div class="qst-helpMsg">
@@ -154,7 +154,7 @@
       <li *ngSwitchCase="question.ANSWER_TYPE == 'Date'">
         <div *ngIf="question.SHOW_QUESTION == true" class="show-qst">
           <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL && question.GROUP_LABEL != null">
-            <div class="col-12 col-sm-12 col-md-12 pl-0">
+            <div class="col-12 col-sm-12 col-md-12">
               <p class="prop-quest-category">{{question.GROUP_LABEL}}</p>
             </div>
           </div>
@@ -174,8 +174,8 @@
             </div>
           </div>
         <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
-            <div class="col-12 col-sm-12 col-md-12 pl-0 qst-helpCard">
-              <button class="qst-closeResultCard qst-close-help" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
+            <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
+              <button class="qst-closeResultCard qst-help-close-btn" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
                 <i class="fa fa-times"></i>
               </button>
               <div class="qst-helpMsg">
@@ -218,7 +218,7 @@
               <th>Name</th>
               <th>Type</th>
             </thead>
-            <tbody class="upload-name-style">{{tempFiles[0]}}
+            <tbody class="upload-name-style">
               <tr *ngFor="let item of tempFiles;let i = index" class="qst-atmt-list">
                 <td><span>{{ item.fileName }}</span></td>
                 <td><span>{{ item.type }}</span></td>
@@ -234,4 +234,4 @@
     </div>
   </div>
 </div>
-<div id="toast-success-id">Saved Sucessfully</div>
+<div id="prop-save-questionnaire-success">Saved Sucessfully</div>

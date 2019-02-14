@@ -36,7 +36,7 @@ export class ProposalListComponent implements OnInit {
 
   constructor( private _router: Router,
     private _dashboardService: DashboardService,
-    private _commonService: CommonService) { }
+    public _commonService: CommonService) { }
 
   ngOnInit() {
     this.proposalRequestObject.proposalTabName = 'MY_PROPOSAL';

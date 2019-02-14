@@ -7,7 +7,7 @@
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
     <div class="borderBox col-12">
       <h4 class="borderBoxHeading">Grant Call Details</h4>
-      <button id="grant-details-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isGrantCallWdgtOpen = !showOrHideDataFlagsObj.isGrantCallWdgtOpen">
+      <button id="prop-grant-details-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isGrantCallWdgtOpen = !showOrHideDataFlagsObj.isGrantCallWdgtOpen">
         <i [ngClass]="showOrHideDataFlagsObj.isGrantCallWdgtOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'" class="fa-large"></i>
       </button>
       <table class="table tableSkin grid2">
@@ -16,7 +16,7 @@
           <td class="pull-left">
             <span>
               <div class="searchBox memberSearchBox">
-                <input type="text" placeholder="Search here for Grant Call Title"  [(ngModel)]="proposalDataBindObj.selectedGrantCall" (blur)="isSearchGrantCallActive = false"
+                <input id="prop-grant-details-search" type="text" placeholder="Search here for Grant Call Title"  [(ngModel)]="proposalDataBindObj.selectedGrantCall" (blur)="isSearchGrantCallActive = false"
                   (focus)="isSearchGrantCallActive = true" class="member_search" (ngModelChange)="grantCallChangeFunction();" />
                 <a href="#" class="searchButton" (click)="clearGrantCallSearchBox($event)"><i [ngClass]="grantCallIconClass"></i></a>
                 <div class="sb-seachresults" *ngIf="isSearchGrantCallActive">
@@ -54,7 +54,7 @@
                     more<i [ngClass]="isGrantThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
                   </span>
                 </p>
-                <p *ngIf=" isGrantThemeReadMore" class="textView">
+                <p *ngIf="isGrantThemeReadMore" class="textView">
                   {{result?.proposal?.grantCall?.grantTheme}} <span *ngIf="(result?.proposal?.grantCall?.grantTheme?.length>100)"
                     class="hand-cursor fibiDefaultColor italian" (click)="isGrantThemeReadMore = !isGrantThemeReadMore">Show
                     less<i [ngClass]="isGrantThemeReadMore?'fa fa-angle-double-left':'fa fa-angle-double-right'"></i>
@@ -64,7 +64,7 @@
             </td>
             <td>
               <ul class="actionButtonGroup">
-                <li><a href="#" data-target="#deleteGrantCall" data-toggle="modal"><i
+                <li><a href="#" id="prop-grant-dlt-btn" data-target="#deleteGrantCall" data-toggle="modal"><i
                       class="fa fa-trash-o" aria-hidden="true" title="Click here to remove this Grant Call"></i></a></li>
               </ul>
             </td>
@@ -93,7 +93,7 @@
           <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
               <label>Abstract:</label><br>
-              <textarea name="abstract" id="proposalAbstract" maxlength="4000" placeholder="Please provide Lay Abstract or Scientic Abstract details here"
+              <textarea name="abstract" id="prop-abstract" maxlength="4000" placeholder="Please provide Lay Abstract or Scientic Abstract details here"
                 [(ngModel)]="result.proposal.abstractDescription" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" class="scheduleBoxes"></textarea>
             </div>
           </div>
@@ -113,10 +113,10 @@
   <div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
     <div class="borderBox col-12" [ngClass]="showOrHideDataFlagsObj.isBudgetWdgtOpen?'normalPadd':'lowPadd'">
       <h4 class="borderBoxHeading">Proposal Budget</h4>
-      <span *ngIf="result?.proposal?.budgetHeader == null" class="addBtn font hoverColor" style="margin-right: 25px;"
-        title="Create Proposal Budget" data-toggle="modal" data-target="#warning-modal" (click)="_proposalComponent.showTab('BUDGET')">Create Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
+      <span *ngIf="result?.proposal?.budgetHeader == null" id="prop-budget-create-btn" class="addBtn font hoverColor" style="margin-right: 25px;"
+        title="Create Proposal Budget" (click)="_proposalComponent.showTab('BUDGET')">Create Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
       </span>
-      <span *ngIf="result?.proposal?.budgetHeader != null" class="addBtn font hoverColor" style="margin-right: 25px;"
+      <span *ngIf="result?.proposal?.budgetHeader != null" id="prop-budget-open-btn" class="addBtn font hoverColor" style="margin-right: 25px;"
         title="View Detailed Budget" (click)="_proposalComponent.showTab('BUDGET')">Open Budget<i class="fa fa-angle-double-right" style="margin-left: 3px;"></i>
       </span>
       <button id="budgetExpandBtn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isBudgetWdgtOpen = !showOrHideDataFlagsObj.isBudgetWdgtOpen" *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length > 0">
@@ -166,8 +166,7 @@
         <tbody *ngIf="result?.proposal?.budgetHeader?.budgetPeriods?.length <= 0">
           <tr>
             <td colspan="7">
-              <div class="noDataExists">There are no
-                Budget Periods added yet.</div>
+              <div class="noDataExists">There are no Budget Periods added yet.</div>
             </td>
           </tr>
         </tbody>
@@ -186,7 +185,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" id="prop-grant-dlt-dismiss" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -194,8 +193,8 @@
         <p>Are you sure you want to remove this grant call?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal">No</button>
-        <button type="button" class="btnSkin btnSkinPrimary" (click)="removeSelectedGrant($event)" data-dismiss="modal">Yes</button>
+        <button type="button" id="prop-grant-dlt-no-btn" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal">No</button>
+        <button type="button" id="prop-grant-dlt-yes-btn" class="btnSkin btnSkinPrimary" (click)="removeSelectedGrant($event)" data-dismiss="modal">Yes</button>
       </div>
     </div>
   </div>

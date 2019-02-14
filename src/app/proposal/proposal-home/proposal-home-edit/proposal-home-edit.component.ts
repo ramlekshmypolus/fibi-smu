@@ -22,7 +22,7 @@ export class ProposalHomeEditComponent implements OnInit {
 
   grantCallIconClass = 'fa fa-search fa-med';
 
-  constructor( private _proposalHomeService: ProposalHomeService, private _proposalComponent: ProposalComponent ) { }
+  constructor( private _proposalHomeService: ProposalHomeService, public _proposalComponent: ProposalComponent ) { }
 
   ngOnInit() {
     this.grantCallIconClass = this.proposalDataBindObj.selectedGrantCall ? 'fa fa-times fa-med' : 'fa fa-search fa-med';

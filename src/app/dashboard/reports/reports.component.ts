@@ -24,7 +24,7 @@ export class ReportsComponent implements OnInit {
   constructor( private _dashboardService: DashboardService,
     private _router: Router,
     private _completerService: CompleterService,
-    private _commonService: CommonService ) { }
+    public _commonService: CommonService ) { }
 
   ngOnInit() {
     this.userName = localStorage.getItem('currentUser');

@@ -29,6 +29,8 @@ export class GrantEditComponent implements OnInit {
   selectedEligibilityType = null;
   attachmentDescription = null;
   selectedAttachmentType = null;
+  openingDate = null;
+  closingDate = null;
   selectedArea: string;
   selectedKeyword: string;
   clearField;
@@ -47,7 +49,7 @@ export class GrantEditComponent implements OnInit {
   constructor(private _grantService: GrantService,
     private _router: Router,
     private _completerService: CompleterService,
-    private _commonService: CommonService) { }
+    public _commonService: CommonService) { }
 
   ngOnInit() {
     this.elasticSearchOptions.url   = this._commonService.elasticIndexUrl;
@@ -69,6 +71,8 @@ export class GrantEditComponent implements OnInit {
         this.selectedFundingType =  (this.result.grantCall.fundingSourceType != null) ?
                                     this.result.grantCall.fundingSourceType.description : null;
         this.selectedGrantCallType = this.result.grantCall.grantCallType.description;
+        this.openingDate = this.result.grantCall.openingDate === null ? null : new Date(this.result.grantCall.openingDate);
+        this.closingDate = this.result.grantCall.closingDate === null ? null : new Date(this.result.grantCall.closingDate);
     }
     this.keywordsList = this._completerService.local( this.result.scienceKeywords, 'description', 'description' );
     this.areaList = this._completerService.local( this.result.researchAreas, 'description', 'description' );
@@ -100,11 +104,11 @@ export class GrantEditComponent implements OnInit {
 
   /** check for validations in closing and opening dates */
   dateValidation() {
-    if ( this.result.grantCall.openingDate == null ) {
+    if ( this.openingDate == null ) {
         this.warningMsgObj.dateWarningText = 'Please select an opening date';
-    } else if ( this.result.grantCall.closingDate == null ) {
+    } else if ( this.closingDate == null ) {
         this.warningMsgObj.dateWarningText = 'Please select a closing date';
-    } else if ( new Date(this.result.grantCall.openingDate) >= new Date(this.result.grantCall.closingDate) ) {
+    } else if ( new Date(this.openingDate) >= new Date(this.closingDate) ) {
         this.warningMsgObj.dateWarningText = 'Please select a closing date after opening date';
     } else {
         this.warningMsgObj.dateWarningText = null;
@@ -515,6 +519,8 @@ export class GrantEditComponent implements OnInit {
       this.result.grantCall.createUser = localStorage.getItem('currentUser');
       this.result.grantCall.createTimestamp = new Date().getTime();
       this.result.grantCall.updateTimeStamp = new Date().getTime();
+      this.result.grantCall.openingDate = new Date(this.openingDate).getTime();
+      this.result.grantCall.closingDate = new Date(this.closingDate).getTime();
       this.result.grantCall.updateUser = localStorage.getItem('currentUser');
       if (this.result.grantCall.grantCallStatus.grantStatusCode === 1 && this.result.grantCall.grantCallId == null) {
           saveType = 'SAVE';
@@ -551,7 +557,7 @@ export class GrantEditComponent implements OnInit {
   checkGrantMandatoryFilled() {
     if (this.result.grantCall.grantCallType == null || this.result.grantCall.grantCallType === 'null' ||
     this.result.grantCall.grantCallStatus == null || this.result.grantCall.maximumBudget == null ||
-    this.result.grantCall.openingDate == null || this.result.grantCall.closingDate == null ||
+    this.openingDate == null || this.closingDate == null ||
     this.result.grantCall.grantTheme === null || this.result.grantCall.grantTheme === '' ||
     this.result.grantCall.grantCallName === null || this.result.grantCall.grantCallName === '' ||
     this.result.grantCall.description === null || this.result.grantCall.description === '' ||

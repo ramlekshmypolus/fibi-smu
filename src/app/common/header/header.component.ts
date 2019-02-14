@@ -54,7 +54,7 @@ export class HeaderComponent implements OnInit {
         private dashboardService: DashboardService,
         private _router: Router,
         private _researchSummaryConfigService: ResearchSummaryConfigService,
-        private _commonService: CommonService
+        public _commonService: CommonService
         ) {
         document.addEventListener( 'mouseup', this.offClickHandler.bind( this ) );
         document.addEventListener( 'mouseup', this.offClickHandlerDashboardConf.bind( this ) );

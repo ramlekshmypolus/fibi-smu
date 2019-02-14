@@ -19,18 +19,18 @@
       <div class="row">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6">
           <label><span class="mandatory">*</span>Title:</label><br>
-          <input type="text" placeholder="" [ngClass]="mandatoryObj.field == 'title' ? 'lineItem-mandatory' : ''" class="committeeBox dateBox" [(ngModel)]="result.proposal.title" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true"/>
+          <input type="text" id="prop-title" placeholder="" [ngClass]="mandatoryObj.field == 'title' ? 'lineItem-mandatory' : ''" class="committeeBox dateBox" [(ngModel)]="result.proposal.title" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true"/>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
           <label><span class="mandatory">*</span>Category:</label><br>
-          <select class="committeeBox dateBox" [ngClass]="mandatoryObj.field == 'category' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.selectedProposalCategory" (ngModelChange)="proposalCategoryChange();proposalDataBindObj.dataChangeFlag = true">
+          <select id="prop-category" class="committeeBox dateBox" [ngClass]="mandatoryObj.field == 'category' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.selectedProposalCategory" (ngModelChange)="proposalCategoryChange();proposalDataBindObj.dataChangeFlag = true">
             <option [value]=null>--Select--</option>
             <option *ngFor="let category of result?.activityTypes" [value]="category.description">{{category.description}}</option>
           </select>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
           <label class="greenLabel"><span class="mandatory">*</span>Type:</label><br>
-          <select class="committeeBox dateBox" [ngClass]="mandatoryObj.field == 'type' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.selectedProposalType" (ngModelChange)="proposalTypeChange();proposalDataBindObj.dataChangeFlag = true">
+          <select id="prop-type" class="committeeBox dateBox" [ngClass]="mandatoryObj.field == 'type' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.selectedProposalType" (ngModelChange)="proposalTypeChange();proposalDataBindObj.dataChangeFlag = true">
             <option [value]=null>--Select--</option>
             <option *ngFor="let type of result?.proposalTypes" [value]="type.description">{{type.description}}</option>
           </select>
@@ -45,7 +45,7 @@
           <label><span class="mandatory">*</span>Lead Unit:</label><br>
           <div>
             <div class="searchBox memberSearchBox">
-              <input type="text" placeholder="Search here for Lead Unit" [ngClass]="mandatoryObj.field == 'homeUnit' ? 'lineItem-mandatory' : ''" [(ngModel)]="result?.proposal.homeUnitName" (blur)="isSearchLeadUnitActive = false"
+              <input id="prop-LU" type="text" placeholder="Search here for Lead Unit" [ngClass]="mandatoryObj.field == 'homeUnit' ? 'lineItem-mandatory' : ''" [(ngModel)]="result?.proposal.homeUnitName" (blur)="isSearchLeadUnitActive = false"
                (focus)="isSearchLeadUnitActive = true" class="member_search" (ngModelChange)="leadUnitChangeFunction();" />
               <a href="#" class="searchButton" (click)="clearLeadUnitSearchBox($event)"><i [ngClass]="leadUnitIconClass"></i></a>
               <div class="sb-seachresults" *ngIf="isSearchLeadUnitActive">
@@ -59,7 +59,7 @@
         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
           <label><span class="mandatory">*</span>Sponsor:</label><br>
           <div class="searchBox memberSearchBox">
-            <input type="text" placeholder="Search here for Sponsor Name"
+            <input id="prop-sponsor" type="text" placeholder="Search here for Sponsor Name"
             [ngClass]="mandatoryObj.field == 'sponsor' ? 'lineItem-mandatory' : ''" [(ngModel)]="result.proposal.sponsorName" (blur)="isSearchSponsorActive = false"
              (focus)="isSearchSponsorActive = true" class="member_search" (ngModelChange)="sponsorChangeFunction();" />
             <a href="#" class="searchButton" (click)="clearSponsorSearchBox($event)"><i [ngClass]="sponsorIconClass"></i></a>
@@ -72,29 +72,29 @@
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
           <label><span class="mandatory">*</span>Proposed Start Date:</label><br>
-          <span class="dateField"> <input type="text" placeholder="mm/dd/yyyy"
-             style="width: 100% !important" [owlDateTime]="startDt" class="dateWidth committeeBox" 
+          <span class="dateField"> <input type="text" placeholder="mm/dd/yyyy" id="prop-start-date"
+             style="width: 100% !important" [owlDateTime]="startDate" class="dateWidth committeeBox" 
              [ngClass]="mandatoryObj.field == 'proposalStartDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.proposalStartDate"
              (keypress)="_commonService._keyPress($event, 'date');proposalDataBindObj.dataChangeFlag = true"/>
-            <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="startDt"></i>
-            <owl-date-time #startDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();proposalDataBindObj.dataChangeFlag = true"></owl-date-time>
+            <i class="fa fa-calendar fa-large hand-cursor insidePicker" id="prop-start-date-icon" [owlDateTimeTrigger]="startDate"></i>
+            <owl-date-time #startDate [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();proposalDataBindObj.dataChangeFlag = true"></owl-date-time>
           </span>
         </div>
         <div [ngClass]="mode == 'view'?'col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2':'col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2'">
           <label><span class="mandatory">*</span>Proposed End Date:</label><br>
-          <span class="dateField"> <input type="text" class="dateWidth committeeBox"
-             placeholder="mm/dd/yyyy" [owlDateTime]="endDt"
+          <span class="dateField"> <input type="text" class="dateWidth committeeBox" id="prop-end-date"
+             placeholder="mm/dd/yyyy" [owlDateTime]="endDate"
              [ngClass]="mandatoryObj.field == 'proposalEndDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.proposalEndDate" (keypress)="_commonService._keyPress($event, 'date');proposalDataBindObj.dataChangeFlag = true">
-            <i class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="endDt"></i>
-            <owl-date-time #endDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();proposalDataBindObj.dataChangeFlag = true"></owl-date-time>
+            <i id="prop-end-date-icon" class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="endDate"></i>
+            <owl-date-time #endDate [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();proposalDataBindObj.dataChangeFlag = true"></owl-date-time>
           </span>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
             <label><span class="mandatory">*</span>Sponsor Deadline Date:</label><br> <span class="dateField"> <input type="text"
-              placeholder="mm/dd/yyyy" style="width: 100% !important" [owlDateTime]="subDt" class="committeeBox dateWidth"
+              placeholder="mm/dd/yyyy" id="prop-sub-date" style="width: 100% !important" [owlDateTime]="subDt" class="committeeBox dateWidth"
               [ngClass]="mandatoryObj.field == 'sponsorDeadlineDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.sponsorDeadlineDate"
               (keypress)="_commonService._keyPress($event, 'date');proposalDataBindObj.dataChangeFlag = true" (ngModelChange)="getInternalDeadlineDate(proposalDataBindObj?.sponsorDeadlineDate)" />
-             <i class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="subDt"></i>
+             <i id="prop-sub-date-icon" class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="subDt"></i>
              <owl-date-time #subDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();proposalDataBindObj.dataChangeFlag = true"></owl-date-time>
            </span>
         </div>
@@ -111,11 +111,11 @@
         </div>
         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-1">
             <label>Subcontract:</label><br>
-            <input type="checkbox" [(ngModel)]="result.proposal.isSubcontract" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true"/>
+            <input type="checkbox" id="prop-subcontract" [(ngModel)]="result.proposal.isSubcontract" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true"/>
         </div>
         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
           <label>Sponsor Proposal ID:</label><br>
-          <input type="text" placeholder="" class="dateBox committeeBox"
+          <input type="text" placeholder="" class="dateBox committeeBox" id="prop-sponsor-id"
            *ngIf="mode != 'view'" [(ngModel)]="result.proposal.sponsorProposalNumber" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" />
            <span *ngIf="mode == 'view'">{{result?.proposal?.sponsorProposalNumber}}</span>
         </div>
@@ -124,7 +124,7 @@
           <div class="row">
             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4" style="padding-left: 0px">
               <div class="searchBox memberSearchBox">
-                <input type="text" placeholder="Search here for Keyword"  [(ngModel)]="proposalDataBindObj.selectedKeyword" (blur)="isSearchKeywordActive = false"
+                <input type="text" id="prop-keywords" placeholder="Search here for Keyword"  [(ngModel)]="proposalDataBindObj.selectedKeyword" (blur)="isSearchKeywordActive = false"
                  (focus)="isSearchKeywordActive  = true" class="member_search" (ngModelChange)="keywordChangeFunction()" />
                 <a href="#" class="searchButton" (click)="clearKeywordSearchBox($event)"><i [ngClass]="keywordIconClass"></i></a>
                 <div class="sb-seachresults" *ngIf="isSearchKeywordActive">
@@ -137,7 +137,7 @@
             <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8" style="padding-left: 0;">
               <div *ngIf="result?.proposal?.proposalKeywords?.length > 0" class="fileChips" style="word-break: break-all;">
                 <span *ngFor="let keyword of result?.proposal?.proposalKeywords;let i = index">{{keyword?.scienceKeyword?.description}}
-                  <i class="fa fa-close hand-cursor"  (click)="deleteKeyword(keyword.keywordId,i);proposalDataBindObj.dataChangeFlag = true" title="Remove this Keyword"></i>
+                  <i class="fa fa-close hand-cursor" id="prop-keywrd-dlt"  (click)="deleteKeyword(keyword.keywordId,i);proposalDataBindObj.dataChangeFlag = true" title="Remove this Keyword"></i>
                 </span>
               </div>
             </div>

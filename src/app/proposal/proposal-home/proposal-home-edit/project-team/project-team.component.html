@@ -1,7 +1,5 @@
 <div class="borderBox col-12">
-  <h4 class="borderBoxHeading">
-    <span class="mandatory">*</span>Project Team
-  </h4>
+  <h4 class="borderBoxHeading"><span class="mandatory">*</span>Project Team</h4>
   <button id="project-expand-btn" class="addBtn font hoverColor" (click)="showOrHideDataFlagsObj.isProjectTeamWidgetOpen = !showOrHideDataFlagsObj.isProjectTeamWidgetOpen">
     <i [ngClass]="showOrHideDataFlagsObj.isProjectTeamWidgetOpen?'fa fa-angle-double-up':'fa fa-angle-double-down'"
       class="fa-large"></i>
@@ -11,8 +9,7 @@
       <div class="row">
         <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
           <label class="col-xl-5 col-lg-2 col-md-12 col-sm-12 col-2">Member Type:</label>
-          <select id="project-member-type" class="col-xl-6 col-lg-2 col-md-12 col-sm-12 col-2 committeeBox" [(ngModel)]="memberTypeSelected"
-            (change)="memberTypeChanged()">
+          <select id="prop-project-member-type" class="col-xl-6 col-lg-2 col-md-12 col-sm-12 col-2 committeeBox" [(ngModel)]="memberTypeSelected" (change)="memberTypeChanged()">
             <option *ngFor="let type of memberTypes" (value)="type">{{type.value}}</option>
           </select>
         </div>
@@ -25,7 +22,7 @@
         </div>
         <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
           <label class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">Role:</label>
-          <select id="project-role" [ngClass]="proposalDataBindObj.field == 'personRole' ? 'lineItem-mandatory' : ''"
+          <select id="prop-project-role" [ngClass]="proposalDataBindObj.field == 'personRole' ? 'lineItem-mandatory' : ''"
             class="col-xl-8 col-lg-2 col-md-12 col-sm-12 col-12 committeeBox" [(ngModel)]="proposalDataBindObj.personRoleSelected">
             <option [value]=null>--Select--</option>
             <option *ngFor="let role of proposalDataBindObj.personRolesList">{{role?.description}}</option>
@@ -33,7 +30,7 @@
         </div>
         <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
           <label class="col-xl-5 col-lg-2 col-md-12 col-sm-12 col-2">% of Effort:</label>
-          <input type="number" id="project-percent-effort" step="any" placeholder="" class="col-xl-6 col-lg-2 col-md-12 col-sm-12 col-2 committeeBox"
+          <input type="number" id="prop-project-percent-effort" step="any" placeholder="" class="col-xl-6 col-lg-2 col-md-12 col-sm-12 col-2 committeeBox"
             [(ngModel)]="percentageEffort" (change)="checkPercentageEffortValidation()" appDecimalLimit>
         </div>
       </div>
@@ -42,7 +39,7 @@
           <label class="col-xl-1 col-lg-2 col-md-2 col-sm-4 col-2">Department:</label>
           <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-4 inline-block-display dept-margin">
             <div class="searchBox memberSearchBox">
-              <input type="text" id="project-dept" placeholder="Search here for departments" [(ngModel)]="departmentSelected"
+              <input type="text" id="prop-project-dept" placeholder="Search here for departments" [(ngModel)]="departmentSelected"
                 (blur)="isSearchDepartmentActive = false" (focus)="isSearchDepartmentActive = true" class="member_search"
                 (ngModelChange)="departmentFetchCall()" />
               <a href="#" class="searchButton" (click)="clearDepartmentSearchBox($event)"><i [ngClass]="departmentIconClass"></i></a>
@@ -57,14 +54,14 @@
           <div class="col-xl-7 col-lg-6 col-md-6 col-sm-4 col-4 inline-block-display pl-0">
             <div *ngIf="personDepartments?.length > 0" class="fileChips" style="word-break: break-all;">
               <span *ngFor="let depart of personDepartments;let i = index">{{depart?.unit?.unitDetail}}
-                <i class="fa fa-close hand-cursor" (click)="deleteDepartment(depart,i)" title="Remove this Department"></i>
+                <i class="fa fa-close hand-cursor" id="prop-dlt-person-unit" (click)="deleteDepartment(depart,i)" title="Remove this Department"></i>
               </span>
             </div>
           </div>
         </div>
         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-8 ">
           <div class="text-right">
-            <button id="project-team-add-btn" class="btnSkin btnSkinPrimary add-btn" (click)="addProposalTeamMember()">Add</button>
+            <button id="prop-project-team-add-btn" class="btnSkin btnSkinPrimary add-btn" (click)="addProposalTeamMember()">Add</button>
           </div>
         </div>
         <div *ngIf="warningMsgObj.departmentWarningMsg != null">
@@ -97,14 +94,13 @@
             </td>
             <td>
               <ul class="actionButtonGroup">
-                <li><a href="#" id="project-team-delete-btn" data-toggle="modal" data-target="#deleteMemberModal" (click)="tempSavePerson($event,person, i)"><i
+                <li><a href="#" id="prop-project-team-delete-btn" data-toggle="modal" data-target="#deleteMemberModal" (click)="tempSavePerson($event,person, i)"><i
                       class="fa fa-trash-o" aria-hidden="true" title="Click here to delete {{person.fullName}}"></i></a></li>
               </ul>
             </td>
           </tr>
         </tbody>
       </table>
-
     </div>
   </div>
 </div>
@@ -116,8 +112,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete</h5>
-
-        <button id="project-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button id="prop-dlt-member-dismiss" type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -125,8 +120,8 @@
         <p>Are you sure you want to delete this member?</p>
       </div>
       <div class="modal-footer">
-        <button id="project-close-btn" type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="showDeleteMember = false">No</button>
-        <button id="project-team-delete-btn" type="button" class="btnSkin btnSkinPrimary" (click)="deletePerson()" data-dismiss="modal">Yes</button>
+        <button id="prop-project-close-btn" type="button" class="btnSkin btn-secondary" data-dismiss="modal" data-toggle="modal" (click)="showDeleteMember = false">No</button>
+        <button id="prop-project-team-delete-btn" type="button" class="btnSkin btnSkinPrimary" (click)="deletePerson()" data-dismiss="modal">Yes</button>
       </div>
     </div>
   </div>

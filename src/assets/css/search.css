@@ -1086,9 +1086,12 @@ table.tableSection th, table.tableSection td {
 	bottom: 15px;
 }
 .card-style {
-	background-color: #f7f1f1;
+	background-color: #e1fdfa;
     padding: 5px;
-    border-left: 2px solid #26A69A;
+    border-left: 2px solid #14b9ce;
+    margin-right: 15px;
+    color: #1e9bab;
+    font-weight: 500;
 }
 /** change password **/
 .box-mt {
@@ -1151,4 +1154,32 @@ table.tableSection th, table.tableSection td {
 }
 .show-qst>hr {
 	margin: 5px 0 0 0 !important;
+}
+.qst-help-close-btn {
+    right: 8px!important;
+}
+
+/** budget **/
+.ib-display {
+	display: inline-block;
+}
+#rate-toast-success {
+    visibility: hidden;
+    min-width: 350px;
+    margin-left: -100px;
+    background-color:#26a69a !important;
+    color: #FFFFFF !important;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 999;
+    left: 40%;
+    bottom: 40%;
+    font-size: 0.80em;
+}
+#rate-toast-success.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
+    animation: fadein 0.6s, fadeout 0.5s 2.5s;
 }

@@ -591,7 +591,8 @@ thead {
 	justify-content: center;
 	align-items: center;
   }
-  /* #toast-success {
+
+  #toast-success, #prop-save-questionnaire-success {
     visibility: hidden;
     min-width: 500px;
     margin-left: -100px;
@@ -606,8 +607,8 @@ thead {
     bottom: 10%;
     font-size: 18px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-} */
-#toast-success
+}
+#toast-success, #prop-save-questionnaire-success
 {
 	background: #26a69a !important;
 	height:80px !important;
@@ -632,7 +633,7 @@ thead {
 	from {bottom: 10%; opacity: 1;}
 	to {bottom: 0; opacity: 0;}
   }
-  #toast-success.show {
+  #toast-success.show, #prop-save-questionnaire-success.show {
     visibility: visible;
     -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
     animation: fadein 0.6s, fadeout 0.5s 2.5s;
@@ -934,26 +935,3 @@ button.qst-closeResultCard.qst-close-help {
 .infoicon i{
 	color: #00bcd4;
 }
-
-#toast-success-id
-{	
-	visibility: hidden;
-    min-width: 500px;
-    margin-left: -100px;
-    background-color: #54a254;
-    color: #fff;
-    text-align: center;
-    border-radius: 2px;
-    padding: 16px;
-    position: fixed;
-    z-index: 1;
-    left: 40%;
-    bottom: 40%;
-	font-size: 18px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-#toast-success-id.show {
-    visibility: visible;
-    -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
-    animation: fadein 0.6s, fadeout 0.5s 2.5s;
- }

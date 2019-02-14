@@ -41,7 +41,7 @@
                             <label class="block-display"><span class="mandatory">*</span>Opening Date:</label>
                             <span class="dateField">
                                 <input type="text" id="grant-opng-date" placeholder="mm/dd/yyyy"
-                                    [(ngModel)]="result.grantCall.openingDate" (keypress)="_commonService._keyPress($event, 'date');showDataFlagObj.isDataChange = true"
+                                    [(ngModel)]="openingDate" (keypress)="_commonService._keyPress($event, 'date');showDataFlagObj.isDataChange = true"
                                     [owlDateTime]="openingDt" class="committeeBox dateWidth" />&nbsp;
                                 <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
                                     [owlDateTimeTrigger]="openingDt"></span>
@@ -52,7 +52,7 @@
                             <label class="block-display"><span class="mandatory">*</span>Closing Date:</label>
                             <span class="dateField">
                                 <input type="text" id="grant-closing-date" placeholder="mm/dd/yyyy"
-                                    [(ngModel)]="result.grantCall.closingDate" (keypress)="_commonService._keyPress($event, 'date'); showDataFlagObj.isDataChange = true"
+                                    [(ngModel)]="closingDate" (keypress)="_commonService._keyPress($event, 'date'); showDataFlagObj.isDataChange = true"
                                     [owlDateTime]="closingDt" class="committeeBox dateWidth" />&nbsp;
                                 <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
                                     [owlDateTimeTrigger]="closingDt"></span>

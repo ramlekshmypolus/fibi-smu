@@ -209,7 +209,9 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Warning...!</h5>
+          <h5 class="modal-title" *ngIf="isShowNoCreateProposalModal">Warning...!</h5>
+          <h5 class="modal-title" *ngIf="isShowDeleteWarningModal">Delete Proposal</h5>
+          <h5 class="modal-title" *ngIf="isShowCopyWarningModal">Copy Proposal</h5>
           <button type="button" class="close" data-dismiss="modal" (click)="clearModalFlags()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
