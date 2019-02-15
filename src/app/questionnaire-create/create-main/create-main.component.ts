@@ -20,7 +20,7 @@ export class CreateMainComponent implements OnInit {
               private _createQuestionnaireService: CreateQuestionnaireService,
               private _spinner: NgxSpinnerService) { }
   data: any = {};
-  toast_message = 'Saved Sucessfully';
+  toast_message = 'Questionnaire Saved Sucessfully';
   QuestionnaireCommonValues: any = {
     lastQuestionId  : 1,
     lastGroupName   : 1,

@@ -15,7 +15,7 @@
                 <input type="text" placeholder="mm/dd/yyyy" class="committeeBox budgetDate-width"
                         [owlDateTime]="budgetstart"  (keypress)="_commonService._keyPress($event, 'date')"
                         [ngClass]="budgetOverviewDateObj.isStartError?'lineItem-mandatory':''"
-                        [(ngModel)]="budgetOverviewDateObj.budgetStartDate" (ngModelChange)="validateBudgetStartDate(budgetOverviewDateObj.budgetStartDate)"/>
+                        [(ngModel)]="budgetOverviewDateObj.budgetStartDate" (ngModelChange)="validateBudgetStartDate(budgetOverviewDateObj.budgetStartDate, budgetOverviewDateObj.budgetEndDate)"/>
                 <i  *ngIf="showOrHideDataFlagsObj?.mode !== 'view'" class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="budgetstart"></i>
                 <owl-date-time #budgetstart [pickerType]="'calendar'"></owl-date-time>
               </span>
@@ -28,7 +28,7 @@
                 <input type="text" placeholder="mm/dd/yyyy" class="budgetDate-width committeeBox"
                         [owlDateTime]="budgetend" (keypress)="_commonService._keyPress($event, 'date')"
                         [ngClass]="budgetOverviewDateObj.isEndError?'lineItem-mandatory':''"
-                        [(ngModel)]="budgetOverviewDateObj.budgetEndDate" (ngModelChange)="validateBudgetEndDate(budgetOverviewDateObj.budgetEndDate)"/>
+                        [(ngModel)]="budgetOverviewDateObj.budgetEndDate" (ngModelChange)="validateBudgetEndDate(budgetOverviewDateObj.budgetStartDate, budgetOverviewDateObj.budgetEndDate)"/>
                 <i  *ngIf="showOrHideDataFlagsObj?.mode !== 'view'" class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="budgetend"></i>
                 <owl-date-time #budgetend [pickerType]="'calendar'"></owl-date-time>
               </span>

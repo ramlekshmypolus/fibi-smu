@@ -45,7 +45,7 @@ export class SessionTimeoutComponent implements OnDestroy {
   }
 
   logout() {
-    let currentTab = localStorage.getItem('currentTab');
+    const currentTab = localStorage.getItem('currentTab');
     this._commonService.logout();
     localStorage.setItem('currentTab', currentTab);
     localStorage.setItem('currentUrl', window.location.hash);

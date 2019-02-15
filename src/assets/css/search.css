@@ -836,7 +836,7 @@ table.tableSection th, table.tableSection td {
 .dept-margin {
 	margin-left: 10px;
 }
-#proposalAbstract {
+#prop-abstract {
   height: 150px !important;
 }
 
@@ -1003,14 +1003,14 @@ table.tableSection th, table.tableSection td {
 	-webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
 	animation: fadein 0.6s, fadeout 0.5s 2.5s;
 }
-.dropdown-menu>a {
+/* .dropdown-menu>a {
 	color: #00BCD4;
 	font-size: .85em;
 }
 .dropdown-menu>a:hover {
 	background-color: #26a69a;
 	color: #fff;
-}
+} */
 .overflow {
 	overflow: hidden;
     width: 100%;
@@ -1086,11 +1086,11 @@ table.tableSection th, table.tableSection td {
 	bottom: 15px;
 }
 .card-style {
-	background-color: #e1fdfa;
-    padding: 5px;
-    border-left: 2px solid #14b9ce;
+    background-color: #e0fcff;
+    padding: 5px 15px;
+    border-left: 2px solid #00bcd4;
     margin-right: 15px;
-    color: #1e9bab;
+    color: #049baf;
     font-weight: 500;
 }
 /** change password **/
@@ -1179,6 +1179,46 @@ table.tableSection th, table.tableSection td {
     font-size: 0.80em;
 }
 #rate-toast-success.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
+    animation: fadein 0.6s, fadeout 0.5s 2.5s;
+}
+#prop-save-questionnaire-success, #toast-success {
+	visibility: hidden;
+    min-width: 350px;
+    margin-left: -100px;
+    background-color:#26a69a !important;
+    color: #FFFFFF !important;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 999;
+    left: 45%;
+    bottom: 45%;
+	font-size: 0.80em;
+}
+#prop-save-questionnaire-success.show, #toast-success.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
+    animation: fadein 0.6s, fadeout 0.5s 2.5s;
+}
+#toast-success {
+	visibility: hidden;
+    min-width: 350px;
+    margin-left: -100px;
+    background-color:#26a69a !important;
+    color: #FFFFFF !important;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 999;
+    left: 45%;
+    bottom: 45%;
+	font-size: 0.80em;
+}
+#toast-success.show {
     visibility: visible;
     -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
     animation: fadein 0.6s, fadeout 0.5s 2.5s;

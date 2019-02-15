@@ -39,9 +39,11 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isShowNotifyApprover: false,
     isShowNotifyApproverSuccess: false,
     isShowNotificationPISuccessModal: false,
-    isAttachmentEditable: false,
+    isShowCalculateModal: false,
+    isAttachmentEditable: true,
     isSaveOnTabSwitch: false,
-    isPeriodsTotalDisabled: false
+    isPeriodsTotalDisabled: false,
+    dataChangeFlag: false
   };
 
   isShowMoreOptions = false;
@@ -51,11 +53,13 @@ export class ProposalComponent implements OnInit, OnDestroy {
   isAttachmentIncomplete = false;
   isShowRouteLog = false;
   isQuestionnaireComplete = false;
-  isShowRatesOpen = false;
+  isShowRates = false;
   isApplyRates = false;
+  isRequestNewReviewerOpen = false;
 
   toast_message = '';
   rate_toast_message = '';
+  savePopopUpMessage = '';
   clearField;
   superUser = localStorage.getItem( 'superUser');
   approveDisapprovePlaceHolder: string;
@@ -92,9 +96,9 @@ export class ProposalComponent implements OnInit, OnDestroy {
     private _router: Router, private _commonService: CommonService, private _questionnaireService: QuestionnaireService,
     private _proposalBudgetService: ProposalBudgetService) {
     document.addEventListener( 'mouseup', this.offClickHandler.bind( this ) );
-    this.proposalDataBindObj.dataChangeFlag = false;
     this.autoSave_subscription = Observable.interval(1000 * 120).subscribe(x => {
-      if (this.result.proposal.proposalId !== null && this.result.proposal.statusCode !== 11) {
+      if (this.result.proposal.proposalId !== null && this.showOrHideDataFlagsObj.dataChangeFlag &&
+          this.result.proposal.statusCode !== 11 && this.showOrHideDataFlagsObj.isAttachmentEditable) {
           this.saveProposal('autoSave');
       }
     });
@@ -112,6 +116,10 @@ export class ProposalComponent implements OnInit, OnDestroy {
       prncpl_nm: {}
     };
     this.result = this._route.snapshot.data.proposalDetails;
+    /** added to naviagate to proposal home if user is in create budgt page and automatically loggs out due to session timeout */
+    if (this.showOrHideDataFlagsObj.currentTab !== 'PROPOSAL_HOME' && this.result.proposal.proposalId == null) {
+      this.showOrHideDataFlagsObj.currentTab = 'PROPOSAL_HOME';
+    }
     if (this._route.snapshot.queryParamMap.get('proposalId') == null) {
       this.showOrHideDataFlagsObj.mode = 'create';
     } else {
@@ -132,13 +140,14 @@ export class ProposalComponent implements OnInit, OnDestroy {
         'userFullName': localStorage.getItem('userFullname'), 'proposal': this.result.proposal})
           .subscribe( data => {
             let tempryProposalObj: any = {};
-			/*no full update: for getting objects in VO that dosen't get returned in craeteBudget call */
+			      /*no full update: for getting objects in VO that dosen't get returned in craeteBudget call */
             tempryProposalObj = data;
             this.result.proposal = tempryProposalObj.proposal;
             this.result.sysGeneratedCostElements = tempryProposalObj.sysGeneratedCostElements;
             this.result.tbnPersons = tempryProposalObj.tbnPersons;
             this.showOrHideDataFlagsObj.currentTab = currentTab;
             localStorage.setItem('currentTab', currentTab);
+            this.timeStampToBudgetDates();
           });
       } else {
         this.saveProposal('partialSave');
@@ -146,7 +155,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     } else if (currentTab === 'QUESTIONNAIRE' && this.result.proposal.proposalId == null) {
         this.saveProposal('partialSave');
     } else {
-        if (this.proposalDataBindObj.dataChangeFlag) {
+        if (this.showOrHideDataFlagsObj.dataChangeFlag) {
           this.showOrHideDataFlagsObj.isSaveOnTabSwitch = true;
         } else {
           this.showOrHideDataFlagsObj.currentTab = currentTab;
@@ -177,6 +186,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     if ( this.requestObject.actionType === 'R' ) {
       this.showOrHideDataFlagsObj.mode = 'edit';
     }
+    this.timeStampToBudgetDates();
     this.proposalDataBindObj.selectedProposalType = ( this.result.proposal.proposalType != null ) ?
                             this.result.proposal.proposalType.description : null;
     this.proposalDataBindObj.selectedProposalCategory = ( this.result.proposal.activityType != null ) ?
@@ -239,7 +249,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   openGoBackModal() {
-    if (this.proposalDataBindObj.dataChangeFlag) {
+    if (this.showOrHideDataFlagsObj.dataChangeFlag) {
       this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = true;
     } else {
       this._router.navigate(['/fibi/dashboard/proposalList']);
@@ -254,13 +264,11 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   saveProposal(saveType) {
     this.closeWarningModal();
-    this.showOrHideDataFlagsObj.isShowSaveWarningModal = false;
-    this.warningMsgObj.errorMsg = null;
     // preserve showOrHideDataFlagsObj.isShowSaveSuccessModal value if autosave to show message in popup else make it false
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = (saveType === 'autoSave') ?
                                                           this.showOrHideDataFlagsObj.isShowSaveSuccessModal : false;
     this.proposalValidation();
-    if (this.result.proposal.proposalId) {
+    if (this.result.proposal.proposalId && this.result.proposal.budgetHeader != null) {
       this.setProposalBudgetDetails();
     }
     if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
@@ -268,55 +276,62 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
       this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
     } else {
-      const TYPE = ( this.result.proposal.proposalId != null ) ? 'UPDATE' : 'SAVE';
-      if (TYPE === 'SAVE') {
-        this.result.proposal.createUser = localStorage.getItem('currentUser');
+      /** call save proposal only if there is a change in data */
+      if (this.showOrHideDataFlagsObj.dataChangeFlag) {
+        const TYPE = ( this.result.proposal.proposalId != null ) ? 'UPDATE' : 'SAVE';
+        if (TYPE === 'SAVE') {
+          this.result.proposal.createUser = localStorage.getItem('currentUser');
+        }
+        this.result.proposal.createTimeStamp = new Date().getTime();
+        this.result.proposal.updateUser = localStorage.getItem('currentUser');
+        this.result.proposal.updateTimeStamp = new Date().getTime();
+        this.result.proposal.startDate = new Date(this.proposalDataBindObj.proposalStartDate).getTime();
+        this.result.proposal.endDate = new Date(this.proposalDataBindObj.proposalEndDate).getTime();
+        this.result.proposal.submissionDate = new Date(this.proposalDataBindObj.sponsorDeadlineDate).getTime();
+        this.result.proposal.internalDeadLineDate = new Date(this.proposalDataBindObj.internalDeadlineDate).getTime();
+        this.updateAttachmentStatus();
+        this._proposalService.saveProposal({'proposal': this.result.proposal,
+        'updateType': TYPE, 'personId': localStorage.getItem( 'personId' )}).subscribe( data => {
+          // when route log is open and autosave happens version changes automatically, so update only proposal obj
+          let tempProposalData: any = {};
+          tempProposalData = data;
+          this.result.proposal = tempProposalData.proposal;
+          this.showOrHideDataFlagsObj.dataChangeFlag = false;
+        },
+        err => {
+          $('#warning-modal').modal('hide');
+          this.warningMsgObj.errorMsg = 'Error in saving proposal';
+          document.getElementById('openSucessModal').click();
+        },
+        () => {
+          if (saveType === 'autoSave') {
+            const toastId      = document.getElementById('toast-success-proposal');
+            this.toast_message = 'Changes has been saved automatically ';
+            toastId.className = 'show';
+            setTimeout(function () {
+            toastId.className = toastId.className.replace('show', '');
+            }, 2000);
+          } else if (saveType === 'partialSave') {
+            this.showTab(this.tempSavecurrentTab);
+          } else if (saveType === 'promptSave') {
+            $('#saveAndExitModal').modal('hide');
+            this._router.navigate(['/fibi/dashboard/proposalList']);
+          } else if (saveType === 'saveOnTabSwitch') {
+            $('#warning-modal').modal('hide');
+            this.showTab(this.tempSavecurrentTab);
+          } else {
+            this.showOrHideDataFlagsObj.isShowSaveSuccessModal = true;
+            this.savePopopUpMessage = 'Proposal has been saved successfully.';
+            document.getElementById('openSucessModal').click();
+          } if (this.result.proposal.proposalId) {
+            this.timeStampToPeriodDates();
+          }
+        });
+      } else {
+        this.showOrHideDataFlagsObj.isShowSaveSuccessModal = true;
+        this.savePopopUpMessage = 'There are no changes made to be saved.';
+        document.getElementById('openSucessModal').click();
       }
-      this.result.proposal.createTimeStamp = new Date().getTime();
-            this.result.proposal.updateUser = localStorage.getItem('currentUser');
-            this.result.proposal.updateTimeStamp = new Date().getTime();
-            this.result.proposal.startDate = new Date(this.proposalDataBindObj.proposalStartDate).getTime();
-            this.result.proposal.endDate = new Date(this.proposalDataBindObj.proposalEndDate).getTime();
-            this.result.proposal.submissionDate = new Date(this.proposalDataBindObj.sponsorDeadlineDate).getTime();
-            this.result.proposal.internalDeadLineDate = new Date(this.proposalDataBindObj.internalDeadlineDate).getTime();
-            this.mandatoryObj.ismandatory = false;
-            this.updateAttachmentStatus();
-            this._proposalService.saveProposal({'proposal': this.result.proposal,
-              'updateType': TYPE, 'personId': localStorage.getItem( 'personId' )}).subscribe( data => {
-                // when route log is open and autosave happens version changes automatically, so update only proposal obj
-                let tempProposalData: any = {};
-                tempProposalData = data;
-                this.result.proposal = tempProposalData.proposal;
-                this.proposalDataBindObj.dataChangeFlag = false;
-            },
-            err => {
-              $('#warning-modal').modal('hide');
-              this.warningMsgObj.errorMsg = 'Error in saving proposal';
-              document.getElementById('openSucessModal').click();
-            },
-            () => {
-              if (saveType === 'autoSave') {
-                const toastId      = document.getElementById('toast-success-proposal');
-                this.toast_message = 'Changes has been saved automatically ';
-                toastId.className = 'show';
-                setTimeout(function () {
-                toastId.className = toastId.className.replace('show', '');
-                }, 2000);
-              } else if (saveType === 'partialSave') {
-                this.showTab(this.tempSavecurrentTab);
-              } else if (saveType === 'promptSave') {
-                $('#saveAndExitModal').modal('hide');
-                this._router.navigate(['/fibi/dashboard/proposalList']);
-              } else if (saveType === 'saveOnTabSwitch') {
-                $('#warning-modal').modal('hide');
-                this.showTab(this.tempSavecurrentTab);
-              } else {
-                this.showOrHideDataFlagsObj.isShowSaveSuccessModal = true;
-                document.getElementById('openSucessModal').click();
-              } if (this.result.proposal.proposalId) {
-                this.timeStampToPeriodDates();
-              }
-          });
     }
   }
 
@@ -359,6 +374,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.showOrHideDataFlagsObj.isShowNotifyApprover = false;
     this.showOrHideDataFlagsObj.isShowNotifyApproverSuccess = false;
     this.showOrHideDataFlagsObj.isShowNotificationPISuccessModal = false;
+    this.showOrHideDataFlagsObj.isShowCalculateModal = false;
     this.showOrHideDataFlagsObj.isSaveOnTabSwitch = false;
     this.warningMsgObj.submitConfirmation = null;
     this.warningMsgObj.submitWarningMsg = null;
@@ -372,7 +388,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
       this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
     } else {
-      this.proposalDataBindObj.dataChangeFlag = false;
+      this.showOrHideDataFlagsObj.dataChangeFlag = false;
       this.showTab(this.tempSavecurrentTab);
     }
   }
@@ -390,9 +406,15 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   checkSubmitProposalValidation() {
+    this.closeWarningModal();
     this.proposalValidation();
+    if (this.result.proposal.budgetHeader != null) {
+      this.setProposalBudgetDetails();
+    }
     if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
+      document.getElementById('openWarningModal').click();
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
+      this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
     } else if (this.result.proposal.proposalAttachments.length === 0) {
         this.showOrHideDataFlagsObj.isShowSubmitWarningModal = true;
         this.warningMsgObj.submitWarningMsg = 'Please add atleast one supporting document to submit the proposal.';
@@ -819,7 +841,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   setProposalBudgetDetails() {
     if (this.budgetOverviewDateObj.isStartError || this.budgetOverviewDateObj.isEndError ||
-        this.budgetOverviewDateObj.budgetStartDate == null || this.budgetOverviewDateObj.budgetEndDate == null) {
+        this.budgetOverviewDateObj.budgetStartDate === null || this.budgetOverviewDateObj.budgetEndDate === null) {
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
       this.mandatoryObj.field = 'budgetDates';
     } else {
@@ -846,18 +868,25 @@ export class ProposalComponent implements OnInit, OnDestroy {
     }
   }
 
-  applyRates(event) {
-      event.preventDefault();
-      const requestObj = {
-        userName: localStorage.getItem( 'currentUser' ),
-        userFullName: localStorage.getItem( 'userFullname' ),
-        proposal: this.result.proposal
-      };
-      this._proposalBudgetService.applyRates ( requestObj ).subscribe( (data: any) => {
-          this.result.proposal = data.proposal;
-          this.timeStampToPeriodDates();
-          this.showToast();
-      });
+  applyRates(event, isToast) {
+    event.preventDefault();
+    const requestObj = {
+      userName: localStorage.getItem( 'currentUser' ),
+      userFullName: localStorage.getItem( 'userFullname' ),
+      proposal: this.result.proposal
+    };
+    this._proposalBudgetService.applyRates ( requestObj ).subscribe( (data: any) => {
+        this.result.proposal = data.proposal;
+        this.timeStampToPeriodDates();
+    }, err => {},
+    () => {
+      if (isToast) {
+        this.showToast();
+      } else {
+        this.showOrHideDataFlagsObj.isShowCalculateModal = true;
+        document.getElementById('openSucessModal').click();
+      }
+    });
   }
 
   resetBudgetRates() {
@@ -907,6 +936,15 @@ export class ProposalComponent implements OnInit, OnDestroy {
     setTimeout(function () {
     toastId.className = toastId.className.replace('show', '');
     }, 2000);
+  }
+
+  timeStampToBudgetDates() {
+    if ( this.result.proposal.budgetHeader != null) {
+      this.budgetOverviewDateObj.budgetStartDate = this.result.proposal.budgetHeader.startDate === null ?
+                                                  null : new Date(this.result.proposal.budgetHeader.startDate);
+      this.budgetOverviewDateObj.budgetEndDate = this.result.proposal.budgetHeader.endDate === null ?
+                                                 null : new Date(this.result.proposal.budgetHeader.endDate);
+    }
   }
 
   ngOnDestroy() {

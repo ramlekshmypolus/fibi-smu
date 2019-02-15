@@ -210,7 +210,7 @@
       </div>
       <div class="modal-body">
         <div class="col-12">
-            <app-file-drop [multiple]="true" (filesDropEvent)="addFileToTempFiles($event)"></app-file-drop>
+            <app-file-drop [multiple]="false" (filesDropEvent)="addFileToTempFiles($event)"></app-file-drop>
         </div>
         <div class="upload-table">
           <table class="table">
@@ -234,4 +234,4 @@
     </div>
   </div>
 </div>
-<div id="prop-save-questionnaire-success">Saved Sucessfully</div>
+<div id="prop-save-questionnaire-success">Questionnaire Saved Sucessfully</div>

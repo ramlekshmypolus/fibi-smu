@@ -21,7 +21,7 @@
                 <a href="#" class="searchButton" (click)="clearGrantCallSearchBox($event)"><i [ngClass]="grantCallIconClass"></i></a>
                 <div class="sb-seachresults" *ngIf="isSearchGrantCallActive">
                   <ul class="sb-results-dropdown-menu text-left">
-                    <li *ngFor="let result of result.grantCalls " (mousedown)="grantCallSelectFunction(result);proposalDataBindObj.dataChangeFlag = true"><span [innerHTML]="result.grantCallName"></span></li>
+                    <li *ngFor="let result of result.grantCalls " (mousedown)="grantCallSelectFunction(result);showOrHideDataFlagsObj.dataChangeFlag = true"><span [innerHTML]="result.grantCallName"></span></li>
                   </ul>
                 </div>
               </div>
@@ -94,7 +94,7 @@
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
               <label>Abstract:</label><br>
               <textarea name="abstract" id="prop-abstract" maxlength="4000" placeholder="Please provide Lay Abstract or Scientic Abstract details here"
-                [(ngModel)]="result.proposal.abstractDescription" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" class="scheduleBoxes"></textarea>
+                [(ngModel)]="result.proposal.abstractDescription" (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true" class="scheduleBoxes"></textarea>
             </div>
           </div>
         </div>

@@ -21,6 +21,7 @@ export class ProposalDetailsComponent implements OnInit {
 
   isSearchLeadUnitActive = false;
   isSearchSponsorActive = false;
+  isSearchKeywordActive = false;
 
   leadUnits: any = [];
 

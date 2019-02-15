@@ -115,6 +115,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   onAutoCalcChange(selectedPeriod) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     this.result.proposal.budgetHeader.isAutoCalc = !this.result.proposal.budgetHeader.isAutoCalc;
     this.showOrHideDataFlagsObj.isPeriodsTotalDisabled = true;
     if ( this.result.proposal.budgetHeader.isAutoCalc === false) {
@@ -184,6 +185,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   setPeriodAndTotalDirectCost(cost, periodNumber) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalCost = 0;
     this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalDirectCost =
         this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalDirectCost === null ?
@@ -212,6 +214,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   setPeriodAndTotalIndirectCost(cost, periodNumber) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalCost = 0;
     this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalDirectCost =
       this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalDirectCost === null ?
@@ -240,6 +243,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   setPeriodAndTotalSubcontractCost(cost, periodNumber) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalCost = 0;
     this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalDirectCost =
       this.result.proposal.budgetHeader.budgetPeriods[periodNumber - 1].totalDirectCost === null ?
@@ -269,6 +273,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   calculatePeriodTotalCost(periodNo) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     let periodTotalCost = 0;
     let periodTotalDirect = 0;
     let periodTotalIndirect = 0;
@@ -317,6 +322,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   validatePeriodStartDate(startDate, endDate, periodNo) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     const periodStartDateString = startDate === null ? null : new Date(startDate);
     const periodEndDateString = endDate === null ? null : new Date(endDate);
 
@@ -346,6 +352,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   validatePeriodEndDate(endDate, startDate, periodNo) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     const periodEndDateString = endDate === null ? null : new Date(endDate);
     const periodStartDateString = startDate === null ? null : new Date(startDate);
 
@@ -375,6 +382,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   fetchCostElements() {
+      this.showOrHideDataFlagsObj.dataChangeFlag = true;
       this.iconClass.costElement = this.selectedCostElement ? 'fa fa-times fa-med' : 'fa fa-search fa-med';
       /*budgetCategoryCode should be passed as '' instead of null for fetching costElement*/
       const budgetCategoryCode = this.budgetDetail.budgetCategoryCode == null ? '' : this.budgetDetail.budgetCategoryCode;
@@ -407,6 +415,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   fetchBudgetCategory(e, type) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     this.iconClass.budgetCategory = this.selectedBudgetCategory ? 'fa fa-times fa-med' : 'fa fa-search fa-med';
     if ( this.selectedBudgetCategory === null || this.selectedBudgetCategory === '') {
       this.clearSearchBox(e, type);
@@ -438,6 +447,8 @@ export class BudgetPeriodsComponent implements OnInit {
         this.costElements = data.costElements;
       });
     }
+    this.isInvalidLineItem.category = false;
+    this.isInvalidLineItem.message = null;
     this.iconClass.budgetCategory = this.selectedBudgetCategory ? 'fa fa-times fa-med' : 'fa fa-search fa-med';
   }
 
@@ -515,7 +526,7 @@ export class BudgetPeriodsComponent implements OnInit {
     this.elasticSearchOptions.index = !this.nonEmployeeFlag ? 'fibiperson' : 'fibirolodex';
     this.elasticSearchOptions.type  = !this.nonEmployeeFlag ? 'person' : 'rolodex';
     this.elasticSearchOptions.contextField = !this.nonEmployeeFlag ? 'full_name' : 'first_name';
-    this.elasticSearchOptions.fields = !this.nonEmployeeFlag ? {full_name: {}, prncpl_nm: {}} :
+    this.elasticSearchOptions.fields = !this.nonEmployeeFlag ? {full_name: {}} :
                                         {first_name: {}, middle_name: {}, last_name: {}, organization: {}};
   }
 
@@ -561,6 +572,7 @@ export class BudgetPeriodsComponent implements OnInit {
         this.budgetDetail.personType = null;
       }
       this.addSystemCostElements();
+      this.showOrHideDataFlagsObj.dataChangeFlag = true;
       this.budgetDetail = {};
       this.selectedBudgetCategory = null;
       this.selectedCostElement = null;
@@ -754,6 +766,7 @@ export class BudgetPeriodsComponent implements OnInit {
     this.rateObj.index = index;
     this.isApplyInflation =
           this.result.proposal.budgetHeader.budgetPeriods[this.rateObj.periodNo].budgetDetails[this.rateObj.index].isApplyInflationRate;
+    const tempPeriod = this.result.proposal.budgetHeader.budgetPeriods.find(period => period.budgetPeriod === this.rateObj.periodNo);
     if (this.result.proposal.budgetHeader.budgetPeriods[this.rateObj.periodNo].budgetDetails[this.rateObj.index].budgetDetailCalcAmounts.length !== 0) {
       this.actionsModalObj.isNoRatesAppplied = false;
     } else {
@@ -762,6 +775,7 @@ export class BudgetPeriodsComponent implements OnInit {
   }
 
   changeApplyInflation () {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     if (this.rateObj.periodNo != null && this.rateObj.index != null) {
       this.result.proposal.budgetHeader.budgetPeriods[this.rateObj.periodNo].budgetDetails[this.rateObj.index].isApplyInflationRate
         = this.isApplyInflation;

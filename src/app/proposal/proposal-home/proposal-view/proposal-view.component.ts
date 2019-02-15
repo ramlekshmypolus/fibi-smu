@@ -11,6 +11,7 @@ export class ProposalViewComponent implements OnInit {
   @Input() result: any = {};
   @Input() showOrHideDataFlagsObj: any = {};
   @Input() proposalDataBindObj: any = {};
+  @Input() warningMsgObj: any = {};
 
   isAbsDescReadMore = false;
 

@@ -84,7 +84,7 @@
               <a href="#" class="searchButton" (click)="clearProtocolSearchBox($event)"><i [ngClass]="protocolIconClass"></i></a>
               <div class="sb-seachresults" *ngIf="isSearchProtocolTitleActive">
                 <ul class="sb-results-dropdown-menu text-left">
-                  <li *ngFor="let result of result.protocols "(mousedown)="addProtocol(result);proposalDataBindObj.dataChangeFlag = true;"><span [innerHTML]="result.title"></span></li>
+                  <li *ngFor="let result of result.protocols "(mousedown)="addProtocol(result);showOrHideDataFlagsObj.dataChangeFlag = true;"><span [innerHTML]="result.title"></span></li>
                 </ul>
               </div>
             </div>

@@ -91,7 +91,7 @@
                       <td>{{awardDetails?.total_cost}}</td>
                       <td>
                         <ul class="actionButtonGroup">
-                          <li><a title="Open {{awardDetails?.awardNumber}}" [routerLink]="'/award'" [queryParams]="{awardId:awardDetails?.awardId}"><i
+                          <li><a title="Open {{awardDetails?.awardNumber}}" [routerLink]="'/fibi/award'" [queryParams]="{awardId:awardDetails?.awardId}"><i
                                 class="fa fa-eye"></i> </a>
                           </li>
                         </ul>
@@ -140,7 +140,7 @@
                     <td>
                       <ul class="actionButtonGroup">
                         <li>
-                          <a title="Open {{awardDetails[0]}}" [routerLink]="['/award']" [queryParams]="{awardId:awardDetails[1]}"><i
+                          <a title="Open {{awardDetails[0]}}" [routerLink]="['/fibi/award']" [queryParams]="{awardId:awardDetails[1]}"><i
                             class="fa fa-eye"></i></a>
                         </li>
                       </ul>
@@ -240,7 +240,7 @@
                       <td>{{awardedProposalDetails[3]}}</td>
                       <td>
                         <ul class="actionButtonGroup">
-                          <li><a title="Open {{awardedProposalDetails[1]}}" [href]="outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+outputPath+'%2FinstitutionalProposalHome.do%3FmethodToCall%3DdocHandler%26docId%3D'+awardedProposalDetails[0]+'%26command%3DdisplayDocSearchView%26docFormKey%3D88888888&__login_user='+userName+'&kcComp=true'"><i
+                          <li><a title="Open {{awardedProposalDetails[1]}}" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FinstitutionalProposalHome.do%3FmethodToCall%3DdocHandler%26docId%3D'+awardedProposalDetails[0]+'%26command%3DdisplayDocSearchView%26docFormKey%3D88888888&__login_user='+userName+'&kcComp=true'"><i
                                class="fa fa-eye"></i> </a></li>
                         </ul>
                       </td>

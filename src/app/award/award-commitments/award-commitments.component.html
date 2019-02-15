@@ -1,0 +1,108 @@
+<div class="pageMinHeight" id="scrollToTop">
+	<div class="pushFixedHeaderFooter">
+		<section class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<div class="row">
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div>
+							<div class="set">
+								<div class="setHead">
+									<span>Cost Sharing</span><a href="#"
+										(click)="showCostsharingTab($event)"><i
+										[ngClass]="(showCostsharing == true)?'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"></i></a>
+								</div>
+								<div class="setBody"
+									*ngIf="(noCostsharingData == false && showCostsharing == true)">
+									<table class="table tableSkin">
+										<thead>
+											<tr>
+												<th>Percentage</th>
+												<th>Type</th>
+												<th>Award Period</th>
+												<th>Commitment Amount</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let costSharing of result.costShareDetails">
+												<td>{{costSharing.cost_share_percentage}}</td>
+												<td>{{costSharing.cost_share_type}}</td>
+												<td>{{costSharing.project_period}}</td>
+												<td>{{costSharing.commitment_amount}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div
+									*ngIf="(noCostsharingData == true && showCostsharing == true)">
+									<p class="noDataOnChart">No cost sharing data associated
+										with this award.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+							<div>
+								<div class="set">
+
+									<div class="setHead">
+										<span>Rates</span><a href="#" (click)="showRatesTab($event)"><i
+											[ngClass]="(showRates == true)?'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"></i></a>
+									</div>
+									<div class="setBody"
+										*ngIf="(result?.fAndADetails && showRates == true)">
+										<label>F&A Rates</label>
+										<table class="table tableSkin subHeads">
+											<thead>
+												<tr>
+													<th>Rate</th>
+													<th>Type</th>
+													<th>Fiscal Year</th>
+													<th>Start Date</th>
+													<th>Campus</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr *ngFor="let fandaDetails of result?.fAndADetails">
+													<td>{{fandaDetails.applicable_idc_rate}}</td>
+													<td>{{fandaDetails.idc_rate_type}}</td>
+													<td>{{fandaDetails.fiscal_year}}</td>
+													<td>{{fandaDetails.start_date}}</td>
+													<td>{{fandaDetails.campus}}</td>
+												</tr>
+											</tbody>
+
+										</table>
+										<label>Benefits Rates</label>
+										<table class="table tableSkin subHeads">
+											<thead>
+												<tr>
+													<th>On Campus</th>
+													<th>Off Campus</th>
+													<th>Comments</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr *ngFor="let benefitsRates of result?.benefitsRates">
+													<td>{{benefitsRates.on_campus}}</td>
+													<td>{{benefitsRates.off_campus}}</td>
+													<td>{{benefitsRates.comments}}</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div *ngIf="(noRateData == true && showRates == true)">
+										<p class="noDataOnChart">No rates data associated with
+											this award.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div class="footerPush"></div>
+	</div>
+</div>

@@ -189,7 +189,7 @@
                   </td>
                   <td>
                     <input *ngIf="showOrHideDataFlagsObj.mode!='view'" type="text" placeholder="" class="dateBox committeeBox"
-                           [(ngModel)]="budgetDetail.lineItemDescription" />
+                           [(ngModel)]="budgetDetail.lineItemDescription"/>
                   </td>
                   <td>
                     <input *ngIf="showOrHideDataFlagsObj.mode!='view'" type="number" step="any" placeholder="" class="dateBox committeeBox" 
@@ -265,7 +265,7 @@
                     <td [ngClass]="isLineItemPersonnelOpen[j]?'position-relative':''">
                       <input *ngIf="showOrHideDataFlagsObj.mode!='view'" type="text" class="dateBox committeeBox"
                              [ngClass]="isLineItemPersonnelOpen[j]?'position-person-inpur-box':''" 
-                             [(ngModel)]="lineItem.lineItemDescription" [disabled]="lineItem?.isSystemGeneratedCostElement==true"/>
+                             [(ngModel)]="lineItem.lineItemDescription"  (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true" [disabled]="lineItem?.isSystemGeneratedCostElement==true"/>
                       <input *ngIf="showOrHideDataFlagsObj.mode =='view'" type="text" placeholder="" class="dateBox committeeBox"
                             [ngClass]="isLineItemPersonnelOpen[j]?'position-person-inpur-box':''" id="lineitem-description" disabled
                             [value]="lineItem.lineItemDescription"/>

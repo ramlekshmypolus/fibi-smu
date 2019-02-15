@@ -14,32 +14,40 @@ export class BudgetOverviewComponent implements OnInit {
   @Input() budgetOverviewDateObj: any = {};
   isBudgetOverviewWidgetOpen = true;
 
-  constructor(private _commonService: CommonService) { }
+  constructor(public _commonService: CommonService) { }
 
-  ngOnInit() {
-    this.budgetOverviewDateObj.budgetStartDate = new Date(this.result.proposal.budgetHeader.startDate);
-    this.budgetOverviewDateObj.budgetEndDate = new Date(this.result.proposal.budgetHeader.endDate);
-  }
+  ngOnInit() { }
 
-  validateBudgetStartDate(startDate) {
+  validateBudgetStartDate(startDate, endDate) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     this.budgetOverviewDateObj.isStartError = false;
     if (new Date(startDate) < new Date(this.result.proposal.startDate)) {
-        this.budgetOverviewDateObj.isStartError = true;
+      this.budgetOverviewDateObj.isStartError = true;
+      if (new Date(startDate) > new Date(endDate)) {
+        this.budgetOverviewDateObj.startDateMessage = '* Choose a Budget Start Date which is on or before Budget End Date.';
+      } else {
         this.budgetOverviewDateObj.startDateMessage = '* Choose a Budget Start Date which is on or after Proposed Start Date.';
+      }
     } else if (new Date(startDate) > new Date(this.result.proposal.endDate)) {
         this.budgetOverviewDateObj.isStartError = true;
         this.budgetOverviewDateObj.startDateMessage = '* Choose a Budget Start Date which is on or before Proposed End Date.';
     }
   }
 
-  validateBudgetEndDate(endDate) {
+  validateBudgetEndDate(startDate, endDate) {
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     this.budgetOverviewDateObj.isEndError = false;
-    if (new Date(endDate) > new Date(this.result.proposal.endDate)) {
-        this.budgetOverviewDateObj.isEndError = true;
-        this.budgetOverviewDateObj.endDateMessage = '* Choose a Budget End Date which is on or before Proposed End Date.';
-    } else if (new Date(endDate) < new Date(this.result.proposal.startDate)) {
-        this.budgetOverviewDateObj.isEndError = true;
-        this.budgetOverviewDateObj.endDateMessage = '* Choose a Budget End Date which is on or after Proposed Start Date.';
+    if (new Date(endDate) < new Date(this.result.proposal.startDate)) {
+      this.budgetOverviewDateObj.isEndError = true;
+      this.budgetOverviewDateObj.endDateMessage = '* Choose a Budget End Date which is on or after Proposed Start Date.';
+    } else if (new Date(endDate) < new Date(this.result.proposal.endDate)) {
+        if (new Date(endDate) < new Date(startDate)) {
+          this.budgetOverviewDateObj.isEndError = true;
+          this.budgetOverviewDateObj.endDateMessage = '* Choose a Budget End Date which is on or after Budget Start Date.';
+        }
+    } else if (new Date(endDate) > new Date(this.result.proposal.endDate)) {
+      this.budgetOverviewDateObj.isEndError = true;
+      this.budgetOverviewDateObj.endDateMessage = '* Choose a Budget End Date which is on or before Proposed End Date.';
     }
   }
 
