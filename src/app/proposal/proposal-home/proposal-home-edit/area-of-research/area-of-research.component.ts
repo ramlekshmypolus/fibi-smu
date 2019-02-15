@@ -111,7 +111,7 @@ export class AreaOfResearchDetailsComponent implements OnInit {
         areaOfResearchObject.updateTimeStamp = new Date().getTime();
         areaOfResearchObject.updateUser = localStorage.getItem('currentUser');
         this.result.proposal.proposalResearchAreas.push(areaOfResearchObject);
-        this.proposalDataBindObj.dataChangeFlag = true;
+        this.showOrHideDataFlagsObj.dataChangeFlag = true;
       }
     }
     this.selectedAreaOfResearch = '';
@@ -136,7 +136,7 @@ export class AreaOfResearchDetailsComponent implements OnInit {
       .subscribe(() => {});
     }
     this.result.proposal.proposalResearchAreas.splice(this.index, 1);
-    this.proposalDataBindObj.dataChangeFlag = true;
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     if (this.result.proposal.proposalResearchAreas.length === 0) {
       this.result.proposal.researchDescription = '';
     }

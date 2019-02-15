@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -10,9 +10,9 @@ export class AppHttpInterceptor implements HttpInterceptor {
     constructor(private _router: Router) { }
     Authtoken: string;
     unauthorized: any;
-/**catches every request and adds the authentication token from local storage
- * creates new header with auth-key
-*/
+    /**catches every request and adds the authentication token from local storage
+     * creates new header with auth-key
+    */
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.Authtoken = localStorage.getItem('authToken');
     if (this.Authtoken == null) {
@@ -20,7 +20,7 @@ export class AppHttpInterceptor implements HttpInterceptor {
     }
     const authReq = req.clone({ headers: req.headers.set('Authorization', this.Authtoken)});
 
-/**send the newly created request*/
+    /**send the newly created request*/
     return next.handle(authReq).catch(
         ( error ) => {
         console.log('"Error Occurred"');

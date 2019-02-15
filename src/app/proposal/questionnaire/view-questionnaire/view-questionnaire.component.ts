@@ -15,8 +15,6 @@ export class ViewQuestionnaireComponent implements OnInit {
   @Input() showOrHideDataFlagsObj: any;
   @Input() proposalData: any;
 
-  constructor(private _questionnaireService: QuestionnaireService,
-              private _activatedRoute: ActivatedRoute) { }
   questionnaire: any = {};
   attachmentIndex    = null;
   requestObject: any = {};
@@ -28,6 +26,9 @@ export class ViewQuestionnaireComponent implements OnInit {
   helpMsg     = [];
 
   QuestionnaireCompletionFlag = 'N';
+
+  constructor(private _questionnaireService: QuestionnaireService,
+              private _activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     if (this.questionnaireData.hasOwnProperty('QUESTIONNAIRE_ANS_HEADER_ID') &&
@@ -274,13 +275,13 @@ export class ViewQuestionnaireComponent implements OnInit {
    * add file to temporarylist
    */
   addFileToTempFiles(file) {
-    //(<HTMLInputElement>document.getElementById('selectedFile')).value = '';
+    // (<HTMLInputElement>document.getElementById('selectedFile')).value = '';
     if (file) {
       this.tempFiles = [];
-      this.tempFiles.push({ attachment : file,
-                            questionId : this.questionnaire.questions[this.attachmentIndex].QUESTION_ID,
-                            fileName   : file.name,
-                            type       : file.type});
+      this.tempFiles.push({ attachment : file[0],
+                            questionId : this.questionnaire.questions[6].QUESTION_ID,
+                            fileName   : file[0].name,
+                            type       : file[0].type});
     }
   }
   saveQuestionnaire() {

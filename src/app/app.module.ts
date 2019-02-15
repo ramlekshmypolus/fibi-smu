@@ -6,6 +6,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TreeModule } from 'angular-tree-component';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -25,6 +26,7 @@ import { AuthGuard } from './common/services/auth-guard.service';
 import { AppHttpInterceptor } from './common/services/http-interceptor';
 import { AppRouterComponent } from './common/app-router/app-router.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule( {
     declarations: [
@@ -34,7 +36,8 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
         AppComponent,
         LoginComponent,
         SessionTimeoutComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        LogoutComponent
     ],
     imports: [
         BrowserModule,
@@ -43,7 +46,8 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
         HttpClientModule,
         NgIdleKeepaliveModule,
         NgbModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        TreeModule.forRoot(),
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [

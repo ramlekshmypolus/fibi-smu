@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import { ExpandedViewService } from './expanded-view.service';
+import { CommonService } from '../../../common/services/common.service';
 
 @Component({
   selector: 'app-expanded-view',
@@ -19,7 +20,7 @@ export class ExpandedViewComponent implements OnInit {
   exportIndex = '';
   exportDataHeading = '';
 
-  constructor( private _route: ActivatedRoute, private _expandedViewService: ExpandedViewService) { }
+  constructor( private _route: ActivatedRoute, private _expandedViewService: ExpandedViewService, public _commonService: CommonService) { }
 
   ngOnInit() {
     this.researchSummaryIndex = this._route.snapshot.queryParamMap.get('summaryIndex');

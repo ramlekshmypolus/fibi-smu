@@ -63,7 +63,8 @@ export class ProjectTeamComponent implements OnInit {
 
   /* calls elastic search according to member type selected */
   memberTypeChanged() {
-    this.clearField = 'true';
+    // tslint:disable-next-line:no-construct
+    this.clearField = new String('true');
     this.selectedMemberObject = null;
     if (this.memberTypeSelected === 'Employee') {
       this.isNonEmployeeFlag = false;
@@ -153,8 +154,6 @@ export class ProjectTeamComponent implements OnInit {
   /* adds proposal team member */
   addProposalTeamMember() {
     const tempDeptObj: any = {};
-    // tslint:disable-next-line:no-construct
-    this.clearField = new String('true');
     this.warningMsgObj.personWarningMsg = null;
     if (this.selectedMemberObject != null && this.proposalDataBindObj.personRoleSelected !== null &&
       this.proposalDataBindObj.personRoleSelected !== 'null') {
@@ -224,9 +223,9 @@ export class ProjectTeamComponent implements OnInit {
           tempDeptObj.units = this.personDepartments;
         }
         this.result.proposal.proposalPersons.push(tempDeptObj);
-        this.proposalDataBindObj.dataChangeFlag = true;
-        this.selectedMemberObject = null;
+        this.showOrHideDataFlagsObj.dataChangeFlag = true;
         this.memberTypeSelected = 'Employee';
+        this.memberTypeChanged();
         this.proposalDataBindObj.personRoleSelected = null;
         this.percentageEffort = null;
         this.departmentSelected = null;
@@ -256,12 +255,12 @@ export class ProjectTeamComponent implements OnInit {
     this.requestObject.proposalPersonId = this.tempSavePersonObject.proposalPersonId;
     if (this.tempSavePersonObject.proposalPersonId == null) {
       this.result.proposal.proposalPersons.splice(this.index, 1);
-      this.proposalDataBindObj.dataChangeFlag = true;
+      this.showOrHideDataFlagsObj.dataChangeFlag = true;
     } else {
       this._proposalHomeService.deleteProposalPerson(this.requestObject)
         .subscribe(data => {
           this.result.proposal.proposalPersons.splice(this.index, 1);
-          this.proposalDataBindObj.dataChangeFlag = true;
+          this.showOrHideDataFlagsObj.dataChangeFlag = true;
         });
     }
     this.memberTypeSelected = 'Employee';

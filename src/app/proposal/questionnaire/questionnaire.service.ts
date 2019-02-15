@@ -13,7 +13,7 @@ export class QuestionnaireService {
   }
 
   getQuestionnaire(data) {
-    return this._http.post('/getQuestionnaire', data );
+    return this._http.post(this._commonService.baseUrl + '/getQuestionnaire', data );
   }
 
   saveQuestionnaire(data, filesArray) {
@@ -24,11 +24,12 @@ export class QuestionnaireService {
       });
     }
     formData.append('formDataJson', JSON.stringify(data));
-    return this._http.post('/saveQuestionnaire', formData);
+    return this._http.post(this._commonService.baseUrl + '/saveQuestionnaire', formData);
   }
 
   downloadAttachment(attachmentId) {
-    return this._http.post('/downloadQuesAttachment', {'questionnaire_ans_attachment_id': attachmentId }, {responseType: 'blob'});
+    return this._http.post(this._commonService.baseUrl + '/downloadQuesAttachment',
+    {'questionnaire_ans_attachment_id': attachmentId }, {responseType: 'blob'});
   }
 
 }

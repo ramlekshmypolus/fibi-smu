@@ -32,7 +32,7 @@
             > 60)?(attachment?.description | slice:0:60)+'...':(attachment?.description)}}
           </span>
           <textarea *ngIf="showOrHideDataFlagsObj.isAttachmentEditable" id="prop-doc-desc" cols=2 rows="1"
-          [(ngModel)]="attachment.description" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true" placeholder="" class="scheduleBoxes forTextAreaEntry">
+          [(ngModel)]="attachment.description" (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true" placeholder="" class="scheduleBoxes forTextAreaEntry">
           </textarea>
         </td>
         <td title="{{(attachment?.fileName?.length>60)?(attachment?.fileName):''}}">{{(attachment?.fileName?.length
@@ -42,7 +42,7 @@
             {{attachment?.narrativeStatus?.description}}
           </span>
           <select *ngIf="showOrHideDataFlagsObj.isAttachmentEditable" id="prop-doc-status"
-            class="committeeBox dateBox" [(ngModel)]="attachment.narrativeStatus.description" (ngModelChange)="proposalDataBindObj.dataChangeFlag = true">
+            class="committeeBox dateBox" [(ngModel)]="attachment.narrativeStatus.description" (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true">
               <option *ngFor="let attachStatus of this.result.narrativeStatus"
                 (value)="attachStatus.description">{{attachStatus?.description}}</option>
           </select>

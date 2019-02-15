@@ -1,0 +1,78 @@
+<div class="pageMinHeight" id="scrollToTop">
+	<div class="pushFixedHeaderFooter">
+		<section class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<div class="row">
+					<div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+						<input class="hierarchyFonts" type="text" #filter
+							(keyup)="tree.treeModel.filterNodes(filter.value)"
+							placeholder="Search Award in Hierarchy.." />
+						<div class="row">
+							<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 collapseFont">
+								<a *ngIf="expandAllEnabled" class="expandFont" href="#"
+									(click)="expandAllNodes($event)"><strong>Expand
+										All</strong></a> <a *ngIf="expandAllEnabled== false" class="expandFont"
+									href="#" (click)="collapseAllNodes($event)"><strong>Collapse
+										All</strong></a>
+							</div>
+							<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+								<strong> <font class="activeStatus">*</font><span
+									class="expandFont">Active&nbsp;</span> <font
+									class="pendingStatus">*</font><span class="expandFont">Pending&nbsp;</span>
+									<font class="holdStatus">*</font> <span class="expandFont">
+										Hold&nbsp;</span> <font class="allStatus">*</font> <span
+									class="expandFont"> All Other Status&nbsp;</span>
+								</strong>
+							</div>
+						</div>
+						<tree-root #tree [nodes]="nodes" [options]="options"
+							class="scrollTreeDiv"> <ng-template #treeNodeTemplate
+							let-node let-index="index"> <font
+							[ngClass]="{activeStatus:node.data.StatusCode == 1, pendingStatus:node.data.StatusCode == 3,holdStatus:node.data.StatusCode == 6,allStatus:((node.data.StatusCode == 2)||(node.data.StatusCode == 4)||(node.data.StatusCode ==5)||(node.data.StatusCode ==7))}">*</font>
+						<span>{{ node.data.name }}</span> </ng-template> </tree-root>
+					</div>
+					<div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+						<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+							<label><strong>Award Overview (#{{awardNumber}}
+									)</strong></label> &nbsp;<a class="view_eye" href="#"
+								(click)="awardView($event,awardId)"> <i
+								title="Open {{awardNumber}}" class="fa fa-eye"></i>
+							</a><br>
+							<div class="borderBox">
+								<table class="table tableSkin grid2">
+									<tbody>
+										<tr>
+											<td><label>Account Number</label><br>{{accountNumber}}</td>
+											<td><label>Status</label><br>{{awardStatus}}</td>
+										</tr>
+										<tr>
+											<td><label> PI</label><br>{{piName}}</td>
+											<td><label>Title</label><br>{{awardTitle}}</td>
+										</tr>
+										<tr>
+											<td><label> Sponsor</label><br>{{sponsorName}}</td>
+											<td><label>Lead Unit</label><br>{{leadUnitName}}</td>
+										</tr>
+										<tr>
+											<td><label>Award Effective Date</label><br>{{awardEffectiveDate}}</td>
+											<td><label>Activity Type</label><br>{{activityType}}</td>
+										</tr>
+										<tr>
+											<td><label>Obligation Start</label><br>{{obligationStartDate}}</td>
+											<td><label>Obligation End</label><br>{{obligationEndDate}}</td>
+										</tr>
+										<tr>
+											<td><label>Obligated Amount</label><br>{{obligatedAmount}}</td>
+											<td><label>Anticipated Amount</label><br>{{anticipatedAmount}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div class="footerPush"></div>
+	</div>
+</div>

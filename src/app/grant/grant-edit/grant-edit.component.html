@@ -88,7 +88,7 @@
                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-3">
                             <label class="block-display">Lead Unit:</label>
                             <ng2-completer [clearUnselected]="true"
-                                [fillHighlighted]="false" [inputClass]="completerID" [(ngModel)]="result.grantCall.homeUnitName"
+                                [fillHighlighted]="false" [(ngModel)]="result.grantCall.homeUnitName"
                                 placeholder="Search here for Lead Unit" [datasource]="homeUnits"
                                 [minSearchLength]="0" (selected)="homeUnitChangeFunction(); showDataFlagObj.isDataChange = true">
                             </ng2-completer>
@@ -117,7 +117,7 @@
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-2"
                                     style="padding-left: 0px">
-                                    <ng2-completer [inputClass]="completerID" id="grant-keyword"
+                                    <ng2-completer id="grant-keyword"
                                         [(ngModel)]="selectedKeyword" placeholder="Search here for Keyword"
                                         [datasource]="keywordsList" [minSearchLength]="0"
                                         [clearUnselected]="true" [fillHighlighted]="false" (selected)="keywordChangeFunction(); showDataFlagObj.isDataChange = true;">
@@ -404,8 +404,6 @@
     </table>
 </div>
 <div class="col-12 text-right">
-    <p class="mandatory warningMessage" *ngIf="saveSuccessfulMessage!=null">
-        {{saveSuccessfulMessage}}</p>
     <button type="button" class="btnSkin btnPublish" (click)="checkGrantCallPublish()" data-toggle="modal"
         data-target="#warningOrAlertModal" [disabled]="result.grantCall.grantCallId ==null"
         *ngIf="result?.grantCall?.grantCallId !=null">Publish</button>

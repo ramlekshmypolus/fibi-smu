@@ -1,0 +1,220 @@
+<div class="pageMinHeight" id="scrollToTop">
+	<div class="pushFixedHeaderFooter">
+		<section class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<div class="row">
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div class="set">
+							<div class="setHead">
+								<span>Reporting</span><a href="#"
+									(click)="showReportingTab($event)"><i
+									[ngClass]="(showReports == true)?'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"></i></a>
+							</div>
+							<div class="setBody" *ngIf="showReports">
+								<table class="table tableSkin subHeads"
+									*ngIf="result?.awardReport">
+									<thead>
+										<tr>
+											<th>TYPE</th>
+											<th>FREQUENCY</th>
+											<th>FREQUENCY BASIS</th>
+											<th>OSP DISTRIBUTION</th>
+											<th>DUE DATE</th>
+										</tr>
+									</thead>
+									<tbody *ngFor="let key of awardReportKeyList">
+										<tr>
+											<td colspan="4"><label>{{key}}
+													({{result?.awardReport[key]?.length}})</label></td>
+										</tr>
+										<tr *ngFor="let awardreport of result.awardReport[key]">
+											<td class="report_type">{{awardreport.report}}</td>
+											<td>{{awardreport.frequency}}</td>
+											<td>{{awardreport.frequency_base}}</td>
+											<td>{{awardreport.osp_distribution}}</td>
+											<td></td>
+										</tr>
+									</tbody>
+								</table>
+								<div
+									*ngIf="((noReports == true && (showReports == true)) ||(result == null) && (showReports == true))">
+									<p class="noDataOnChart">No reports data associated with
+										this award.</p>
+								</div>
+							</div>
+						</div>
+						<div class="set">
+							<div class="setHead">
+								<span>Approved Special Items</span><a href="#"
+									(click)="showApprovedSpecialItemsTab($event)"><i
+									[ngClass]="(showApprovedSpecialItems == true)?'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"></i></a>
+							</div>
+							<div class="setBody" *ngIf="showApprovedSpecialItems">
+								<table class="table tableSkin"
+									*ngIf="result?.awardApprovdEquipment">
+									<p>
+										<label>Equipment</label>
+									</p>
+									<thead>
+										<tr>
+											<th>Item</th>
+											<th>Vendor</th>
+											<th>Model</th>
+											<th>Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let equipment of result?.awardApprovdEquipment">
+											<td>{{equipment.item}}</td>
+											<td>{{equipment.vendor}}</td>
+											<td>{{equipment.model}}</td>
+											<td>{{equipment.amount}}</td>
+										</tr>
+									</tbody>
+								</table>
+								<table class="table  tableSkin"
+									*ngIf="result?.approvedTravel">
+									<p>
+										<label>Foreign Travel</label>
+									</p>
+									<thead>
+										<tr>
+											<th>Traveller</th>
+											<th>Destination</th>
+											<th>Date From</th>
+											<th>Date To</th>
+											<th>Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr *ngFor="let travel of result.approvedTravel">
+											<td>{{travel.traveler_name}}</td>
+											<td>{{travel.destination}}</td>
+											<td>{{travel.start_date}}</td>
+											<td>{{travel.end_date}}</td>
+											<td>{{travel.amount}}</td>
+										</tr>
+									</tbody>
+								</table>
+								<div
+									*ngIf="((noApprovedTravel == true && (noApprovedEquipment == true) && (showApprovedSpecialItems == true)) ||(result == null) && (showApprovedSpecialItems == true))">
+									<p class="noDataOnChart">No travel data associated with
+										this award.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+							<div class="set">
+								<div class="setHead">
+									<span>Terms</span><a href="#" (click)="showTermsTab($event)"><i
+										[ngClass]="(showTerms == true)?'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"></i></a>
+								</div>
+								<div class="setBody"
+									*ngIf="(showTerms == true &&(noTerms== false) && result != null)">
+									<table class="table tableSkin subHeads">
+										<tbody *ngFor="let key of awardTermsKeyList">
+											<tr>
+												<td colspan="4"><label>{{key}}
+														({{result?.awardTerms[key]?.length}})</label></td>
+											</tr>
+											<tr *ngFor="let terms of result?.awardTerms[key]">
+												<td>{{terms.sponsor_term}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div
+									*ngIf="((noTerms == true && (showTerms == true)) ||(result == null) && (showTerms == true))">
+									<p class="noDataOnChart">No terms data associated with this
+										award.</p>
+								</div>
+							</div>
+							<div class="set">
+								<div class="setHead">
+									<span>Payment & Invoice</span><a href="#"
+										(click)="showPaymentAndInvoiceTab($event)"><i
+										[ngClass]="(showPaymentAndInvoice == true)?'fa fa-chevron-circle-up':'fa fa-chevron-circle-down'"></i></a>
+								</div>
+								<div class="setBody"
+									*ngIf="showPaymentAndInvoice == true && result?.awardPaymntInvoice">
+									<div class="row">
+										<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+											<p>
+												<label>Payment Basis</label><br>
+												{{result?.awardPayment[0]?.payment_basis}}
+											</p>
+										</div>
+										<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+											<p id="paymethod">
+												<label>Payment Method</label><br>
+												{{result?.awardPayment[0]?.payment_method}}
+											</p>
+										</div>
+									</div>
+									<table class="table tableSkin subHeads">
+										<p>
+											<label>Payment and Invoice Requirement</label><br>
+										<thead>
+											<tr>
+												<th>TYPE</th>
+												<th>FREQUENCY</th>
+												<th>FREQUENCY BASIC</th>
+												<th>OSP DISTRIBUTION</th>
+												<th>DUE DATE</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr
+												*ngFor="let awardPaymntInvoice of result?.awardPaymntInvoice">
+												<td class="report_type">{{awardPaymntInvoice.report}}</td>
+												<td>{{awardPaymntInvoice.frequency}}</td>
+												<td>{{awardPaymntInvoice.frequency_base}}</td>
+												<td>{{awardPaymntInvoice.osp_distribution}}</td>
+												<td>{{awardPaymntInvoice.due_date}}</td>
+											</tr>
+										</tbody>
+										</p>
+									</table>
+									<table class="table tableSkin subHeads">
+										<p>
+											<label>Payment Schedules</label><br>
+										<thead>
+											<tr>
+												<th>Schedule Details</th>
+												<th>Due Date</th>
+												<th>Preparer</th>
+												<th>Status</th>
+												<th>Comments</th>
+												<th>Amount</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr
+												*ngFor="let awardPaymntSchedule of result.awardPaymntSchedule">
+												<td class="report_type">{{awardPaymntSchedule.schedule_details}}</td>
+												<td>{{awardPaymntSchedule.due_date}}</td>
+												<td>{{awardPaymntSchedule.full_name}}</td>
+												<td>{{awardPaymntSchedule.status}}</td>
+												<td>{{awardPaymntSchedule.comments}}</td>
+												<td>{{awardPaymntSchedule.amount}}</td>
+											</tr>
+										</tbody>
+										</p>
+									</table>
+								</div>
+								<div
+									*ngIf="((noPayment == true && (showPaymentAndInvoice == true)) ||(result == null) && (showPaymentAndInvoice == true))">
+									<p class="noDataOnChart">No payment data associated with
+										this award.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div class="footerPush"></div>
+	</div>
+</div>

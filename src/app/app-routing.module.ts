@@ -5,6 +5,7 @@ import { AuthGuard } from './common/services/auth-guard.service';
 import { LoginComponent } from './login/login.component';
 import { AppRouterComponent } from './common/app-router/app-router.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { LogoutComponent } from './logout/logout.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -21,16 +22,16 @@ const routes: Routes = [
       { path: 'codetable', loadChildren: 'app/codetable/codetable.module#CodetableModule',
         canActivate: [AuthGuard]},
       { path: 'changePassword', component: ChangePasswordComponent,
-      canActivate: [AuthGuard]}
+      canActivate: [AuthGuard]},
+      { path: 'unitHierarchy', loadChildren: 'app/unit-hierarchy/unit-hierarchy.module#UnitHierarchyModule',
+      canActivate: [AuthGuard]},
+      { path: 'award', loadChildren: 'app/award/award.module#AwardModule',
+        canActivate: [AuthGuard]},
     ]
   },
 
   { path: 'login', component: LoginComponent },
-  // { path: 'award', loadChildren: 'app/award/award.module#AwardModule' },
-  // { path: 'expandedview', component: ExpandedviewComponent, canActivate: [AuthGuard] },
-  // { path: 'committee', loadChildren: 'app/committee/committee.module#CommitteeModule' },
-  // { path: 'grant', loadChildren: 'app/grant/grant.module#GrantModule', canActivate: [AuthGuard] },
-  // { path: 'proposal', loadChildren: 'app/proposal/proposal.module#ProposalModule', canActivate: [AuthGuard] }
+  { path: 'logout', component: LogoutComponent },
 ];
 
 @NgModule({

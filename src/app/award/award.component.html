@@ -1,0 +1,211 @@
+
+<div class="push4slideMenu pageMinHeight" id="scrollToTop">
+	<div class="container-fluid pushFixedHeaderFooter">
+		<div class="headerPush"></div>
+		<section class="row">
+			<div id="myawa"
+				class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<br/>
+				<div class="row pb-2">
+					<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 text-left"><span class="topHeading">MY AWARD</span></div>
+					<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 text-right ">
+						<button class="btnSkin btnSkinPrimary" (click)="backToList($event)">Back to Award</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 viewMode resultCard">
+				<div class="row">
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
+						<label>Award#:Account</label> <span>{{awardNumber}}:{{accountNumber}}</span>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
+						<label>Lead Unit</label> <span>{{leadUnitName}}</span>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
+						<label>Sponsor</label> <span>{{sponsorName}}</span>
+					</div>
+					<div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-6">
+						<label>Last Update</label> <span>{{lastUpdate}}</span>
+					</div>
+					<div class="col-xl-1 col-lg-1 col-md-1 col-sm-4 col-6">
+						<label>Status</label> <span>{{awardStatus}}</span>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<ul class="tabsIcon" style="margin-top: 10px;">
+							<li [ngClass]="{'active':currentTab=='award_home'}"><a
+								style="padding-top: -5px;" href="#"
+								(click)="show_current_tab($event,'award_home');"><i
+									class="fa fa-usd"></i><span>Award</span></a></li>
+							<li [ngClass]="{'active':currentTab=='award_reports_and_terms'}"><a
+								href="#"
+								(click)="show_current_tab($event,'award_reports_and_terms');"><i
+									class="fa fa-file-text-o"></i><span>Reporting
+										Requirements</span></a></li>
+							<li [ngClass]="{'active':currentTab=='award_hierarchy'}"><a
+								href="#" (click)="show_current_tab($event,'award_hierarchy');"><i
+									class="fa fa-sitemap"></i><span>Hierarchy</span></a></li>
+							<li [ngClass]="{'active':currentTab=='award_commitments'}"><a
+								href="#" (click)="show_current_tab($event,'award_commitments');"><i
+									class="fa fa-handshake-o"></i><span>Commitments</span></a></li>
+							<a class="view_external_link" *ngIf="is_awd_budget == 'F'" title="Create Award Budget {{awardNumber}}"
+								[href]="_commonService.outputPathAB+'/award.search?username='+currentUser+'&isSMU=true#/budget?awardNumber='+awardNumber+'&from=CREATE_NEW_BUDGET&mode=CREATE'">
+								<i class="fa fa-external-link"></i> Create Award Budget
+							</a>
+							<a class="view_external_link" *ngIf="is_awd_budget == 'T'" title="View Award Budget {{awardNumber}}"
+								[href]="_commonService.outputPathAB+'/award.search?username='+currentUser+'&isSMU=true#/budget?awardNumber='+awardNumber+'&from=EDIT_DETAILS&versionNumber='+latest_version_number">
+								<i class="fa fa-external-link"></i> View Award Budget
+							</a>
+							<a class="view_external_link hand-cursor" title="Create award variation request" (click)="createProjectVariationRequest()" data-toggle="modal" data-target="#OSTRequest">
+								<!-- [href]="_commonService.outputPathOST+'/dashboard?username='+currentUser+'&isSMU=true#/createform' "> -->
+								<i class="fa fa-external-link"></i> Create Variation Request
+							</a>	
+							<a class="view_external_link" title="Open {{awardNumber}}"
+								[href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FawardHome.do%3FmethodToCall%3DdocHandler%26placeHolderAwardId%3D'+awardId+'%26docId%3D'+this.documentNumber+'%26command%3DdisplayDocSearchView%26businessObjectClassName%3Dorg.kuali.kra.award.home.Award%26docFormKey%3D88888888&__login_user='+currentUser+'&kcComp=true'">
+								 Open Award
+							</a>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div *ngIf="currentTab =='award_home'">
+			<app-award-home></app-award-home>
+		</div>
+		<div *ngIf="currentTab =='award_reports_and_terms'">
+			<award-reports-and-terms></award-reports-and-terms>
+		</div>
+		<div *ngIf="currentTab =='award_hierarchy'">
+			<app-award-hierarchy></app-award-hierarchy>
+		</div>
+		<div *ngIf="currentTab =='award_commitments'">
+			<app-award-commitments></app-award-commitments>
+		</div>
+		<div class="footerPush"></div>
+	</div>
+</div>
+
+<!-- CREATE AWARD VARIATION REQUEST MODAL -->
+<div class="modal fade mySkinDialog" id="OSTRequest" data-backdrop="static" data-keyboard="false" 
+		tabindex="-1" role="dialog" aria-labelledby="skippedSchedulesTitle"
+		aria-hidden="true" *ngIf="createOSTRequest">
+		<div class="modal-dialog modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="skippedSchedulesLongTitle">Create Award Variation Request</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close" title="Close" (click)="closePVRPopup()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="pullSide">
+						<div class="gridSkin">
+							<div class="row" *ngIf="pvr_errorString != ''">
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pvrPadding">
+									<span class="mandatory">* Please fill all mandatory fields</span>
+								</div>
+							</div>
+							<div class="row" *ngIf="isPVRsave == true">
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" style="padding: 0; background-color: #E6F8F6">
+									<span class="routeLogStatus">{{successMsg}}</span>
+								</div>
+							</div>
+							<div class="row">
+									<div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+										<label><span  *ngIf="isPVRsave != true" class="mandatory">*</span>Subject:</label>
+										<input type="text" *ngIf="isPVRsave != true" class="dateBox committeeBox" placeholder="Type here the Subject of the Request" [(ngModel)]="serviceRequest.summary"/>
+										<span class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.SUMMARY}}</span>
+									</div>
+									<div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+										<label>Status: </label>
+										<span class="block-display" [ngClass]="isPVRsave?'':'status-lineHeight'">{{serviceRequest.status}}</span>
+									</div>	
+							</div>
+							<div class="row">
+								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4">
+									<label><span *ngIf="isPVRsave != true" class="mandatory">*</span>Category:</label>
+									<select *ngIf="isPVRsave != true" class="committeeBox dateBox" [(ngModel)]="serviceRequest.ostCategoryCode" (ngModelChange)="checkCategory(serviceRequest.ostCategoryCode, serviceRequest.serviceTypeCode)">
+										<option [value]=null>{{select}}</option>
+										 <option *ngFor="let category of this.projectVariationRequest_categoryMap" [value]="category.CATEGORY_CODE">
+											{{category.DESCRIPTION}}
+										</option> 
+									</select>
+									<span class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.CATEGORY}}</span>
+								</div>
+								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4">
+									<label><span *ngIf="isPVRsave != true" class="mandatory">*</span>Type:</label>
+									<select  *ngIf="isPVRsave != true" class="committeeBox dateBox" [disabled]="serviceRequest.ostCategoryCode==null||serviceRequest.ostCategoryCode=='null'" [(ngModel)]="serviceRequest.serviceTypeCode" (ngModelChange)="checkCategory(serviceRequest.ostCategoryCode, serviceRequest.serviceTypeCode)">
+										<option [value]=null>{{select}}</option>
+										 <option *ngFor="let type of this.projectVariationRequest_typeMap" [value]="type.TYPE_CODE">
+											{{type.DESCRIPTION}}
+										</option>
+									</select>
+									<span class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.SERVICE_TYPE}}</span>
+								</div>
+								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4" *ngIf="serviceRequest.serviceTypeCode!=null && serviceRequest.serviceTypeCode!='null' && serviceRequest.serviceTypeCode=='7'">
+									<label><span *ngIf="isPVRsave != true" class="mandatory">*</span>Award Extension Date:</label>
+									<input type="text" *ngIf="isPVRsave != true" placeholder="{{obligationEndDate}}" [(ngModel)]="serviceRequest.arrivalDate" 
+															id="extensionDate" [owlDateTime]="arrivalDt"  class="committeeBox"  
+															[ngClass]="editClass"  (keypress)="_keyPress($event)"/>
+									<i  *ngIf="isPVRsave != true" class="fa fa-calendar fa-large hand-cursor popupDatePicker" [owlDateTimeTrigger]="arrivalDt"></i>
+									<owl-date-time #arrivalDt [pickerType]="'calendar'" (afterPickerClosed)="validateExtensionDate(serviceRequest.arrivalDate)"></owl-date-time>
+									<span class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.ARRIVAL_DATE | date: 'MM/dd/yyyy'}}</span>
+								</div>
+								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4" *ngIf="serviceRequest.serviceTypeCode!=null && serviceRequest.serviceTypeCode!='null' && serviceRequest.serviceTypeCode=='31'">
+									<label><span *ngIf="isPVRsave != true"></span>Award Status:</label>
+									<span class="block-display paddingStatus">{{awardStatus}}</span>
+									<!-- <span class="block-display paddingStatus" *ngIf="isPVRsave == true">Closed</span> -->
+								</div>
+							</div>
+							<div class="row" *ngIf="isDateValidationMsg">
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+									<span *ngIf="isDateValidationMsg" class="mandatory">{{dateValidationMsg}}</span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4">
+									<label><span  *ngIf="isPVRsave != true" class="mandatory">*</span>Department:</label>
+									<select  *ngIf="isPVRsave != true" class="committeeBox dateBox" [(ngModel)]="serviceRequest.unitNumber" (ngModelChange)="getContractAdmin(serviceRequest.unitNumber)">
+										<option [value]=null>{{select}}</option>
+										 <option *ngFor="let department of this.projectVariationRequest_departmentList" [value]="department.UNIT_NUMBER">
+											{{department.UNIT_NAME}}
+										</option>
+									</select>
+									<span  class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.UNIT_NAME}}</span>
+								</div>
+								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4">
+									<label><span *ngIf="isPVRsave != true" class="mandatory">*</span>Grant Manager/Administrator:</label>
+									<input type="text" *ngIf="isPVRsave != true" class="dateBox committeeBoxNotEditable disableInput" [disabled]="createOSTRequest==true" [(ngModel)]="serviceRequest.contractAdminName"/>
+									<span class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.CURRENT_CA_NAME}}</span>
+								</div>
+								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4">
+									<label>Reporter:</label>
+									<input type="text"  *ngIf="isPVRsave != true" [ngClass]="isGrantManager == 'false'?'dateBox committeeBoxNotEditable disableInput':'dateBox committeeBox'" [disabled]="isGrantManager == 'false'" [(ngModel)]="fullName" (ngModelChange)="updateReporter(fullName)"/> 
+									<span class="block-display" *ngIf="isPVRsave == true">{{fullName}}</span>
+								</div>
+							</div>
+							<div class="row" *ngIf="serviceRequest.ostCategoryCode != null && serviceRequest.ostCategoryCode != 'null' && serviceRequest.serviceTypeCode!=null && serviceRequest.serviceTypeCode!='null'">
+								<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+									<label><span *ngIf="isPVRsave != true" class="mandatory">*</span>Description:</label>
+									<app-ngx-editor *ngIf="isPVRsave != true" [config]="ngxEditorConfig" [(ngModel)]="serviceRequest.description"></app-ngx-editor>
+									<div *ngIf="isPVRsave == true" id="variationDescriptionBox" class="scheduleBoxes" [innerHTML]="serviceRequest.description">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" *ngIf="isPVRsave != true" class="btnSkin btn-secondary" title="Cancel" data-dismiss="modal" (click)="closePVRPopup()">Cancel</button>
+					<button type="button" *ngIf="isPVRsave != true" class="btnSkin btnSkinPrimary" title="Submit Award Variation Request" (click)="saveProjectVariationRequest(serviceRequest)">Submit</button>
+					<button type="button" *ngIf="isPVRsave == true" class="btnSkin btn-secondary" title="Close" data-dismiss="modal" (click)="closePVRPopup()">Close</button>
+					<button type="button" *ngIf="isPVRsave == true" class="btnSkin btnSkinPrimary" title="Open Award Variation Request" (click)="openOSTRequest()">Open</button>
+				</div>
+			</div>
+		</div>
+	</div>
+

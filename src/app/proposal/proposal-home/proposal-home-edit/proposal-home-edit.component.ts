@@ -62,7 +62,7 @@ export class ProposalHomeEditComponent implements OnInit {
     this.result.proposal.grantCallType = this.result.defaultGrantCallType;
     this.proposalDataBindObj.selectedGrantCall = null;
     this.isSearchGrantCallActive = false;
-    this.proposalDataBindObj.dataChangeFlag = true;
+    this.showOrHideDataFlagsObj.dataChangeFlag = true;
   }
 
 }

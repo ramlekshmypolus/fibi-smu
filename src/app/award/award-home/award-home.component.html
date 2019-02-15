@@ -1,0 +1,200 @@
+<div class="pageMinHeight" id="scrollToTop">
+	<div class="pushFixedHeaderFooter">
+		<section class="row">
+			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+				<div class="row">
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div class="borderBox">
+							<h4 class="borderBoxHeading">Details</h4>
+							<div class="pullSide">
+								<table class="table tableSkin grid2"
+									*ngIf="result?.awardDetails?.length >0">
+									<tbody>
+										<tr>
+											<td><label>Activity Type</label><br>{{activityType}}</td>
+											<td><label>Award Type</label><br>{{awardType}}</td>
+											<td><label>Account Type</label><br>{{accountType}}</td>
+										</tr>
+										<tr>
+											<td><label>Sponsor Award#</label><br>{{sponsorAwardNumber}}</td>
+											<td colspan="2"><label>Title</label><br>{{awardTitle}}</td>
+										</tr>
+
+									</tbody>
+								</table>
+								<div *ngIf="result?.awardDetails?.length == 0">
+									<p class="noDataOnChart">No award details found.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div class="borderBox">
+							<h4 class="borderBoxHeading">Dates & Amounts</h4>
+							<div class="pullSide">
+								<table class="table tableSkin grid2">
+									<tbody>
+										<tr>
+											<td><label>Award Effective Date</label><br>{{awardEffectiveDate}}</td>
+											<td><label>Obligation Start</label><br>{{obligationStartDate}}</td>
+											<td><label>Obligation End</label><br>{{obligationEndDate | date: 'MM/dd/yyyy'}}</td>
+										</tr>
+										<tr>
+											<td><label>Notice Date</label><br>{{noticeDate}}</td>
+											<td><label>Obligated Amount</label><br>{{obligatedAmount}}
+
+
+											
+											<td><label>Anticipated Amount</label><br>{{anticipatedAmount}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div class="borderBox">
+							<h4 class="borderBoxHeading">Personnel</h4>
+							<div class="pullSide">
+								<table class="table tableSkin grid2"
+									*ngIf="result?.awardPersons?.length >0">
+									<tr>
+										<td><label *ngIf="pi_coiTrigger==true">Investigators</label><br>
+											<div *ngFor="let person of awardPersons">
+												<div
+													*ngIf="person.contact_role_code=='PI' || person.contact_role_code=='COI'">
+													({{person.contact_role_code}}) {{person.full_name}}
+													({{person.unit_name}})</div>
+											</div> <label *ngIf="kpTrigger==true"><br>Keypersons</label><br>
+											<div *ngFor="let person of awardPersons">
+												<div
+													*ngIf="person.contact_role_code!='PI' && person.contact_role_code!='COI'">
+													({{person.contact_role_code}}) {{person.full_name}}
+													({{person.unit_name}})</div>
+											</div></td>
+									</tr>
+								</table>
+								<div *ngIf="result?.awardPersons?.length == 0">
+									<p class="noDataOnChart">No personnel details associated
+										with this award.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+						<div class="borderBox">
+							<h4 class="borderBoxHeading">Contacts</h4>
+							<div class="pullSide">
+								<table class="table tableSkin grid2">
+									<tbody>
+										<tr>
+											<td>
+												<div *ngIf="result?.awardSponsorContact?.length >0">
+													<label>Sponsor</label><br>
+													<ng-container>
+													<div
+														*ngFor="let awardSponsorContact of awardSponsorContacts">
+														{{awardSponsorContact.full_name}} -
+														{{awardSponsorContact.address_line_1}},
+														{{awardSponsorContact.address_line_2}},
+														{{awardSponsorContact.address_line_3}},
+														{{awardSponsorContact.city}},
+														{{awardSponsorContact.postal_code}},<br>
+														{{awardSponsorContact.email_address}} <br>
+													</div>
+													</ng-container>
+												</div>
+												<div *ngIf="result?.awardUnitContact?.length >0">
+
+													<label>Unit</label><br>
+													<ng-container>
+													<div *ngFor="let awardUnitContact of awardUnitContacts">
+														({{awardUnitContact.unit_administrator_type}}) -
+														{{awardUnitContact.full_name}},
+														{{awardUnitContact.email_addr}} <br>
+													</div>
+													</ng-container>
+												</div>
+												<div
+													*ngIf="result?.awardUnitContact?.length == 0 || result?.awardSponsorContact?.length == 0">
+													<p align="center">No contact data associated with this
+														award.</p>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="borderBox col-12">
+					<h4 class="borderBoxHeading">Funded Proposals</h4>
+					<table class="table table-responsive tableSkin"
+						*ngIf="result?.awardFundedProposals?.length > 0">
+						<tr>
+							<th title="Click to sort by Proposal">Proposal#</th>
+							<th title="Click to sort by Title">PI</th>
+							<th title="Click to sort by Lead Unit">Lead Unit</th>
+							<th title="Click to sort by Sponsor">Sponsor</th>
+							<th title="Click to sort by Deadline">Start Date</th>
+							<th title="Click to sort by Status">End Date</th>
+							<th title="Click to sort by Status">Total Cost</th>
+
+						</tr>
+						<tr *ngFor="let awardFundedProposal of awardFundedProposals">
+							<td>{{awardFundedProposal.proposal_number}}</td>
+							<td>{{awardFundedProposal.pi}}</td>
+							<td>{{awardFundedProposal.unit_name}}</td>
+							<td>{{awardFundedProposal.sponsor_name}}</td>
+							<td>{{awardFundedProposal.start_date}}</td>
+							<td>{{awardFundedProposal.end_date}}</td>
+							<td>{{awardFundedProposal.total_direct_cost_total}}</td>
+
+						</tr>
+
+					</table>
+					<div *ngIf="result?.awardFundedProposals?.length == 0">
+						<p class="noDataOnChart">No funded proposals are associated
+							with this award.</p>
+					</div>
+				</div>
+
+				<div class="borderBox col-12">
+
+					<h4 class="borderBoxHeading">Special Review</h4>
+					<table class="table table-responsive tableSkin"
+						*ngIf="result?.awardSpecialReviews?.length >0">
+						<tr>
+							<th title="Click to sort by Proposal">Protocol#</th>
+							<th title="Click to sort by Title">Type</th>
+							<th title="Click to sort by Lead Unit">Description</th>
+							<th title="Click to sort by Sponsor">Approval Date</th>
+							<th title="Click to sort by Deadline">Expiration Date</th>
+							<th title="Click to sort by Status">Approval Status</th>
+							<th title="Click to sort by Status">Application Date</th>
+						</tr>
+						<tr *ngFor="let awardSpecialReview of awardSpecialReviews">
+							<td>{{awardSpecialReview.protocol_number}}</td>
+							<td>{{awardSpecialReview.special_review_type}}</td>
+							<td>{{awardSpecialReview.description}}</td>
+							<td>{{awardSpecialReview.approval_date}}</td>
+							<td>{{awardSpecialReview.expiration_date}}</td>
+							<td>{{awardSpecialReview.approval_status}}</td>
+							<td>{{awardSpecialReview.application_date}}</td>
+						</tr>
+						<tr>
+						</tr>
+					</table>
+					<div *ngIf="result?.awardSpecialReviews?.length == 0">
+						<p class="noDataOnChart">No special reviews are associated
+							with this award.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div class="footerPush"></div>
+	</div>
+</div>

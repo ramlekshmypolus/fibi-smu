@@ -106,7 +106,7 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    getUserNotification() {
+    getUserNotification(event) {
         this.isNotificationBox = !this.isNotificationBox;
         this.isShowMore = false;
         if ( this.isNotificationBox === true && !this.result.length ) {
