@@ -23,6 +23,7 @@
         <th style="width: 25%">Description</th>
         <th>File Name</th>
         <th>Status</th>
+        <th>Updated By</th>
         <th>Action</th>
       </tr>
       <tr *ngFor="let attachment of result?.proposal?.proposalAttachments;let i = index">
@@ -46,6 +47,9 @@
               <option *ngFor="let attachStatus of this.result.narrativeStatus"
                 (value)="attachStatus.description">{{attachStatus?.description}}</option>
           </select>
+        </td>
+        <td>
+          <span>{{attachment.updateUser}} on {{attachment.updateTimeStamp | date:'MM/dd/yyyy'}}</span>
         </td>
         <td>
           <ul class="actionButtonGroup">

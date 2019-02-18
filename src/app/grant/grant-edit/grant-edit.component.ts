@@ -409,7 +409,6 @@ export class GrantEditComponent implements OnInit {
         });
       }
     }
-    this.showDataFlagObj.isDataChange = true;
   }
 
   backToList( e ) {

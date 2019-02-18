@@ -7,6 +7,7 @@ import { ProposalService } from './services/proposal.service';
 import { CommonService } from '../common/services/common.service';
 import { ProposalBudgetService } from './proposal-budget/proposal-budget.service';
 import { QuestionnaireService } from './questionnaire/questionnaire.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 declare var $: any;
 
@@ -92,7 +93,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   private autoSave_subscription: ISubscription;
 
-  constructor( private _route: ActivatedRoute, private _proposalService: ProposalService,
+  constructor( private _route: ActivatedRoute, private _proposalService: ProposalService, private _spinner: NgxSpinnerService,
     private _router: Router, private _commonService: CommonService, private _questionnaireService: QuestionnaireService,
     private _proposalBudgetService: ProposalBudgetService) {
     document.addEventListener( 'mouseup', this.offClickHandler.bind( this ) );
@@ -116,6 +117,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
       prncpl_nm: {}
     };
     this.result = this._route.snapshot.data.proposalDetails;
+    this._spinner.hide();
     /** added to naviagate to proposal home if user is in create budgt page and automatically loggs out due to session timeout */
     if (this.showOrHideDataFlagsObj.currentTab !== 'PROPOSAL_HOME' && this.result.proposal.proposalId == null) {
       this.showOrHideDataFlagsObj.currentTab = 'PROPOSAL_HOME';

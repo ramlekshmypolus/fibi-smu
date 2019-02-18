@@ -118,7 +118,8 @@ export class ProposalDetailsComponent implements OnInit {
     } else if ( this.proposalDataBindObj.proposalStartDate != null && this.proposalDataBindObj.proposalEndDate != null &&
         new Date(this.proposalDataBindObj.proposalStartDate) <= new Date(this.proposalDataBindObj.proposalEndDate) ) {
         this.warningMsgObj.dateWarningText = null;
-    } else if ( new Date(this.proposalDataBindObj.proposalStartDate) > new Date(this.proposalDataBindObj.proposalEndDate) ) {
+    } else if ( (new Date(this.proposalDataBindObj.proposalStartDate) > new Date(this.proposalDataBindObj.proposalEndDate) &&
+                this.proposalDataBindObj.proposalEndDate != null) ) {
         this.warningMsgObj.dateWarningText = '* Please select an end date after start date';
     } else {
         this.warningMsgObj.dateWarningText = null;

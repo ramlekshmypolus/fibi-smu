@@ -277,7 +277,7 @@ export class RateMaintainanceComponent implements OnInit {
       event.preventDefault();
     }
   }
-  limitKeypress(event) {debugger
+  limitKeypress(event) {
     const pattern = /^(?:[0-9][0-9]{0,2}(?:\.\d{0,2})?|999|999.00|999.99)$/;
     if (!pattern.test(event)) {
       this.rateMaintainance.instituteRate = '';

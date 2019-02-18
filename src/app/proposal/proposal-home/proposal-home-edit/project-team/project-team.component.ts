@@ -255,12 +255,10 @@ export class ProjectTeamComponent implements OnInit {
     this.requestObject.proposalPersonId = this.tempSavePersonObject.proposalPersonId;
     if (this.tempSavePersonObject.proposalPersonId == null) {
       this.result.proposal.proposalPersons.splice(this.index, 1);
-      this.showOrHideDataFlagsObj.dataChangeFlag = true;
     } else {
       this._proposalHomeService.deleteProposalPerson(this.requestObject)
         .subscribe(data => {
           this.result.proposal.proposalPersons.splice(this.index, 1);
-          this.showOrHideDataFlagsObj.dataChangeFlag = true;
         });
     }
     this.memberTypeSelected = 'Employee';
