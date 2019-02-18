@@ -78,10 +78,17 @@ export class BudgetPeriodsComponent implements OnInit {
   changeTab(tabLabel, periodNumber) {
     for (let periodIndex = 0; periodIndex < this.result.proposal.budgetHeader.budgetPeriods.length; periodIndex++) {
       for (let detailsIndex = 0;
-           detailsIndex < this.result.proposal.budgetHeader.budgetPeriods[periodIndex].budgetDetails.length;
-           detailsIndex++) {
+          detailsIndex < this.result.proposal.budgetHeader.budgetPeriods[periodIndex].budgetDetails.length;
+          detailsIndex++) {
         this.isLineItemPersonnelOpen[detailsIndex] = false;
       }
+    }
+    if (this.selectedCostElement != null || this.selectedBudgetCategory != null ||
+      this.budgetDetail.lineItemDescription != null || this.budgetDetail.lineItemCost != null) {
+        this.selectedCostElement = this.selectedBudgetCategory = null;
+        this.budgetDetail.lineItemDescription =  this.budgetDetail.lineItemCost = null;
+        this.iconClass.costElement = this.selectedCostElement ? 'fa fa-times fa-med' : 'fa fa-search fa-med';
+        this.iconClass.budgetCategory = this.selectedBudgetCategory ? 'fa fa-times fa-med' : 'fa fa-search fa-med';
     }
     this.isInvalidLineItem.message = null;
     this.isInvalidLineItem.category = false;
@@ -96,11 +103,11 @@ export class BudgetPeriodsComponent implements OnInit {
       this.selectedPeriod = periodNumber;
       this.selectedPeriodTab.isPeriod = false;
       this.selectedPeriodTab.isPeriodAndTotal = true;
-     } else if (tabLabel === 'PERIODS') {
+    } else if (tabLabel === 'PERIODS') {
         this.selectedPeriod = periodNumber;
         this.selectedPeriodTab.isPeriod = true;
         this.selectedPeriodTab.isPeriodAndTotal = false;
-     }
+    }
   }
 
   enablePeriodsAndTotal() {

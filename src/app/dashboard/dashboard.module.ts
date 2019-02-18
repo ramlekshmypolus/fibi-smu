@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from '../shared/shared.module';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { DashboardService } from '../dashboard/dashboard.service';
 import { DashboardConfigurationService } from '../common/dashboard-configuration-service';
@@ -30,7 +32,6 @@ import { ProtocolsByGrantcallComponent } from './reports/charts/protocols-by-gra
 import { AwardsByGrantcallComponent } from './reports/charts/awards-by-grantcall/awards-by-grantcall.component';
 import { CommitteeComponent } from './committee/committee.component';
 import { ScheduleComponent } from './schedule/schedule.component';
-import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     ReactiveFormsModule,
     Ng2CompleterModule,
-    SharedModule
+    SharedModule,
+    NgxSpinnerModule
   ],
   declarations: [
     DashboardComponent,

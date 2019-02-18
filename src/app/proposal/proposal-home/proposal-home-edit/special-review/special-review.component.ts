@@ -125,11 +125,9 @@ export class SpecialReviewDetailsComponent implements OnInit {
           let temp: any = {};
           temp = success;
           this.result.proposal.propSpecialReviews.splice(this.index, 1);
-          this.showOrHideDataFlagsObj.dataChangeFlag = true;
         });
     } else {
       this.result.proposal.propSpecialReviews.splice(this.index, 1);
-      this.showOrHideDataFlagsObj.dataChangeFlag = true;
     }
   }
 

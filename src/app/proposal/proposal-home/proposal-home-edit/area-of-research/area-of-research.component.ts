@@ -136,7 +136,6 @@ export class AreaOfResearchDetailsComponent implements OnInit {
       .subscribe(() => {});
     }
     this.result.proposal.proposalResearchAreas.splice(this.index, 1);
-    this.showOrHideDataFlagsObj.dataChangeFlag = true;
     if (this.result.proposal.proposalResearchAreas.length === 0) {
       this.result.proposal.researchDescription = '';
     }

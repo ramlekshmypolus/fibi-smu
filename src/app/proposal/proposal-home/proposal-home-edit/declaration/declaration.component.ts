@@ -126,11 +126,9 @@ export class DeclarationComponent implements OnInit {
       this._proposalHomeService.deleteProposalSponsor(this.requestObject)
         .subscribe(data => {
           this.result.proposal.proposalSponsors.splice(this.index, 1);
-          this.showOrHideDataFlagsObj.dataChangeFlag = true;
         });
     } else {
       this.result.proposal.proposalSponsors.splice(this.index, 1);
-      this.showOrHideDataFlagsObj.dataChangeFlag = true;
     }
   }
 
@@ -197,10 +195,8 @@ export class DeclarationComponent implements OnInit {
         this._proposalHomeService.deleteIrbProtocol( this.requestObject  )
         .subscribe( data => { } );
         this.result.proposal.proposalIrbProtocols.splice( this.index, 1 );
-        this.showOrHideDataFlagsObj.dataChangeFlag = true;
     } else {
          this.result.proposal.proposalIrbProtocols.splice( this.index, 1 );
-         this.showOrHideDataFlagsObj.dataChangeFlag = true;
      }
     }
 }

@@ -42,7 +42,7 @@
           </td>
         </tr>
         <tr *ngIf="warningMsgObj.fundingWarningMsg != null">
-          <td colspan="3"><span class="mandatory">{{warningMsgObj.fundingWarningMsg}}</span></td>
+          <td colspan="12"><span class="mandatory">{{warningMsgObj.fundingWarningMsg}}</span></td>
         </tr>
         <!--Funding agency details-->
         <tbody *ngIf="result?.proposal?.proposalSponsors?.length > 0">

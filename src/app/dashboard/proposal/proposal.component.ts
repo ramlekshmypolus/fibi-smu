@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { DashboardService } from '../dashboard.service';
 import { CommonService } from '../../common/services/common.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-proposal',
@@ -36,7 +37,8 @@ export class ProposalListComponent implements OnInit {
 
   constructor( private _router: Router,
     private _dashboardService: DashboardService,
-    public _commonService: CommonService) { }
+    public _commonService: CommonService,
+    private _spinner: NgxSpinnerService ) { }
 
   ngOnInit() {
     this.proposalRequestObject.proposalTabName = 'MY_PROPOSAL';
@@ -101,6 +103,7 @@ export class ProposalListComponent implements OnInit {
   gotoProposal() {
     if (localStorage.getItem('createProposal') === 'true') {
         localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+        this._spinner.show();
         this._router.navigate(['fibi/proposal']);
     } else {
         this.isShowNoCreateProposalModal = true;
@@ -148,6 +151,7 @@ export class ProposalListComponent implements OnInit {
   viewProposalById(event: any, proposalId) {
     event.preventDefault();
     localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+    this._spinner.show();
     this._router.navigate(['fibi/proposal'], { queryParams: { 'proposalId': proposalId } });
   }
 

@@ -4,6 +4,7 @@ import { ProposalRoutingModule } from './proposal-routing.module';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { Ng2CompleterModule } from 'ng2-completer';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { ProposalComponent } from './proposal.component';
 import { ProposalHomeComponent } from './proposal-home/proposal-home.component';
@@ -34,7 +35,8 @@ import { ViewQuestionnaireComponent } from './questionnaire/view-questionnaire/v
     Ng2CompleterModule,
     ProposalRoutingModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    NgxSpinnerModule
   ],
   declarations: [
     ProposalComponent,
