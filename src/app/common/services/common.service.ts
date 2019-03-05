@@ -27,6 +27,7 @@ export class CommonService {
   // outputPathOST = 'https://demo.fibiweb.com/sst';
   // outputPathOST = 'https://polus.fibiweb.com/sst';
 
+  // IRBOutputPath = 'http://localhost:8080/fibi-irb/dashboard#/irb/dashboard';
   IRBOutputPath = 'http://192.168.1.139:8080/fibi-irb/dashboard#/irb/dashboard';
   // IRBOutputPath = 'https://demo.fibiweb.com/fibi-irb/dashboard#/irb/dashboard';
   // IRBOutputPath = 'https://polus.fibiweb.com/fibi-irb/dashboard#/irb/dashboard';
@@ -36,6 +37,7 @@ export class CommonService {
     property2: '',
     property3: '',
     property4: '',
+    property5: '',
     pageNumber: 20,
     sortBy: 'updateTimeStamp',
     reverse: 'DESC',

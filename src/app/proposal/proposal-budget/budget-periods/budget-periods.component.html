@@ -42,8 +42,8 @@
               <tbody>
                 <tr *ngFor="let period of result?.proposal?.budgetHeader?.budgetPeriods">
                   <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-number" disabled [value]="period?.budgetPeriod"/></td>
-                  <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-start" disabled [value]="period?.startDate | date:'MM/dd/yyyy'"/></td>
-                  <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-end" disabled [value]="period?.endDate | date:'MM/dd/yyyy'"/></td>
+                  <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-start" disabled [value]="period?.startDate | date: 'dd/MM/yyyy'"/></td>
+                  <td><input type="text" placeholder="" class="dateBox committeeBox" id="period-end" disabled [value]="period?.endDate | date: 'dd/MM/yyyy'"/></td>
                   <td>
                     <input *ngIf="showOrHideDataFlagsObj.mode != 'view'" type="number" step="any" placeholder="" class="dateBox committeeBox" id="lineItemBudget" [(ngModel)]= "period.totalDirectCost"
                            (ngModelChange)="setPeriodAndTotalDirectCost(period.totalDirectCost, period.budgetPeriod)" [attr.disabled]="showOrHideDataFlagsObj.isPeriodsTotalDisabled? '' : null" appDecimalLimit/>
@@ -93,30 +93,32 @@
                     <span class="mandatory" *ngIf="showOrHideDataFlagsObj.mode!='view'">*</span>Start Date:
                   </label>
                   <span  class="dateField" *ngIf="showOrHideDataFlagsObj.mode!='view'">
-                    <input type="text" placeholder="MM/dd/YYYY" (keypress)="_commonService._keyPress($event, 'date')"
+                    <input type="text" placeholder="dd/mm/yyyy" (keypress)="_commonService._keyPress($event, 'date')"
                       [owlDateTime]="periodstart" class="budgetDate-width committeeBox"
-                      [ngClass]="budgetPeriodsDateObj.isStartError?'lineItem-mandatory':''"
+                      [ngClass]="budgetPeriodsDateObj.isStartError && budgetPeriodsDateObj.period==selectedPeriod ?'lineItem-mandatory':''"
                       [(ngModel)]="period.startDate" (ngModelChange)="validatePeriodStartDate(period.startDate, period.endDate, period.budgetPeriod-1)"/>
                     <i class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="periodstart"></i>
                     <owl-date-time #periodstart [pickerType]="'calendar'"></owl-date-time>
                   </span>
-                  <span *ngIf="budgetPeriodsDateObj.isStartError" class="mandatory block-display">{{budgetPeriodsDateObj.startErrorMessage}}</span>
-                  <input type="text" disabled placeholder="" class="committeeBox" *ngIf="showOrHideDataFlagsObj.mode=='view'" [value]="period.startDate | date:'MM/dd/yyyy'"/>
+                  <span *ngIf="budgetPeriodsDateObj.isStartError && budgetPeriodsDateObj.period==selectedPeriod
+                  " class="mandatory block-display">{{budgetPeriodsDateObj.startErrorMessage}}</span>
+                  <input type="text" disabled placeholder="" class="committeeBox" *ngIf="showOrHideDataFlagsObj.mode=='view'" [value]="period.startDate | date: 'dd/MM/yyyy'"/>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
                   <label class="block-display">
                     <span class="mandatory" *ngIf="showOrHideDataFlagsObj.mode!='view'">*</span>End Date:
                   </label>
                   <span  class="dateField" *ngIf="showOrHideDataFlagsObj.mode!='view'">
-                    <input type="text" placeholder="MM/dd/YYYY" (keypress)="_commonService._keyPress($event, 'date')"
+                    <input type="text" placeholder="dd/mm/yyyy" (keypress)="_commonService._keyPress($event, 'date')"
                       [owlDateTime]="periodend" class="budgetDate-width committeeBox"
-                      [ngClass]="budgetPeriodsDateObj.isEndError?'lineItem-mandatory':''"
+                      [ngClass]="budgetPeriodsDateObj.isEndError && budgetPeriodsDateObj.period==selectedPeriod ?'lineItem-mandatory':''"
                       [(ngModel)]="period.endDate" (ngModelChange)="validatePeriodEndDate(period.endDate, period.startDate, period.budgetPeriod-1)"/>
                     <i class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="periodend"></i>
                     <owl-date-time #periodend [pickerType]="'calendar'"></owl-date-time>
                   </span>
-                  <span *ngIf="budgetPeriodsDateObj.isEndError" class="mandatory block-display">{{budgetPeriodsDateObj.endErrorMessage}}</span>
-                  <input type="text" disabled placeholder="" class="committeeBox" *ngIf="showOrHideDataFlagsObj.mode=='view'" [value]="period.endDate | date:'MM/dd/yyyy'"/>
+                  <span *ngIf="budgetPeriodsDateObj.isEndError && budgetPeriodsDateObj.period==selectedPeriod"
+                  class="mandatory block-display">{{budgetPeriodsDateObj.endErrorMessage}}</span>
+                  <input type="text" disabled placeholder="" class="committeeBox" *ngIf="showOrHideDataFlagsObj.mode=='view'" [value]="period.endDate | date: 'dd/MM/yyyy'"/>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
                   <label>Direct Cost:</label>

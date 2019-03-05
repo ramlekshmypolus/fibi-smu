@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { DashboardService } from '../dashboard.service';
 import { CommonService } from '../../common/services/common.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-grant-call',
@@ -20,7 +21,7 @@ export class GrantCallListComponent implements OnInit {
   grantId: number;
 
   constructor( private _dashboardService: DashboardService, private _router: Router,
-               public _commonService: CommonService ) { }
+               public _commonService: CommonService, private _spinner: NgxSpinnerService  ) { }
 
   ngOnInit() {
     this.grantCallRequestObject.tabIndex = 'GRANT';
@@ -33,6 +34,7 @@ export class GrantCallListComponent implements OnInit {
    */
   createGrant(event: any, mode) {
     event.preventDefault();
+    this._spinner.show();
     this._router.navigate(['fibi/grant'], { queryParams: { 'mode': mode } });
   }
 
@@ -77,6 +79,7 @@ export class GrantCallListComponent implements OnInit {
    */
   viewGrantById(event: any, grantId) {
     event.preventDefault();
+    this._spinner.show();
     this._router.navigate(['fibi/grant'], { queryParams: { 'grantId': grantId } });
   }
 
@@ -89,7 +92,7 @@ export class GrantCallListComponent implements OnInit {
    * @param grantId
    */
   copyGrantCall(grantId) {
-    this._commonService.copyGrantCall({'grantCallId': this.grantId, 'userFullName': localStorage.getItem('currentUser')})
+    this._commonService.copyGrantCall({'grantCallId': this.grantId, 'userFullName': localStorage.getItem('userFullname')})
     .subscribe((success: any) => {
       this._router.navigate(['fibi/grant'], { queryParams: { 'grantId': success.grantCallId } });
     });

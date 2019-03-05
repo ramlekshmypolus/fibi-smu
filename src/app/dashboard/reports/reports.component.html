@@ -67,8 +67,8 @@
             <td>{{proposal?.proposalId}}</td>
             <td title="{{proposal.title}}">{{(proposal.title.length>60? (proposal.title | slice : 0 : 59)+'...':
               (proposal.title)) }}</td>
-            <td>{{proposal?.startDate | date: 'MM/dd/yyyy'}}</td>
-            <td>{{proposal?.endDate | date: 'MM/dd/yyyy'}}</td>
+            <td>{{proposal?.startDate | date: 'dd/MM/yyyy'}}</td>
+            <td>{{proposal?.endDate | date: 'dd/MM/yyyy'}}</td>
             <td>{{proposal?.grantCall?.homeUnitName}}</td>
             <td>{{proposal?.proposalStatus?.description}}</td>
             <td>
@@ -120,13 +120,11 @@
         </tr>
         <tbody *ngIf="reportObject?.expenditureList?.length > 0">
           <tr>
-            <th>Sl No.</th>
             <th>Cost Element</th>
             <th>Description</th>
             <th>Line Item Cost</th>
           </tr>
           <tr *ngFor="let expenditure of reportObject?.expenditureList; let i=index">
-            <td>{{i+1}}</td>
             <td>{{expenditure[1]}}</td>
             <td>{{expenditure[2]}}</td>
             <td>{{expenditure[0] | currency:'USD'}}</td>

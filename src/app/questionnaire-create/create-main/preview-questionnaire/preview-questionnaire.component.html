@@ -72,11 +72,11 @@
                   </li>
                   <li *ngSwitchCase ="question.ANSWER_TYPE == 'Checkbox'">
                     <div *ngIf= "question.SHOW_QUESTION == true">
-                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
-                            <div class="col-12 col-sm-12 col-md-12 pl-0">
-                              <p class="qst-category">{{question.GROUP_LABEL}}</p>
-                            </div>
-                          </div>
+                      <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                        <div class="col-12 col-sm-12 col-md-12 pl-0">
+                          <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                        </div>
+                      </div>
                       <p class="questionfont">{{question.QUESTION}} 
                         <span class="infoicon">
                           <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle"></i>
@@ -129,11 +129,11 @@
                   </li>
                   <li *ngSwitchCase="question.ANSWER_TYPE == 'Textarea'">
                     <div *ngIf= "question.SHOW_QUESTION == true">
-                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
-                            <div class="col-12 col-sm-12 col-md-12 pl-0">
-                              <p class="qst-category">{{question.GROUP_LABEL}}</p>
-                            </div>
-                          </div>
+                      <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                        <div class="col-12 col-sm-12 col-md-12 pl-0">
+                          <p class="qst-category">{{question.GROUP_LABEL}}</p>
+                        </div>
+                      </div>
                       <p class="questionfont">{{question.QUESTION}} 
                         <span class="infoicon">
                           <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle"></i>
@@ -155,7 +155,7 @@
                   </li>
                   <li *ngSwitchCase="question.ANSWER_TYPE == 'Date'">
                     <div *ngIf= "question.SHOW_QUESTION == true">
-                        <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
+                          <div class="row qst-category-margin p-0" *ngIf="question.SHOW_LABEL">
                             <div class="col-12 col-sm-12 col-md-12 pl-0">
                               <p class="qst-category">{{question.GROUP_LABEL}}</p>
                             </div>

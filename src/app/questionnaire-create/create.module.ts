@@ -12,7 +12,6 @@ import { QuestionnaireListComponent } from './questionnaire-list/questionnaire-l
 import { CreateMainComponent } from './create-main/create-main.component';
 import { CreateQuestionnaireService } from './services/create.service';
 
-
 import { TreeModule } from 'angular-tree-component';
 import { NgxEditorModule } from 'ngx-editor';
 import { NgxSpinnerModule } from 'ngx-spinner';

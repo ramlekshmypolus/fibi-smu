@@ -2,13 +2,99 @@
     <div class="container-fluid pushFixedHeaderFooter">
         <div class="headerPush"></div>
         <section class="row">
-            <!-- edit mode -->
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode != 'view'">
-                <app-grant-edit [result]="result" [showDataFlagObj]="showDataFlagObj"></app-grant-edit>
-            </div>
-            <!--view mode-->
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="showDataFlagObj.mode == 'view'" >
-                <app-grant-view [result]="result" [showDataFlagObj]="showDataFlagObj"></app-grant-view>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="fixed-proposalHeader">
+                    <div class="row padding-tbx">
+                        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12 text-left">
+                            <span *ngIf="result?.grantCall?.grantCallId != null" title="{{result?.grantCall?.grantCallName}}" class="topHeading overflow">#{{result.grantCall.grantCallId}} :
+                                {{result?.grantCall?.grantCallName}}</span>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 text-right">
+                            <a title="Back to Grant Call" id="back-to-grant-btn" class="col-sm-6 col-6 back-btn" data-toggle="modal" data-target="#warningOrAlertModal" (click)="openGoBackModal();"><i class="fa fa-reply" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                    <div class="row padding-tbx">
+                        <div class="col-12 text-right">
+                            <button *ngIf="showDataFlagObj.mode !== 'view'" type="button" class="btnSkin btnPublish" (click)="saveGrant()" data-target="#warningOrAlertModal"
+                                data-toggle="modal">Save</button>
+                            <button type="button" class="btnSkin btnSkinPrimary" (click)="checkGrantCallPublish()" data-toggle="modal"
+                                data-target="#warningOrAlertModal" [disabled]="result.grantCall.grantCallId ==null"
+                                *ngIf="result?.grantCall?.grantCallId !=null && showDataFlagObj.mode !== 'view'">Publish</button>
+                            <span class="grantCall_create_proposal_link" *ngIf="showDataFlagObj.mode == 'view'">
+                                    <a (click)="setCurrentProposalTab()" [routerLink]="['/fibi/proposal']" [queryParams]="{ 'grantId': result.grantCall.grantCallId }"><button
+                                        class="btnSkin btnSkinPrimary">Create Proposal</button></a>
+                                </span>
+                            <button type="button" class="btnSkin btnSkinPrimary" *ngIf="result?.grantCall?.grantCallId != null" (click)="modalHideAndShowObj.isShowCopyWarningModal = true" data-target="#warningOrAlertModal"
+                                data-toggle="modal">Copy Grant</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- edit mode -->
+                <div *ngIf="showDataFlagObj.mode != 'view'">
+                    <app-grant-edit [result]="result" [showDataFlagObj]="showDataFlagObj" [warningMsgObj]="warningMsgObj" [modalHideAndShowObj]="modalHideAndShowObj"></app-grant-edit>
+                </div>
+                <!--view mode-->
+                <div *ngIf="showDataFlagObj.mode == 'view'" >
+                    <app-grant-view [result]="result" [showDataFlagObj]="showDataFlagObj"></app-grant-view>
+                </div>
+                <!-- WARNING AND ALERT MODAL -->
+                <div class="modal fade show mySkinDialog modal-opacity" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true || modalHideAndShowObj.isShowPublishWarningModal == true || modalHideAndShowObj.isShowCopyWarningModal == true"
+                tabindex="-1" id="warningOrAlertModal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true">Warning..!</h5>
+                                <h5 class="modal-title" *ngIf="modalHideAndShowObj.isShowPublishWarningModal == true">Publish</h5>
+                                <h5 class="modal-title" *ngIf="modalHideAndShowObj.isShowCopyWarningModal == true">Copy grant</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalHideAndShowObj = {};">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true">
+                                <p>You are currently creating/editing a grant call. Unsaved changes may lost if you go back. Do you
+                                    want to stay on this page.?</p>
+                            </div>
+                            <div class="modal-body" *ngIf="modalHideAndShowObj.isShowPublishWarningModal == true">
+                                <p>Are you sure you want to publish this grant call?</p>
+                            </div>
+                            <div class="modal-body" *ngIf="modalHideAndShowObj.isShowCopyWarningModal == true">
+                                <p>Are you sure you want to copy this grant call?</p>
+                            </div>
+                            <div class="modal-footer" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true || modalHideAndShowObj.isShowPublishWarningModal == true || modalHideAndShowObj.isShowCopyWarningModal == true">
+                                <button type="button" class="btnSkin btn-secondary" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true"
+                                    (click)="backToList($event)" data-dismiss="modal" data-toggle="modal">No</button>
+                                <button type="button" class="btnSkin btn-secondary" *ngIf="modalHideAndShowObj.isShowPublishWarningModal == true || modalHideAndShowObj.isShowCopyWarningModal == true"
+                                    (click)="modalHideAndShowObj = {};" data-dismiss="modal" data-toggle="modal">No</button>
+                                <button type="button" class="btnSkin btnSkinPrimary" *ngIf="modalHideAndShowObj.isShowConfirmGoBack == true"
+                                    (click)="modalHideAndShowObj = {};" data-dismiss="modal">Yes</button>
+                                <button type="button" class="btnSkin btnSkinPrimary" *ngIf="modalHideAndShowObj.isShowPublishWarningModal == true"
+                                    (click)="publishGrantCall()" data-dismiss="modal">Yes</button>
+                                <button type="button" class="btnSkin btnSkinPrimary" *ngIf="modalHideAndShowObj.isShowCopyWarningModal == true"
+                                (click)="copyGrantCall()" data-dismiss="modal">Yes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Saved Successfully modal -->
+                <div class="modal fade show mySkinDialog modal-opacity" tabindex="-1" id="saveAlertModal" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Success</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modalHideAndShowObj = {};">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Grant Call has been saved successfully</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btnSkin btnSkinPrimary" (click)="modalHideAndShowObj = {};" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="openSaveModal" [hidden]="true" data-toggle="modal" data-target="#saveAlertModal">modal</button>
             </div>
         </section>
         <div class="footerPush"></div>

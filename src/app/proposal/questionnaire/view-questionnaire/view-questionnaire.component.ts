@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
 
 import { QuestionnaireService } from '../questionnaire.service';
@@ -24,11 +23,9 @@ export class ViewQuestionnaireComponent implements OnInit {
   result: any = {};
   showHelpMsg = [];
   helpMsg     = [];
-
   QuestionnaireCompletionFlag = 'N';
 
-  constructor(private _questionnaireService: QuestionnaireService,
-              private _activatedRoute: ActivatedRoute) { }
+  constructor(private _questionnaireService: QuestionnaireService) { }
 
   ngOnInit() {
     if (this.questionnaireData.hasOwnProperty('QUESTIONNAIRE_ANS_HEADER_ID') &&
@@ -43,10 +40,8 @@ export class ViewQuestionnaireComponent implements OnInit {
       this.result.module_sub_item_code = 0;
       this.result.module_sub_item_key = 0;
       this.result.module_item_key = this.proposalData.proposal.proposalId;
-      // save issue handled
       this.result.action_user_id = localStorage.getItem('personId');
       this.result.action_person_name = localStorage.getItem('currentUser');
-
       this.questionnaire = this.result.questionnaire;
       const tempLabels: any = {};
       this.questionnaire.questions.forEach(question => {
@@ -275,7 +270,7 @@ export class ViewQuestionnaireComponent implements OnInit {
    * add file to temporarylist
    */
   addFileToTempFiles(file) {
-    // (<HTMLInputElement>document.getElementById('selectedFile')).value = '';
+    //
     if (file) {
       this.tempFiles = [];
       this.tempFiles.push({ attachment : file[0],
@@ -284,6 +279,7 @@ export class ViewQuestionnaireComponent implements OnInit {
                             type       : file[0].type});
     }
   }
+
   saveQuestionnaire() {
     this.QuestionnaireCompletionFlag = 'Y';
     this.checkQuestionaireCompletion();
@@ -343,17 +339,18 @@ export class ViewQuestionnaireComponent implements OnInit {
       });
   }
 
-  setIndex(index) {
-    this.attachmentIndex = index;
-  }
-
   saveOnComplete() {
+    let timeOut = 0;
     this.QuestionnaireCompletionFlag = 'Y';
     this.checkQuestionaireCompletion();
     if (this.QuestionnaireCompletionFlag === 'Y') {
-       this.saveQuestionnaire();
+      timeOut = 5000;
+      setTimeout(() => {
+        this.saveQuestionnaire();
+      }, timeOut);
      }
   }
+
   /**checks whether the questionnaire is complete and sets the flag */
   checkQuestionaireCompletion() {
     this.questionnaire.questions.forEach(question => {
@@ -365,4 +362,5 @@ export class ViewQuestionnaireComponent implements OnInit {
       }
     });
   }
+
 }

@@ -47,14 +47,12 @@
     </tr>
     <tbody *ngIf="result?.proposal?.proposalResearchAreas?.length > 0 && showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
       <tr>
-        <th width="10%">Sl No.</th>
         <th width="10%">Code</th>
         <th>Type</th>
         <th colspan="2">Research Area</th>
         <th title="">Action</th>
       </tr>
       <tr *ngFor="let researchArea of result?.proposal?.proposalResearchAreas; let i = index">
-        <td>{{i+1}}</td>
         <td width="10%" *ngIf="researchArea.excellenceAreaCode? researchArea.excellenceAreaCode: researchArea.researchAreaCode;let areaCode; ">{{areaCode}}</td>
         <td>{{researchArea.proposalResearchType.description}}</td>
         <td colspan="2" *ngIf="researchArea.proposalExcellenceArea? researchArea.proposalExcellenceArea.description: researchArea.researchArea.description;let description; ">{{description}}</td>

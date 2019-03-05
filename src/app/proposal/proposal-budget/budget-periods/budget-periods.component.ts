@@ -51,8 +51,6 @@ export class BudgetPeriodsComponent implements OnInit {
 
   ngOnInit() {
     this.selectedPeriodTab.isPeriod = true;
-    this.selectedPeriodTab.isPeriodAndTotal = false;
-    this.selectedPeriodTab.isCumulative = false;
     this.actionsModalObj.isWarning = false;
     this.iconClass.costElement = this.iconClass.budgetCategory = 'fa fa-search fa-med';
     this.tbnPersonsList = this._completerService.local( this.result.tbnPersons, 'personName', 'personName' );
@@ -328,7 +326,8 @@ export class BudgetPeriodsComponent implements OnInit {
     }
   }
 
-  validatePeriodStartDate(startDate, endDate, periodNo) {
+  validatePeriodStartDate(startDate, endDate, periodIndex) {
+    this.budgetPeriodsDateObj.period = periodIndex + 1;
     this.showOrHideDataFlagsObj.dataChangeFlag = true;
     const periodStartDateString = startDate === null ? null : new Date(startDate);
     const periodEndDateString = endDate === null ? null : new Date(endDate);
@@ -340,12 +339,12 @@ export class BudgetPeriodsComponent implements OnInit {
     } else if (periodEndDateString !== null && periodStartDateString > periodEndDateString) {
       this.budgetPeriodsDateObj.isStartError = true;
       this.budgetPeriodsDateObj.startErrorMessage = '* Choose a Period Start Date before Period End Date.';
-    } else if (periodNo > 0) {
+    } else if (periodIndex > 0) {
       for (let period = 0; period < this.result.proposal.budgetHeader.budgetPeriods.length; period++) {
         const period_StartDate = new Date(this.result.proposal.budgetHeader.budgetPeriods[period].startDate);
         const period_EndDate = new Date(this.result.proposal.budgetHeader.budgetPeriods[period].endDate);
 
-        if (period_StartDate <= periodStartDateString && period_EndDate >= periodStartDateString && periodNo !== period) {
+        if (period_StartDate <= periodStartDateString && period_EndDate >= periodStartDateString && periodIndex !== period) {
           this.budgetPeriodsDateObj.isStartError = true;
           this.budgetPeriodsDateObj.startErrorMessage = '* Period dates can not be overlapped each other.';
           break;
@@ -358,7 +357,8 @@ export class BudgetPeriodsComponent implements OnInit {
     }
   }
 
-  validatePeriodEndDate(endDate, startDate, periodNo) {
+  validatePeriodEndDate(endDate, startDate, periodIndex) {
+    this.budgetPeriodsDateObj.period = periodIndex + 1;
     this.showOrHideDataFlagsObj.dataChangeFlag = true;
     const periodEndDateString = endDate === null ? null : new Date(endDate);
     const periodStartDateString = startDate === null ? null : new Date(startDate);
@@ -370,12 +370,12 @@ export class BudgetPeriodsComponent implements OnInit {
     } else if ( periodStartDateString !== null && periodEndDateString < periodStartDateString) {
       this.budgetPeriodsDateObj.isEndError = true;
       this.budgetPeriodsDateObj.endErrorMessage = '* Choose a Period End Date after Period Start Date.';
-    } else if (periodNo > 0) {
+    } else if (periodIndex > 0) {
       for (let period = 0; period < this.result.proposal.budgetHeader.budgetPeriods.length; period++) {
         const period_StartDate = new Date(this.result.proposal.budgetHeader.budgetPeriods[period].startDate);
         const period_EndDate = new Date(this.result.proposal.budgetHeader.budgetPeriods[period].endDate);
 
-        if (period_StartDate <= periodEndDateString && period_EndDate >= periodEndDateString && periodNo !== period) {
+        if (period_StartDate <= periodEndDateString && period_EndDate >= periodEndDateString && periodIndex !== period) {
           this.budgetPeriodsDateObj.isEndError = true;
           this.budgetPeriodsDateObj.endErrorMessage = '* Period dates can not be overlapped each other.';
           break;

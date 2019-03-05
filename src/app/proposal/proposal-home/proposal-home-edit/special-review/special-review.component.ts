@@ -60,7 +60,7 @@ export class SpecialReviewDetailsComponent implements OnInit {
       this.specialReviewObject.approvalTypeCode = null;
     } else {
       const specialReviewApprovalStatusObject = this.result.specialReviewApprovalTypes.find
-        (approvalType => approvalType.description === type);
+                                                (approvalType => approvalType.description === type);
       this.specialReviewObject.approvalType = specialReviewApprovalStatusObject;
       this.specialReviewObject.approvalTypeCode = specialReviewApprovalStatusObject.approvalTypeCode;
     }

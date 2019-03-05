@@ -378,13 +378,13 @@ input[type="text"] {
 
 }
 
-.searchBox>input[type="text"], .advancedTools input[type="text"] {
+.searchBox>input[type="text"], .advancedTools input[type="text"], .advanced-search input[type="text"] {
 	border-radius: 20px;
 	border: 1px #DEDEDE solid;
 	width: 100%;
 	padding-right: 35px;
-  line-height: 27px;
-  height: 30px;
+	line-height: 27px;
+	height: 30px;
 	font-size: .8em;
 	padding-left: 10px;
 }
@@ -436,7 +436,7 @@ input[type="text"] {
 	cursor:pointer;
 }
 
-.advancedTools {
+.advancedTools, .advanced-search {
 	background: #f5f5f5;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -444,7 +444,7 @@ input[type="text"] {
 	margin-top: 5px;
 }
 
-.advancedTools input[type="text"] {
+.advancedTools input[type="text"], .advanced-search input[type="text"] {
 	width: 100%;
 	padding: 2px 10px;
 }
@@ -504,7 +504,7 @@ input[type="text"] {
 	transition: background-color .25s, border-color .25s, color .25s;
 }
 
-.advancedTools .btnSkin {
+.advancedTools .btnSkin, .advanced-search .btnSkin {
 	width: 100%;
 }
 
@@ -1152,6 +1152,12 @@ tbody td label {
 
 /*/ Extra large devices (large desktops, 1200px and up)*/
 @media ( min-width : 1200px) {
+}
+
+@media ( max-width : 1200px) {
+	.advanced-search input[type="text"] {
+		margin-bottom: 10px;
+	}
 }
 
 /*/ Extra small devices (portrait phones, less than 576px)*/

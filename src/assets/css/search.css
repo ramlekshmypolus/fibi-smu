@@ -523,7 +523,11 @@ input[type=number]::-webkit-outer-spin-button {
 	padding-bottom: 15px;
 }
 
-.noPadd {
+.advance-search-btn {
+	margin-left: -20px;
+}
+
+.advance-search-btn .btnSkin {
 	padding: 0px;
 }
 
@@ -769,13 +773,13 @@ table.tableSection th, table.tableSection td {
   font-size: .8em;
   display: inline-block;
 }
-.budgetMembersearchBox>input[type="text"], .advancedTools input[type="text"] {
+.budgetMembersearchBox>input[type="text"], .advancedTools input[type="text"], .advanced-search input[type="text"]  {
 	border-radius: 20px;
 	border: 1px #DEDEDE solid;
 	width: 80%;
 	padding-right: 35px;
-  line-height: 27px;
-  height: 30px;
+	line-height: 27px;
+	height: 30px;
 	font-size: .8em;
 	padding-left: 10px;
 }
@@ -1183,7 +1187,7 @@ table.tableSection th, table.tableSection td {
     -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
     animation: fadein 0.6s, fadeout 0.5s 2.5s;
 }
-#prop-save-questionnaire-success, #toast-success {
+#prop-save-questionnaire-success, #toast-success, #attach-toast-fail  {
 	visibility: hidden;
     min-width: 350px;
     margin-left: -100px;
@@ -1198,7 +1202,7 @@ table.tableSection th, table.tableSection td {
     bottom: 45%;
 	font-size: 0.80em;
 }
-#prop-save-questionnaire-success.show, #toast-success.show {
+#prop-save-questionnaire-success.show, #toast-success.show, #attach-toast-fail.show {
     visibility: visible;
     -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
     animation: fadein 0.6s, fadeout 0.5s 2.5s;
@@ -1222,4 +1226,11 @@ table.tableSection th, table.tableSection td {
     visibility: visible;
     -webkit-animation: fadein 0.6s, fadeout 0.5s 2.5s;
     animation: fadein 0.6s, fadeout 0.5s 2.5s;
+}
+.modal-body>ngx-spinner>.black-overlay>p {
+    top: 70% !important;
+}
+.version-icon {
+	width: 19px;
+	padding-bottom: 6px;
 }

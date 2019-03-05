@@ -18,6 +18,7 @@ export class FileDropComponent implements OnInit {
   }
   onFileDrop(files) {
     this.filesDropEvent.emit(files);
+    // (<HTMLInputElement>document.getElementById('selectedFile')).value = '';
   }
 
 }

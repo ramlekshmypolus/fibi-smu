@@ -22,7 +22,7 @@
               <option *ngFor="let sponsor of result.sponsors" (value)="sponsor">{{sponsor?.sponsorName}}</option>
             </select></td>
           <td><label>Start Date:</label>
-            <span class="dateField"><input id="prop-declaration-start-date" [owlDateTime]="startDt" placeholder="mm/dd/yyyy"
+            <span class="dateField"><input id="prop-declaration-start-date" [owlDateTime]="startDt" placeholder="dd/mm/yyyy"
            [(ngModel)]="fundingStartDate" class="dateWidth committeeBox dateBox" (keypress)="_commonService._keyPress($event, 'date')" />
               <i class="fa fa-calendar fa-large hand-cursor insidePicker" id="prop-declaration-start-date-icon" [owlDateTimeTrigger]="startDt"></i>
               <owl-date-time #startDt [pickerType]="'calendar'" (afterPickerClosed)="sponsorDateValidation()"></owl-date-time>
@@ -30,7 +30,7 @@
           </td>
           <td><label>End Date:</label>
             <span class="dateField"><input id="prop-declaration-end-date" [owlDateTime]="endDt"
-                placeholder="mm/dd/yyyy" [(ngModel)]="fundingEndDate" class="dateWidth committeeBox dateBox" (keypress)="_commonService._keyPress($event, 'date')" />
+              placeholder="dd/mm/yyyy" [(ngModel)]="fundingEndDate" class="dateWidth committeeBox dateBox" (keypress)="_commonService._keyPress($event, 'date')" />
               <i class="fa fa-calendar fa-large hand-cursor insidePicker" id="prop-declaration-end-date-icon" [owlDateTimeTrigger]="endDt"></i>
               <owl-date-time #endDt [pickerType]="'calendar'" (afterPickerClosed)="sponsorDateValidation()"></owl-date-time>
             </span>
@@ -55,8 +55,8 @@
           </tr>
           <tr *ngFor="let proposalSponsor of result?.proposal?.proposalSponsors;let i = index">
             <td>{{proposalSponsor?.sponsor?.sponsorName}}</td>
-            <td>{{proposalSponsor?.startDate | date:'MM/dd/yyyy'}}</td>
-            <td>{{proposalSponsor?.endDate | date:'MM/dd/yyyy'}}</td>
+            <td>{{proposalSponsor?.startDate | date: 'dd/MM/yyyy'}}</td>
+            <td>{{proposalSponsor?.endDate | date: 'dd/MM/yyyy'}}</td>
             <td>{{proposalSponsor?.amount | currency:'USD':true}}</td>
             <td>
               <ul class="actionButtonGroup">
@@ -108,8 +108,8 @@
                       <td>{{protocol?.protocol?.protocolNumber}}</td>
                       <td>{{protocol?.protocol?.title}}</td>
                       <td>{{protocol?.protocol?.protocolStatus?.description}}</td>
-                      <td>{{protocol?.protocol?.approvalDate | date:'MM/dd/yyyy'}}</td>
-                      <td>{{protocol?.protocol?.expirationDate | date:'MM/dd/yyyy'}}</td>
+                      <td>{{protocol?.protocol?.approvalDate | date: 'dd/MM/yyyy'}}</td>
+                      <td>{{protocol?.protocol?.expirationDate | date: 'dd/MM/yyyy'}}</td>
                       <td>
                         <ul class="actionButtonGroup">
                           <li><a href="#" id="prop-declaration-delete-btn" data-toggle="modal" data-target="#deleteIRB" (click)="temprySaveIRBProtocolDetails($event,protocol,i)"><i class="fa fa-trash-o"

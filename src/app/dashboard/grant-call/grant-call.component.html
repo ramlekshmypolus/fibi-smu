@@ -1,6 +1,7 @@
+<ngx-spinner></ngx-spinner>
 <div class="row">
   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-left">
-    <span class="linkButtonGroup noPadd" *ngIf="grantCallRequestObject.isUnitAdmin">
+    <span class="linkButtonGroup" *ngIf="grantCallRequestObject.isUnitAdmin">
       <a class="noMarginTop" [href]="" id="create-grant-btn" (click)="createGrant($event,'create')">
         <i class="fa fa-plus pointer"></i> Create New Grant Call
       </a>
@@ -66,8 +67,8 @@
           (grant?.grantCallName | slice:0:60)+'...' : grant?.grantCallName}}</td>
         <td>{{grant?.sponsorName}}</td>
         <td>{{grant?.grantCallTypeDesc}}</td>
-        <td>{{grant?.openingDate | date: 'MM/dd/yyyy'}}</td>
-        <td>{{grant?.closingDate | date: 'MM/dd/yyyy'}}</td>
+        <td>{{grant?.openingDate | date: 'dd/MM/yyyy'}}</td>
+        <td>{{grant?.closingDate | date: 'dd/MM/yyyy'}}</td>
         <td>{{grant?.grantCallStatusDesc}}</td>
         <td>
           <ul class="actionButtonGroup">

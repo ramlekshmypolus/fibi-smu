@@ -154,7 +154,7 @@
 															[ngClass]="editClass"  (keypress)="_keyPress($event)"/>
 									<i  *ngIf="isPVRsave != true" class="fa fa-calendar fa-large hand-cursor popupDatePicker" [owlDateTimeTrigger]="arrivalDt"></i>
 									<owl-date-time #arrivalDt [pickerType]="'calendar'" (afterPickerClosed)="validateExtensionDate(serviceRequest.arrivalDate)"></owl-date-time>
-									<span class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.ARRIVAL_DATE | date: 'MM/dd/yyyy'}}</span>
+									<span class="block-display" *ngIf="isPVRsave == true">{{pvr_result.serviceRequest.serviceList[0]?.ARRIVAL_DATE | date: 'dd/MM/yyyy'}}</span>
 								</div>
 								<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-4" *ngIf="serviceRequest.serviceTypeCode!=null && serviceRequest.serviceTypeCode!='null' && serviceRequest.serviceTypeCode=='31'">
 									<label><span *ngIf="isPVRsave != true"></span>Award Status:</label>

@@ -92,11 +92,17 @@ export class ExpandedViewComponent implements OnInit {
     this._expandedViewService.exportResearchSummaryData(this.exportDataReqObj).subscribe(
          data => {
             const temp: any = data || {};
-            const exportDataElement = document.createElement( 'a' );
-            exportDataElement.href = URL.createObjectURL( temp.body );
-            exportDataElement.download = this.exportDataHeading + '.' + this.exportDataReqObj.exportType;
-            document.body.appendChild(exportDataElement);
-            exportDataElement.click();
+            // msSaveOrOpenBlob only available for IE & Edge
+            if (window.navigator.msSaveOrOpenBlob) {
+              window.navigator.msSaveBlob( new Blob([data.body], { type: this.exportDataReqObj.exportType }),
+                                          this.exportDataHeading.toLowerCase() + '.' + this.exportDataReqObj.exportType );
+            } else {
+              const exportDataElement = document.createElement( 'a' );
+              exportDataElement.href = URL.createObjectURL( temp.body );
+              exportDataElement.download = this.exportDataHeading + '.' + this.exportDataReqObj.exportType;
+              document.body.appendChild(exportDataElement);
+              exportDataElement.click();
+            }
          } );
     }
 

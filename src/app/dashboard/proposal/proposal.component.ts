@@ -97,6 +97,7 @@ export class ProposalListComponent implements OnInit {
     this.proposalRequestObject.property2 = '';
     this.proposalRequestObject.property3 = '';
     this.proposalRequestObject.property4 = '';
+    this.proposalRequestObject.property5 = '';
   }
 
   /** navigate to proposal create page if the logged in user has permission*/
@@ -165,6 +166,11 @@ export class ProposalListComponent implements OnInit {
         personId: localStorage.getItem( 'personId' ),
         isUnitAdmin: localStorage.getItem('isAdmin'),
         unitNumber: localStorage.getItem('unitNumber'),
+        property1: this.proposalRequestObject.property1,
+        property2: this.proposalRequestObject.property2,
+        property3: this.proposalRequestObject.property3,
+        property4: this.proposalRequestObject.property4,
+        property5: this.proposalRequestObject.property5,
         reviewer: ( localStorage.getItem( 'reviewer' ) === 'true' ) ? true : false,
         proposalTabName: this.proposalRequestObject.proposalTabName,
         documentHeading: this.proposalRequestObject.proposalTabName === 'PROPOSAL' ?
@@ -176,11 +182,17 @@ export class ProposalListComponent implements OnInit {
         data => {
             let fileName = '';
             fileName = exportDataReqObject.documentHeading;
-            const DOWNLOAD_BTN = document.createElement('a');
-            DOWNLOAD_BTN.href = URL.createObjectURL(data.body);
-            DOWNLOAD_BTN.download = fileName.toLowerCase() + '.' + exportDataReqObject.exportType;
-            document.body.appendChild(DOWNLOAD_BTN);
-            DOWNLOAD_BTN.click();
+            // msSaveOrOpenBlob only available for IE & Edge
+            if (window.navigator.msSaveOrOpenBlob) {
+              window.navigator.msSaveBlob( new Blob([data.body], { type: exportDataReqObject.exportType }),
+                                            fileName.toLowerCase() + '.' + exportDataReqObject.exportType );
+            } else {
+                const DOWNLOAD_BTN = document.createElement('a');
+                DOWNLOAD_BTN.href = URL.createObjectURL(data.body);
+                DOWNLOAD_BTN.download = fileName.toLowerCase() + '.' + exportDataReqObject.exportType;
+                document.body.appendChild(DOWNLOAD_BTN);
+                DOWNLOAD_BTN.click();
+            }
         });
   }
 
@@ -237,11 +249,15 @@ export class ProposalListComponent implements OnInit {
             this._commonService.downloadRoutelogAttachment( ATTACHMENT.attachmentId )
             .subscribe(
                 data => {
-                    const a = document.createElement( 'a' );
-                    a.href = URL.createObjectURL( data );
-                    a.download = ATTACHMENT.fileName;
-                    document.body.appendChild(a);
-                    a.click();
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveBlob( new Blob([data], { type: ATTACHMENT.mimeType }), ATTACHMENT.fileName );
+                    } else {
+                        const a = document.createElement( 'a' );
+                        a.href = URL.createObjectURL( data );
+                        a.download = ATTACHMENT.fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                    }
                 } );
         }
     }
@@ -284,7 +300,7 @@ export class ProposalListComponent implements OnInit {
     const proposalVO = {
         proposal: null,
         proposalId: this.proposalId,
-        userFullName: localStorage.getItem('currentUser')
+        userFullName: localStorage.getItem('userFullname')
     };
     this._commonService.copyProposal(proposalVO).subscribe((success: any) => {
         localStorage.setItem('currentTab', 'PROPOSAL_HOME');

@@ -46,9 +46,9 @@
     <tbody>
       <tr *ngFor="let schedule of serviceRequestList">
         <td>{{schedule.scheduleId}}</td>
-        <td>{{schedule.scheduledDate | date: 'MM/dd/yyyy'}}</td>
+        <td>{{schedule.scheduledDate | date: 'dd/MM/yyyy'}}</td>
         <td>{{schedule.place}}</td>
-        <td>{{schedule.protocolSubDeadline | date: 'MM/dd/yyyy'}}</td>
+        <td>{{schedule.protocolSubDeadline | date: 'dd/MM/yyyy'}}</td>
         <td>{{schedule.scheduleStatus.description}}</td>
         <td>{{schedule.committeeId}}</td>
         <td>{{schedule.committeeName}}</td>

@@ -8,11 +8,11 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ProposalOverviewComponent implements OnInit {
 
   @Input() result: any = {};
+
   isOverviewWidgetOpen = true;
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
 }

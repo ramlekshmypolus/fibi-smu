@@ -5,6 +5,8 @@ import { CommonService } from '../services/common.service';
 const IDLE_TIME = 1200; // Watching for an event for 1200 seconds(20 min.)
 const EXIT_TIME = 300;  // Automatically logouts after 300 seconds(5 min.)
 
+declare var $: any;
+
 @Component({
   selector: 'app-sessiontimeout',
   templateUrl: 'session-timeout.component.html',
@@ -50,6 +52,7 @@ export class SessionTimeoutComponent implements OnDestroy {
     localStorage.setItem('currentTab', currentTab);
     localStorage.setItem('currentUrl', window.location.hash);
     this._router.navigate(['/login']);
+    $('.modal').modal('hide');
   }
 
   continueSession() {
