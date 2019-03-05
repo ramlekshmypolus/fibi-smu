@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Ng2CompleterModule } from 'ng2-completer';
 import { GrantRoutingModule } from './grant-routing.module';
 import { SharedModule } from '../shared/shared.module';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { GrantComponent } from './grant.component';
 import { GrantViewComponent } from './grant-view/grant-view.component';
@@ -19,7 +20,8 @@ import { GrantService } from './services/grant.service';
     NgbModule.forRoot(),
     FormsModule,
     Ng2CompleterModule,
-    SharedModule
+    SharedModule,
+    NgxSpinnerModule
   ],
   declarations: [GrantComponent, GrantViewComponent, GrantEditComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

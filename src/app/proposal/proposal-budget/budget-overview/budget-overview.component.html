@@ -12,7 +12,7 @@
             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
               <label class="block-display"><span class="mandatory" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">*</span>Budget Start:</label>
               <span class="dateField" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">
-                <input type="text" placeholder="mm/dd/yyyy" class="committeeBox budgetDate-width"
+                <input type="text" placeholder="dd/mm/yyyy" class="committeeBox budgetDate-width"
                         [owlDateTime]="budgetstart"  (keypress)="_commonService._keyPress($event, 'date')"
                         [ngClass]="budgetOverviewDateObj.isStartError?'lineItem-mandatory':''"
                         [(ngModel)]="budgetOverviewDateObj.budgetStartDate" (ngModelChange)="validateBudgetStartDate(budgetOverviewDateObj.budgetStartDate, budgetOverviewDateObj.budgetEndDate)"/>
@@ -20,12 +20,12 @@
                 <owl-date-time #budgetstart [pickerType]="'calendar'"></owl-date-time>
               </span>
               <span *ngIf="budgetOverviewDateObj.isStartError" class="mandatory block-display">{{budgetOverviewDateObj.startDateMessage}}</span>
-              <span *ngIf="showOrHideDataFlagsObj?.mode === 'view'">{{budgetOverviewDateObj.budgetStartDate | date:'MM/dd/yyyy'}}</span>
+              <span *ngIf="showOrHideDataFlagsObj?.mode === 'view'">{{budgetOverviewDateObj.budgetStartDate | date: 'dd/MM/yyyy'}}</span>
             </div>
             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
               <label class="block-display"><span class="mandatory" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">*</span>Budget End:</label>
               <span  class="dateField" *ngIf="showOrHideDataFlagsObj?.mode !== 'view'">
-                <input type="text" placeholder="mm/dd/yyyy" class="budgetDate-width committeeBox"
+                <input type="text" placeholder="dd/mm/yyyy" class="budgetDate-width committeeBox"
                         [owlDateTime]="budgetend" (keypress)="_commonService._keyPress($event, 'date')"
                         [ngClass]="budgetOverviewDateObj.isEndError?'lineItem-mandatory':''"
                         [(ngModel)]="budgetOverviewDateObj.budgetEndDate" (ngModelChange)="validateBudgetEndDate(budgetOverviewDateObj.budgetStartDate, budgetOverviewDateObj.budgetEndDate)"/>
@@ -33,7 +33,7 @@
                 <owl-date-time #budgetend [pickerType]="'calendar'"></owl-date-time>
               </span>
               <span *ngIf="budgetOverviewDateObj.isEndError" class="mandatory block-display">{{budgetOverviewDateObj.endDateMessage}}</span>
-              <span *ngIf="showOrHideDataFlagsObj?.mode === 'view'">{{budgetOverviewDateObj.budgetEndDate | date:'MM/dd/yyyy'}}</span>
+              <span *ngIf="showOrHideDataFlagsObj?.mode === 'view'">{{budgetOverviewDateObj.budgetEndDate | date: 'dd/MM/yyyy'}}</span>
             </div>
             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
               <label class="block-display">Direct Cost:</label>
@@ -63,7 +63,7 @@
             </div>
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-3">
               <label class="block-display">Last Updated:</label>
-              <span>on {{result?.proposal?.budgetHeader?.updateTimeStamp | date: 'MM/dd/yyyy'}} by {{result?.proposal?.budgetHeader?.updateUserName}}</span>
+              <span>on {{result?.proposal?.budgetHeader?.updateTimeStamp | date: 'dd/MM/yyyy'}} by {{result?.proposal?.budgetHeader?.updateUserName}}</span>
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-6"></div>
           </div>

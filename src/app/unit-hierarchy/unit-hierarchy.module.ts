@@ -10,7 +10,7 @@ import { RateMaintainanceComponent } from './rate-maintainance/rate-maintainance
 import { SharedModule } from '../shared/shared.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { RatePipeService } from './rate-maintainance/rate-pipe.service';
 
 @NgModule({
   imports: [
@@ -22,6 +22,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgbModule.forRoot(),
   ],
   declarations: [HierarchyTreeviewComponent, RateMaintainanceComponent, FilterPipe ],
-  providers: [UnitHierarchyService]
+  providers: [UnitHierarchyService, RatePipeService]
 })
 export class UnitHierarchyModule {  }

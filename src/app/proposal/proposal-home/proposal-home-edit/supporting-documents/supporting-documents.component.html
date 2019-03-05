@@ -1,7 +1,7 @@
 <div class="borderBox col-12">
   <h4 class="borderBoxHeading">Supporting Documents</h4>
   <button title="add new attachment" id="prop-add-doc-btn" class="addBtn font attachBtn"
-    style="right: 55px" (click)="showAddAttachmentPopUp($event); isReplaceAttachment = false;"
+    style="right: 55px" (click)="clearAttachmentDetails();showAddAttachmentPopUp($event); isReplaceAttachment = false;"
     *ngIf="showOrHideDataFlagsObj.mode != 'view'" data-toggle="modal"
     data-target="#addAttachment">
     <i class="fa fa-plus"></i>&nbsp;<span>Add Document</span>
@@ -16,8 +16,7 @@
     <tr *ngIf="result?.proposal?.proposalAttachments?.length == 0 && showOrHideDataFlagsObj.mode == 'view'">
       <td colspan="5"><div class="noDataExists">There are no documents uploaded</div></td>
     </tr>
-    <tbody
-      *ngIf="result?.proposal?.proposalAttachments?.length > 0 && showOrHideDataFlagsObj.isAttachmentListOpen">
+    <tbody *ngIf="result?.proposal?.proposalAttachments?.length > 0 && showOrHideDataFlagsObj.isAttachmentListOpen">
       <tr>
         <th style="width: 24%">Document Type</th>
         <th style="width: 25%">Description</th>
@@ -26,63 +25,104 @@
         <th>Updated By</th>
         <th>Action</th>
       </tr>
-      <tr *ngFor="let attachment of result?.proposal?.proposalAttachments;let i = index">
-        <td>{{attachment?.attachmentType?.description}}</td>
-        <td title="{{(attachment?.description?.length>60)?(attachment?.description):''}}">
-          <span *ngIf="!showOrHideDataFlagsObj.isAttachmentEditable">{{(attachment?.description?.length
-            > 60)?(attachment?.description | slice:0:60)+'...':(attachment?.description)}}
-          </span>
-          <textarea *ngIf="showOrHideDataFlagsObj.isAttachmentEditable" id="prop-doc-desc" cols=2 rows="1"
-          [(ngModel)]="attachment.description" (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true" placeholder="" class="scheduleBoxes forTextAreaEntry">
-          </textarea>
-        </td>
-        <td title="{{(attachment?.fileName?.length>60)?(attachment?.fileName):''}}">{{(attachment?.fileName?.length
-          > 60)?(attachment?.fileName | slice:0:60)+'...':(attachment?.fileName)}}</td>
-        <td>
-          <span *ngIf="!showOrHideDataFlagsObj.isAttachmentEditable">
-            {{attachment?.narrativeStatus?.description}}
-          </span>
-          <select *ngIf="showOrHideDataFlagsObj.isAttachmentEditable" id="prop-doc-status"
-            class="committeeBox dateBox" [(ngModel)]="attachment.narrativeStatus.description" (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true">
-              <option *ngFor="let attachStatus of this.result.narrativeStatus"
-                (value)="attachStatus.description">{{attachStatus?.description}}</option>
-          </select>
-        </td>
-        <td>
-          <span>{{attachment.updateUser}} on {{attachment.updateTimeStamp | date:'MM/dd/yyyy'}}</span>
-        </td>
-        <td>
-          <ul class="actionButtonGroup">
-            <li *ngIf="showOrHideDataFlagsObj.mode != 'view'">
-              <a (click)="temprySaveAttachments(attachment.attachmentId,i)" id="prop-doc-dlt-btn" data-toggle="modal" data-target="#deleteAttachment"><i
-                class="fa fa-trash-o" title="Click here to delete {{attachment?.fileName}}"></i></a>
-            </li>
-            <li>
-              <a (click)="downloadProposalAttachments(attachment)" id="prop-doc-dwnlod-btn" title="Click here to download {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}">
-                <i class="fa fa-download pointer" aria-hidden="true"></i>
-            </a>
-            </li>
-            <li *ngIf="showOrHideDataFlagsObj.isAttachmentEditable && attachment.attachmentId !== null">
-              <a id="prop-doc-replace-btn" (click)="isReplaceAttachment= true;showAddAttachmentPopUp($event, attachment)" data-toggle="modal" data-target="#addAttachment"
-              title="Click here to replace file {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}">
-                <i class="fa fa-retweet pointer" aria-hidden="true"></i>
-              </a>
-            </li>
-          </ul>
-        </td>
-      </tr>
+      <ng-container *ngFor="let attachment of result?.proposal?.proposalAttachments;let i = index">
+        <tr *ngIf="attachment?.documentStatusCode == 1">
+          <td>{{attachment?.attachmentType?.description}}
+          </td>
+          <td title="{{(attachment?.description?.length>60)?(attachment?.description):''}}">
+            <span *ngIf="!showOrHideDataFlagsObj.isAttachmentEditable">{{(attachment?.description?.length
+              > 30)?(attachment?.description | slice:0:30)+'...':(attachment?.description)}}
+            </span>
+            <textarea *ngIf="showOrHideDataFlagsObj.isAttachmentEditable" id="prop-doc-desc" cols=2 rows="1" [(ngModel)]="attachment.description"
+              (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true" placeholder="" class="scheduleBoxes forTextAreaEntry">
+            </textarea>
+          </td>
+          <td title="{{(attachment?.fileName?.length>20)?(attachment?.fileName):''}}">{{(attachment?.fileName?.length
+            > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}</td>
+          <td>
+            <span *ngIf="!showOrHideDataFlagsObj.isAttachmentEditable">
+              {{attachment?.narrativeStatus?.description}}
+            </span>
+            <select *ngIf="showOrHideDataFlagsObj.isAttachmentEditable" id="prop-doc-status" class="committeeBox dateBox"
+              [(ngModel)]="attachment.narrativeStatus.description" (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true">
+              <option *ngFor="let attachStatus of this.result.narrativeStatus" (value)="attachStatus.description">{{attachStatus?.description}}</option>
+            </select>
+          </td>
+          <td>
+            <span>{{attachment.updateUser}} on {{attachment.updateTimeStamp | date:'dd/MM/yyyy'}}</span>
+          </td>
+          <td>
+            <ul class="actionButtonGroup">
+              <li *ngIf="showOrHideDataFlagsObj.mode != 'view'">
+                <a (click)="temprySaveAttachments(attachment.attachmentId,i,attachment.documentId)" id="prop-doc-dlt-btn" data-toggle="modal"
+                  data-target="#deleteAttachment"><i class="fa fa-trash-o" title="Click here to delete {{attachment?.fileName}}"></i></a>
+              </li>
+              <li>
+                <a (click)="downloadProposalAttachments(attachment)" id="prop-doc-dwnlod-btn" title="Click here to download {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}">
+                  <i class="fa fa-download pointer" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li *ngIf="showOrHideDataFlagsObj.isAttachmentEditable && attachment.attachmentId !== null">
+                <a id="prop-doc-replace-btn" (click)="isReplaceAttachment= true;showAddAttachmentPopUp($event, attachment);uploadedFile = [];"
+                  data-toggle="modal" data-target="#addAttachment" title="Click here to replace file {{(attachment?.fileName?.length > 20)?(attachment?.fileName | slice:0:20)+'...':(attachment?.fileName)}}">
+                  <i class="fa fa-retweet pointer" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li *ngIf="attachment.attachmentId !== null">
+                  <a id="prop-doc-version-btn" (click)="getVersion(i, attachment.documentId, showOrHideDataFlagsObj.isAttachmentVersionOpen[i])"
+                  title= "{{!showOrHideDataFlagsObj.isAttachmentVersionOpen[i] ? 'Click here to view file versions' : ''}}" >
+                  <img class="version-icon" src="./assets/images/version-icons.png" aria-hidden="true">
+                </a>
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <ng-container *ngIf="showOrHideDataFlagsObj.isAttachmentVersionOpen[i] == true &&  attachmentVersions.length > 0" >
+          <tr style="background: #f1eeee;">
+            <th style="width:11%;padding-left:40px;">Version</th>
+            <th colspan="2">File Name</th>
+            <th colspan="2">Updated By</th>
+            <th colspan="2">Action</th>
+          </tr>
+          <tr *ngFor="let version of attachmentVersions" >
+            <td style="width:11%;padding-left:40px;border: 0;">
+                <span>{{version.versionNumber}}</span>
+            </td>
+            <td colspan="2" style="border: 0;">
+                <span title="{{(version?.fileName?.length>40)?(version?.fileName):''}}">{{(version?.fileName?.length
+                  > 40)?(version?.fileName | slice:0:40)+'...':(version?.fileName)}}</span>
+            </td>
+            <td colspan="2" style="border: 0;">
+                <span>{{version.updateUser}} on {{version.updateTimeStamp | date:'dd/MM/yyyy'}}</span>
+            </td>
+            <td colspan="2" style="border: 0;">
+              <ul class="actionButtonGroup">
+                <li>
+                  <a (click)="downloadProposalAttachments(version)" id="prop-version-dwnlod-btn" title="Click here to download {{(version?.fileName?.length > 20)?(version?.fileName | slice:0:20)+'...':(version?.fileName)}}">
+                    <i class="fa fa-download pointer" aria-hidden="true"></i>
+                  </a>
+                </li>
+              </ul>
+            </td>
+          </tr>
+          </ng-container>
+          <tr *ngIf="showOrHideDataFlagsObj.isAttachmentVersionOpen[i] == true &&  attachmentVersions.length == 0">
+            <td colspan="12" style="background: #f1eeee;">
+              <div class="noDataExists">There are no versions found</div>
+            </td>
+          </tr>
+      </ng-container>
     </tbody>
   </table>
 </div>
-
+<div id="attach-toast-fail">Failed to add attachment</div>
 <!-- ADD ATTACHMENT MODAL -->
 <div class="modal fade mySkinDialog" id="addAttachment" tabindex="-1" role="dialog"
-aria-labelledby="skippedSchedulesTitle" data-backdrop="static" data-keyboard="false"
-aria-hidden="true" *ngIf="isShowAddAttachment">
+aria-labelledby="skippedSchedulesTitle" aria-hidden="true" *ngIf="isShowAddAttachment">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 *ngIf="!isReplaceAttachment" class="modal-title" id="skippedSchedulesLongTitle">Add Document</h5>
+        <h5 *ngIf="!isReplaceAttachment" class="modal-title">Add Document</h5>
         <h5 *ngIf="isReplaceAttachment" class="modal-title">Replace Document</h5>
         <button type="button" class="close" data-dismiss="modal" id="prop-doc-popup-dismiss-btn"
           aria-label="Close" (click)="clearAttachmentDetails()">
@@ -90,6 +130,13 @@ aria-hidden="true" *ngIf="isShowAddAttachment">
         </button>
       </div>
       <div class="modal-body">
+        <ngx-spinner
+            bdColor="rgba(51,51,51,0.7)"
+            size="medium"
+            color="#fff"
+            type="ball-spin-clockwise-fade"
+            loadingText="Uploading..">
+        </ngx-spinner>
         <div>
           <app-file-drop [multiple]="true" (filesDropEvent)="fileDrop($event)"></app-file-drop>
         </div>

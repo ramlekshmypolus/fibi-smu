@@ -14,7 +14,7 @@
               <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
             </span>
           </p>
-          <div *ngFor=" let number of  getArray(question.NO_OF_ANSWERS); let i = index">
+          <div *ngFor="let number of getArray(question.NO_OF_ANSWERS); let i = index">
             <input type="text" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[i+1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();" name="name" />
           </div>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
@@ -102,7 +102,7 @@
               <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
             </span>
           </p>
-          <a class="qst-attachment-addlink" (click)="setIndex(indexQuestion)" data-toggle="modal" data-target="#AttachmentModal">Add Attachment :</a>
+          <a id="add-attach{{questionnaireData.QUESTIONNAIRE_ID}}" class="qst-attachment-addlink" (click)="attachmentIndex = indexQuestion" data-toggle="modal" [attr.data-target]="'#AttachmentModal' + questionnaireData.QUESTIONNAIRE_ID">Add Attachment :</a>
           <span *ngIf="question.ANSWERS[1]" class="qst-attachment-label">
             <label><b>{{ question.ANSWERS[1] }}</b></label>
             <button class="qst-attachment-cls-btn" (click)="removeDulplicateFile(question.QUESTION_ID, indexQuestion)">
@@ -195,15 +195,15 @@
       </div>
     </div>
   </div>
-  </div> 
+  </div>
 </div>
 
 <!-- attachment modal -->
-<div class="modal fade" id="AttachmentModal" tabindex="-1" role="dialog" aria-labelledby="AttachmentModal" aria-hidden="true">
+<div class="modal fade" id="AttachmentModal{{questionnaireData.QUESTIONNAIRE_ID}}" tabindex="-1" role="dialog" aria-labelledby="'AttachmentModal'+ questionnaireData.QUESTIONNAIRE_ID" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="AttachmentModalTitle">Add Attachment</h5>
+        <h5 class="modal-title" id="AttachmentModal{{questionnaireData.QUESTIONNAIRE_ID}}Title">Add Attachment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -228,7 +228,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btnSkin btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" (click)="addFiletoArray()" data-dismiss="modal" class="btnSkin btnSkinPrimary">Save</button>
+          <button type="button" (click)="addFiletoArray();" data-dismiss="modal" class="btnSkin btnSkinPrimary">Save</button>
         </div>
       </div>
     </div>

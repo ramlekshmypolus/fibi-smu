@@ -21,7 +21,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
   @ViewChild( 'moreOptionsBtn' ) moreOptions: ElementRef;
 
   result: any = {};
-  showOrHideDataFlagsObj = {
+  showOrHideDataFlagsObj: any = {
     mode : '',
     currentTab: (localStorage.getItem('currentTab') == null) ? 'PROPOSAL_HOME' : localStorage.getItem('currentTab'),
     isGrantCallWdgtOpen: true,
@@ -32,40 +32,23 @@ export class ProposalComponent implements OnInit, OnDestroy {
     isDeclarationWidgetOpen: true,
     isBudgetWdgtOpen: true,
     isAttachmentListOpen: true,
-    isShowSaveWarningModal: false,
-    isShowSaveSuccessModal: false,
-    isShowSubmitWarningModal: false,
-    isShowSubmitSuccessModal: false,
-    isShowSaveBeforeExitWarning: false,
-    isShowNotifyApprover: false,
-    isShowNotifyApproverSuccess: false,
-    isShowNotificationPISuccessModal: false,
-    isShowCalculateModal: false,
     isAttachmentEditable: true,
-    isSaveOnTabSwitch: false,
-    isPeriodsTotalDisabled: false,
-    dataChangeFlag: false
+    periodWithoutDate: null,
+    isAttachmentVersionOpen: []
   };
 
   isShowMoreOptions = false;
   isShowPreReviewModalOptions = false;
   isPreReviewExist = false;
   isReviewMandatoryFilled = true;
-  isAttachmentIncomplete = false;
-  isShowRouteLog = false;
   isQuestionnaireComplete = false;
-  isShowRates = false;
   isApplyRates = false;
   isRequestNewReviewerOpen = false;
 
   toast_message = '';
   rate_toast_message = '';
-  savePopopUpMessage = '';
   clearField;
   superUser = localStorage.getItem( 'superUser');
-  approveDisapprovePlaceHolder: string;
-  modalAproveHeading: string;
-  approveComments: string;
   tempSavecurrentTab: string;
   selectedRateClassType = '';
 
@@ -75,14 +58,14 @@ export class ProposalComponent implements OnInit, OnDestroy {
   applicableQuestionnaire = [];
 
   warningMsgObj: any = {};
-  proposalDataBindObj: any = {};
+  proposalDataBindObj: any = {
+    successModalHeader: 'Success'
+  };
   mandatoryObj: any = {};
   addPreReviewerObj: any = {};
   elasticSearchOptions: any = {};
   requestObject: any = {};
-  showApproveDisapproveModal = {
-    isReadyToApprove: false
-  };
+  showApproveDisapproveModal: any = {};
 
   versionHistorySelected: number;
   workflowDetailsMap: any = [];
@@ -118,7 +101,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     };
     this.result = this._route.snapshot.data.proposalDetails;
     this._spinner.hide();
-    /** added to naviagate to proposal home if user is in create budgt page and automatically loggs out due to session timeout */
+    /** added to naviagate to proposal home if user is in create budget page and automatically loggs out due to session timeout */
     if (this.showOrHideDataFlagsObj.currentTab !== 'PROPOSAL_HOME' && this.result.proposal.proposalId == null) {
       this.showOrHideDataFlagsObj.currentTab = 'PROPOSAL_HOME';
     }
@@ -147,6 +130,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
             this.result.proposal = tempryProposalObj.proposal;
             this.result.sysGeneratedCostElements = tempryProposalObj.sysGeneratedCostElements;
             this.result.tbnPersons = tempryProposalObj.tbnPersons;
+            this.result.rateClassTypes = tempryProposalObj.rateClassTypes;
             this.showOrHideDataFlagsObj.currentTab = currentTab;
             localStorage.setItem('currentTab', currentTab);
             this.timeStampToBudgetDates();
@@ -173,10 +157,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
   }
 
   initialiseProposalFormElements() {
-    this.proposalDataBindObj.proposalStartDate = this.result.proposal.startDate === null ?
-      null : new Date(this.result.proposal.startDate);
-    this.proposalDataBindObj.proposalEndDate = this.result.proposal.endDate === null ?
-      null : new Date(this.result.proposal.endDate);
+    this.proposalDataBindObj.proposalStartDate = this.result.proposal.startDate === null ? null : new Date(this.result.proposal.startDate);
+    this.proposalDataBindObj.proposalEndDate = this.result.proposal.endDate === null ? null : new Date(this.result.proposal.endDate);
     this.proposalDataBindObj.sponsorDeadlineDate = this.result.proposal.submissionDate === null ?
       null : new Date(this.result.proposal.submissionDate);
     this.proposalDataBindObj.internalDeadlineDate = this.result.proposal.internalDeadLineDate === null ?
@@ -217,6 +199,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   // proposal details validation
   proposalValidation() {
+    this.mandatoryObj.field = null;
     if ( this.result.proposal.title === '' || this.result.proposal.title == null ) {
         this.mandatoryObj.field = 'title';
     } else if ( this.proposalDataBindObj.selectedProposalCategory == null ||
@@ -234,19 +217,15 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this.mandatoryObj.field = 'proposalEndDate';
     } else if (this.proposalDataBindObj.sponsorDeadlineDate === '' || this.proposalDataBindObj.sponsorDeadlineDate == null) {
       this.mandatoryObj.field = 'sponsorDeadlineDate';
-    }else {
-        this.mandatoryObj.field = null;
     }
     if ( this.result.proposal.proposalPersons.length > 0 ) {
-      let PIExists = {};
-      PIExists = this.result.proposal.proposalPersons.find( persons => persons.proposalPersonRole.description === 'Principal Investigator');
-      if (PIExists == null) {
-        this.warningMsgObj.personWarningMsg = '* Select a member as PI';
-      } else {
-        this.warningMsgObj.personWarningMsg = null;
-      }
+      const PIExists = this.result.proposal.proposalPersons.find( role => role.proposalPersonRole.description === 'Principal Investigator');
+      this.warningMsgObj.personWarningMsg = PIExists == null ? '* Select a member as PI' : null;
     } else {
         this.warningMsgObj.personWarningMsg = '* Select atleast one team member';
+    }
+    if (this.result.proposal.proposalId && this.result.proposal.budgetHeader != null) {
+      this.setProposalBudgetDetails();
     }
   }
 
@@ -269,15 +248,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
     // preserve showOrHideDataFlagsObj.isShowSaveSuccessModal value if autosave to show message in popup else make it false
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = (saveType === 'autoSave') ?
                                                           this.showOrHideDataFlagsObj.isShowSaveSuccessModal : false;
-    this.proposalValidation();
-    if (this.result.proposal.proposalId && this.result.proposal.budgetHeader != null) {
-      this.setProposalBudgetDetails();
-    }
-    if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
-      document.getElementById('openWarningModal').click();
-      this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
-      this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
-    } else {
+    const isMandatoryFilled = this.checkMandatoryFilled();
+    if (isMandatoryFilled) {
       /** call save proposal only if there is a change in data */
       if (this.showOrHideDataFlagsObj.dataChangeFlag) {
         const TYPE = ( this.result.proposal.proposalId != null ) ? 'UPDATE' : 'SAVE';
@@ -298,6 +270,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
           let tempProposalData: any = {};
           tempProposalData = data;
           this.result.proposal = tempProposalData.proposal;
+          this.result.rateClassTypes = tempProposalData.rateClassTypes;
           this.showOrHideDataFlagsObj.dataChangeFlag = false;
         },
         err => {
@@ -306,6 +279,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
           document.getElementById('openSucessModal').click();
         },
         () => {
+          this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
           if (saveType === 'autoSave') {
             const toastId      = document.getElementById('toast-success-proposal');
             this.toast_message = 'Changes has been saved automatically ';
@@ -323,15 +297,18 @@ export class ProposalComponent implements OnInit, OnDestroy {
             this.showTab(this.tempSavecurrentTab);
           } else {
             this.showOrHideDataFlagsObj.isShowSaveSuccessModal = true;
-            this.savePopopUpMessage = 'Proposal has been saved successfully.';
+            this.proposalDataBindObj.successMessage = 'Proposal has been saved successfully.';
+            this.proposalDataBindObj.isSaved = true;
             document.getElementById('openSucessModal').click();
-          } if (this.result.proposal.proposalId) {
+          } if (this.result.proposal.proposalId && this.result.proposal.budgetHeader != null) {
             this.timeStampToPeriodDates();
           }
         });
       } else {
         this.showOrHideDataFlagsObj.isShowSaveSuccessModal = true;
-        this.savePopopUpMessage = 'There are no changes made to be saved.';
+        this.proposalDataBindObj.successModalHeader = 'Save';
+        this.proposalDataBindObj.successMessage = 'There are no changes made to be saved.';
+        this.proposalDataBindObj.isSaved = false;
         document.getElementById('openSucessModal').click();
       }
     }
@@ -340,14 +317,9 @@ export class ProposalComponent implements OnInit, OnDestroy {
   openNotifyApprover() {
     if (this.result.proposal.statusCode === 2) {
       let isDocCompleted = false;
-      for (const DOCUMENT of this.result.proposal.proposalAttachments) {
-          if (DOCUMENT.narrativeStatusCode === 'C' ) {
-            isDocCompleted = true;
-          } else {
-            isDocCompleted = false;
-            break;
-          }
-      }
+      const docStatus = this.result.proposal.proposalAttachments.find( attachObj =>
+                        attachObj.narrativeStatusCode === 'I' && attachObj.documentStatusCode === 1 );
+      isDocCompleted = docStatus != null ? false : true;
       if (isDocCompleted) {
         this.showOrHideDataFlagsObj.isShowNotifyApprover = true;
         document.getElementById('openWarningModal').click();
@@ -370,26 +342,21 @@ export class ProposalComponent implements OnInit, OnDestroy {
     $('#saveAndExitModal').modal('hide');
     this.showOrHideDataFlagsObj.isShowSaveWarningModal = false;
     this.showOrHideDataFlagsObj.isShowSaveSuccessModal = false;
-    this.showOrHideDataFlagsObj.isShowSubmitSuccessModal = false;
+    this.showOrHideDataFlagsObj.isShowSuccessModal = false;
     this.showOrHideDataFlagsObj.isShowSubmitWarningModal = false;
     this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
     this.showOrHideDataFlagsObj.isShowNotifyApprover = false;
-    this.showOrHideDataFlagsObj.isShowNotifyApproverSuccess = false;
-    this.showOrHideDataFlagsObj.isShowNotificationPISuccessModal = false;
-    this.showOrHideDataFlagsObj.isShowCalculateModal = false;
     this.showOrHideDataFlagsObj.isSaveOnTabSwitch = false;
     this.warningMsgObj.submitConfirmation = null;
     this.warningMsgObj.submitWarningMsg = null;
     this.warningMsgObj.errorMsg = null;
+    this.proposalDataBindObj.successModalHeader = 'Success';
+    this.proposalDataBindObj.successMessage = null;
   }
 
   closeSaveAndExitModal() {
-    this.proposalValidation();
-    if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
-      document.getElementById('openWarningModal').click();
-      this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
-      this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
-    } else {
+    const isMandatoryFilled = this.checkMandatoryFilled();
+    if (isMandatoryFilled) {
       this.showOrHideDataFlagsObj.dataChangeFlag = false;
       this.showTab(this.tempSavecurrentTab);
     }
@@ -397,7 +364,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   copyProposal(event) {
     event.preventDefault();
-    this.result.userFullName = localStorage.getItem('currentUser');
+    this.result.userFullName = localStorage.getItem('userFullname');
     this.result.proposal.updateUser = localStorage.getItem('currentUser');
     this._commonService.copyProposal(this.result).subscribe(success => {
     let temryProposalObj: any = {};
@@ -407,22 +374,28 @@ export class ProposalComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkSubmitProposalValidation() {
-    this.closeWarningModal();
+  checkMandatoryFilled() {
     this.proposalValidation();
-    if (this.result.proposal.budgetHeader != null) {
-      this.setProposalBudgetDetails();
-    }
     if (this.mandatoryObj.field != null || this.warningMsgObj.personWarningMsg != null || this.warningMsgObj.dateWarningText != null) {
       document.getElementById('openWarningModal').click();
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
       this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
-    } else if (this.result.proposal.proposalAttachments.length === 0) {
+      return false;
+    }
+     return true;
+  }
+
+  checkSubmitProposalValidation() {
+    this.closeWarningModal();
+    const isMandatoryFilled = this.checkMandatoryFilled();
+    if (isMandatoryFilled) {
+      if (this.result.proposal.proposalAttachments.length === 0) {
         this.showOrHideDataFlagsObj.isShowSubmitWarningModal = true;
         this.warningMsgObj.submitWarningMsg = 'Please add atleast one supporting document to submit the proposal.';
         document.getElementById('openWarningModal').click();
-    } else {
-        this.checkQuestionnaireCompletion();
+      } else {
+          this.checkQuestionnaireCompletion();
+      }
     }
   }
 
@@ -437,8 +410,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
       let humanSubjectQuestionnaire: any = {};
       let questionnaireComplete: any = {};
       humanSubjectQuestionnaire = this.result.proposal.propSpecialReviews.find(PROPOSAL_INDEX =>
-                                      PROPOSAL_INDEX.specialReviewTypeCode === '1' || PROPOSAL_INDEX.specialReviewTypeCode === '13' ||
-                                      PROPOSAL_INDEX.specialReviewTypeCode === '15');
+                                  PROPOSAL_INDEX.specialReviewTypeCode === '1' || PROPOSAL_INDEX.specialReviewTypeCode === '13' ||
+                                  PROPOSAL_INDEX.specialReviewTypeCode === '15');
       if (humanSubjectQuestionnaire != null) {
         questionnaireComplete = this.applicableQuestionnaire.find(questionnaireIndex => questionnaireIndex.RULE_ID != null &&
           (questionnaireIndex.QUESTIONNAIRE_COMPLETED_FLAG === 'N' || questionnaireIndex.QUESTIONNAIRE_COMPLETED_FLAG == null));
@@ -478,44 +451,79 @@ export class ProposalComponent implements OnInit, OnDestroy {
       document.getElementById('openSucessModal').click();
       },
     () => {
+      this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
       $('#warning-modal').modal('hide');
-      this.showOrHideDataFlagsObj.isShowSubmitSuccessModal = true;
+      this.showOrHideDataFlagsObj.isShowSuccessModal = true;
+      this.proposalDataBindObj.successModalHeader = 'Submit Proposal';
+      this.proposalDataBindObj.successMessage = 'Proposal has been submitted successfully';
       document.getElementById('openSucessModal').click();
       this.showOrHideDataFlagsObj.mode = 'view';
     } );
+  }
+
+  printPage(event, printPage) {
+    event.preventDefault();
+    if (printPage === 'BUDGET') {
+      this._proposalBudgetService.printBudget(this.result.proposal.proposalId).subscribe(
+        data => {
+          this.parsePrintedPage(data);
+        });
+    } else if (printPage === 'PROPOSAL') {
+      this._proposalService.printProposal(this.result.proposal.proposalId).subscribe(
+        data => {
+          this.parsePrintedPage(data);
+        });
+    }
+   }
+
+  parsePrintedPage(data) {
+    const tempData: any = data || {};
+      if (window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob( new Blob([data], { type: 'application/pdf' }), this.result.proposal.title + '.pdf' );
+      } else {
+        const printBudgetElement = document.createElement( 'a' );
+        document.body.appendChild(printBudgetElement);
+        printBudgetElement.href = URL.createObjectURL( tempData );
+        printBudgetElement.download = this.result.proposal.title;
+        printBudgetElement.click();
+      }
   }
 
   printProposal(event) {
     event.preventDefault();
       this._proposalService.printProposal(this.result.proposal.proposalId).subscribe(
         data => {
-          const temp: any = data || {};
-          const printProposalDataElement = document.createElement('a');
-          printProposalDataElement.href = URL.createObjectURL(temp);
-          printProposalDataElement.download = this.result.proposal.title;
-          printProposalDataElement.click();
+          const tempData: any = data || {};
+          if (window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveBlob( new Blob([data], { type: 'application/pdf' }), this.result.proposal.title + '.pdf' );
+          } else {
+            const printProposalDataElement = document.createElement('a');
+            printProposalDataElement.href = URL.createObjectURL(tempData);
+            printProposalDataElement.download = this.result.proposal.title;
+            printProposalDataElement.click();
+          }
         });
     }
 
-    getPreReview() {
-      this.addPreReviewerObj = {};
-      this.addPreReviewerObj.preReviewType = null;
-      if (this.result.proposal.proposalPreReviews != null) {
-        if (this.result.proposal.proposalPreReviews.length <= 0) {
-          this.isShowPreReviewModalOptions = true;
-        } else {
-          this.isShowPreReviewModalOptions = false;
-          this.result.proposal.proposalPreReviews.forEach((reviews, reviewsIndex) => {
-            this.selectedReviewAttachment[reviewsIndex] = [];
-              reviews.proposalPreReviewComments.forEach((value, index) => {
-              if (value.proposalPreReviewAttachments.length !== 0) {
-                this.selectedReviewAttachment[reviewsIndex][index] = value.proposalPreReviewAttachments[0].fileName;
-              }
-            });
+  getPreReview() {
+    this.addPreReviewerObj = {};
+    this.addPreReviewerObj.preReviewType = null;
+    if (this.result.proposal.proposalPreReviews != null) {
+      if (this.result.proposal.proposalPreReviews.length <= 0) {
+        this.isShowPreReviewModalOptions = true;
+      } else {
+        this.isShowPreReviewModalOptions = false;
+        this.result.proposal.proposalPreReviews.forEach((reviews, reviewsIndex) => {
+          this.selectedReviewAttachment[reviewsIndex] = [];
+            reviews.proposalPreReviewComments.forEach((value, index) => {
+            if (value.proposalPreReviewAttachments.length !== 0) {
+              this.selectedReviewAttachment[reviewsIndex][index] = value.proposalPreReviewAttachments[0].fileName;
+            }
           });
-        }
+        });
       }
     }
+  }
 
   showRequestNewReview() {
     this.isShowPreReviewModalOptions = !this.isShowPreReviewModalOptions;
@@ -569,6 +577,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
           this.clearField = new String('true');
           let temp: any = {};
           temp = data || [];
+          this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
           if (temp.proposal.preReviewExist) {
             this.isPreReviewExist = true;
           } else {
@@ -588,10 +597,14 @@ export class ProposalComponent implements OnInit, OnDestroy {
           this._proposalService.downloadPreReviewAttachment( ATTACHMENT.preReviewAttachmentId )
           .subscribe(
             data => {
-                const a = document.createElement( 'a' );
-                a.href = URL.createObjectURL( data );
-                a.download = ATTACHMENT.fileName;
-                a.click();
+              if (window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveBlob( new Blob([data], { type: ATTACHMENT.mimeType }), ATTACHMENT.fileName );
+              } else {
+                  const a = document.createElement( 'a' );
+                  a.href = URL.createObjectURL( data );
+                  a.download = ATTACHMENT.fileName;
+                  a.click();
+              }
             } );
         }
       }
@@ -667,7 +680,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
         this.warningMsgObj.errorMsg = 'Error in approve/disapprove pre-review';
         document.getElementById('openSucessModal').click();
       },
-    () => { $('#completePreReviewModal').modal('hide'); });
+    () => { this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
+      $('#completePreReviewModal').modal('hide'); });
   }
 
   clearPreReviewDatas() {
@@ -676,20 +690,35 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.isReviewMandatoryFilled = true;
   }
 
- /* approve proposal */
- approveProposal() {
-  this.checkPreReviewCompletion();
-  this.proposalDataBindObj.modalAproveHeading = 'Approve';
-  if (this.showApproveDisapproveModal.isReadyToApprove) {
-    this.requestObject = {};
-    this.requestObject.actionType = 'A';
-    this.isAttachmentIncomplete = false;
-    if (this.result.finalApprover && this.result.isApproved === false) {
-      const attachments = this.result.proposal.proposalAttachments.find(attachment => attachment.narrativeStatus.code === 'I');
-      this.isAttachmentIncomplete = (attachments != null) ? true : false;
+  /* approve proposal */
+  approveProposal() {
+    this.checkPreReviewCompletion();
+    this.proposalDataBindObj.modalAproveHeading = 'Approve';
+    this.showApproveDisapproveModal.isReadyToApprove = false;
+    if (!this.showApproveDisapproveModal.isPrereviewCompletionRequired) {
+      this.requestObject = {};
+      this.requestObject.actionType = 'A';
+      this.checkSuperUserIsFinalApprover();
+      this.showApproveDisapproveModal.isAttachmentIncomplete = false;
+      if ((this.result.finalApprover && this.result.isApproved === false) ||
+            (this.superUser && this.showApproveDisapproveModal.isLastApproval) ) {
+        const attachments = this.result.proposal.proposalAttachments.find(attachment =>
+                                                  attachment.narrativeStatus.code === 'I' && attachment.documentStatusCode === 1);
+        this.showApproveDisapproveModal.isAttachmentIncomplete = (attachments != null) ? true : false;
+        this.showApproveDisapproveModal.isReadyToApprove =  this.showApproveDisapproveModal.isAttachmentIncomplete === true ? false : true;
+      } else {
+        this.showApproveDisapproveModal.isReadyToApprove = true;
+      }
     }
   }
-}
+
+  /* checking whether superuser is final approver or not */
+  checkSuperUserIsFinalApprover() {
+    let lastStop: any;
+    lastStop = this.result.workflow.workflowDetailMap[Object
+      .keys(this.result.workflow.workflowDetailMap)[Object.keys(this.result.workflow.workflowDetailMap).length - 1]];
+      this.showApproveDisapproveModal.isLastApproval = lastStop.filter(stop => stop.approvalStatusCode === 'W').length > 0 ? true : false;
+  }
 
   /* disapprove proposal */
   disapproveProposal() {
@@ -701,11 +730,12 @@ export class ProposalComponent implements OnInit, OnDestroy {
 
   /* checking whether any prereview exists with inprogress status */
   checkPreReviewCompletion() {
-    if (this.result.finalApprover && this.result.isPreReviewCompletionRequired) {
+    this.showApproveDisapproveModal.isPrereviewCompletionRequired = false;
+    this.checkSuperUserIsFinalApprover();
+    if (this.result.finalApprover && this.result.isPreReviewCompletionRequired ||
+                (this.superUser && this.showApproveDisapproveModal.isLastApproval) ) {
       const prereviews = this.result.proposal.proposalPreReviews.find(prereview => prereview.preReviewStatus.reviewStatusCode === '1');
-      this.showApproveDisapproveModal.isReadyToApprove = (prereviews != null) ? false : true;
-    } else {
-      this.showApproveDisapproveModal.isReadyToApprove = true;
+      this.showApproveDisapproveModal.isPrereviewCompletionRequired = (prereviews != null) ? true : false;
     }
   }
 
@@ -716,10 +746,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.requestObject.proposalId = this.result.proposal.proposalId;
     this.requestObject.isSuperUser = this.superUser;
     this.requestObject.approverStopNumber = this.result.approverStopNumber;
-    this.requestObject.approveComment = this.approveComments;
     const approveFormData = new FormData();
-    approveFormData.delete( 'files' );
-    approveFormData.delete( 'formDataJson' );
 
     for ( let i = 0; i < this.uploadedFile.length; i++ ) {
       approveFormData.append( 'files', this.uploadedFile[i] );
@@ -733,21 +760,34 @@ export class ProposalComponent implements OnInit, OnDestroy {
     },
     err => {
       $('#approveDisapproveModal').modal('hide');
+      this.closeApproveDisapproveModal();
       this.warningMsgObj.errorMsg = 'Error in approve/disapprove proposal';
       document.getElementById('openSucessModal').click();
      },
     () => {
+      this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
       $('#approveDisapproveModal').modal('hide');
-      this.proposalDataBindObj.modalAproveHeading = null;
-      this.approveComments = '';
-      this.uploadedFile = [];
+      this.showOrHideDataFlagsObj.isShowSuccessModal = true;
+      if (this.requestObject.actionType === 'A') {
+        this.proposalDataBindObj.successMessage = this.superUser === 'true' && !this.result.isApprover ?
+                    'Proposal has been approved successfully by SuperUser.' :
+                    (this.superUser === 'true' && this.result.isApprover || this.superUser === 'false' && this.result.isApprover) ?
+                    'Proposal has been approved successfully' : null ;
+      } else if (this.requestObject.actionType === 'R') {
+        this.proposalDataBindObj.successMessage = this.superUser === 'true' && !this.result.isApprover ?
+                    'Proposal has been disapproved successfully by SuperUser.' :
+                    (this.superUser  === 'true' && this.result.isApprover || this.superUser === 'false' && this.result.isApprover) ?
+                    'Proposal has been disapproved successfully' : null  ;
+      }
+      document.getElementById('openSucessModal').click();
+      this.closeApproveDisapproveModal();
     });
   }
 
   openRouteLog() {
     this.versionHistorySelected = this.result.workflow.workflowSequence;
     this.routeLogVersionChange();
-    this.isShowRouteLog = true;
+    this.showOrHideDataFlagsObj.isShowRouteLogModal = true;
   }
 
   updateWorkflowStops() {
@@ -794,19 +834,26 @@ export class ProposalComponent implements OnInit, OnDestroy {
     if ( attachment != null) {
       this._commonService.downloadRoutelogAttachment( attachment.attachmentId ).subscribe(
         data => {
-            const a = document.createElement( 'a' );
-            a.href = URL.createObjectURL( data );
-            a.download = attachment.fileName;
-            a.click();
+          if (window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveBlob( new Blob([data], { type: attachment.mimeType }), attachment.fileName );
+          } else {
+              const a = document.createElement( 'a' );
+              a.href = URL.createObjectURL( data );
+              a.download = attachment.fileName;
+              a.click();
+          }
         } );
     }
   }
 
+  /* closes approve-disapprove modal */
   closeApproveDisapproveModal() {
-    this.approveComments = '';
+    this.proposalDataBindObj.modalAproveHeading = null;
+    this.requestObject = {};
     this.uploadedFile = [];
-    // this.showApproveDisapproveModal.isReadyToApprove = false;
-    this.isAttachmentIncomplete = false;
+    this.showApproveDisapproveModal.isReadyToApprove = false;
+    this.showApproveDisapproveModal.isPrereviewCompletionRequired = false;
+    this.showApproveDisapproveModal.isAttachmentIncomplete = false;
   }
 
   notifyAttachmentIncomplete() {
@@ -817,7 +864,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
     err => {},
     () => {
         document.getElementById('openSucessModal').click();
-        this.showOrHideDataFlagsObj.isShowNotificationPISuccessModal = true;
+        this.showOrHideDataFlagsObj.isShowSuccessModal = true;
+        this.proposalDataBindObj.successMessage = 'Notification mail has been sent successfully';
     } );
   }
 
@@ -827,7 +875,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
       let temp: string;
       temp = data;
       if ( temp === 'SUCCESS') {
-        this.showOrHideDataFlagsObj.isShowNotifyApproverSuccess = true;
+        this.showOrHideDataFlagsObj.isShowSuccessModal = true;
       }
     },
     err => {
@@ -836,6 +884,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
       document.getElementById('openSucessModal').click(); },
     () => {
       this.showOrHideDataFlagsObj.isShowNotifyApprover = false;
+      this.proposalDataBindObj.successMessage = 'Notification mail has been sent successfully';
       $('#warning-modal').modal('hide');
       document.getElementById('openSucessModal').click();
     } );
@@ -850,13 +899,15 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this.result.proposal.budgetHeader.startDate = new Date(this.budgetOverviewDateObj.budgetStartDate).getTime();
       this.result.proposal.budgetHeader.endDate = new Date(this.budgetOverviewDateObj.budgetEndDate).getTime();
     }
-    const periodWithoutDate = this.result.proposal.budgetHeader.budgetPeriods.find(
+    this.showOrHideDataFlagsObj.periodWithoutDate = this.result.proposal.budgetHeader.budgetPeriods.find(
                               period => period.startDate == null || period.endDate == null);
-    if (periodWithoutDate != null || this.budgetPeriodsDateObj.isStartError || this.budgetPeriodsDateObj.isEndError) {
+    if (this.showOrHideDataFlagsObj.periodWithoutDate != null ||
+        this.budgetPeriodsDateObj.isStartError || this.budgetPeriodsDateObj.isEndError) {
       this.showOrHideDataFlagsObj.isShowSaveWarningModal = true;
       this.mandatoryObj.field = 'periodDates';
+    } else {
+      this.timeStampToPeriodDates();
     }
-    this.timeStampToPeriodDates();
   }
 
   timeStampToPeriodDates() {
@@ -885,7 +936,8 @@ export class ProposalComponent implements OnInit, OnDestroy {
       if (isToast) {
         this.showToast();
       } else {
-        this.showOrHideDataFlagsObj.isShowCalculateModal = true;
+        this.showOrHideDataFlagsObj.isShowSuccessModal = true;
+        this.proposalDataBindObj.successMessage = 'Budget amounts has been calculated successfully.';
         document.getElementById('openSucessModal').click();
       }
     });
@@ -916,20 +968,6 @@ export class ProposalComponent implements OnInit, OnDestroy {
         this.showToast();
       });
     }
-
-  printBudget(event) {
-    event.preventDefault();
-    let data1: any;
-    this._proposalBudgetService.printBudget(this.result.proposal.proposalId).subscribe(
-    data => {
-      data1 = data;
-      const printBudgetElement = document.createElement( 'a' );
-      document.body.appendChild(printBudgetElement);
-      printBudgetElement.href = URL.createObjectURL( data );
-      printBudgetElement.download = this.result.proposal.title;
-      printBudgetElement.click();
-    });
-   }
 
    showToast() {
     const toastId = document.getElementById('rate-toast-success');

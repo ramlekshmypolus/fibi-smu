@@ -1,9 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
 import { CompleterService } from 'ng2-completer';
 
 import { CommonService } from '../../common/services/common.service';
 import { GrantService } from '../services/grant.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 declare var $: any;
 
@@ -17,8 +17,11 @@ export class GrantEditComponent implements OnInit {
 
   @Input() result: any = {};
   @Input() showDataFlagObj: any = {};
+  @Input() warningMsgObj: any = {};
+  @Input() modalHideAndShowObj: any = {};
 
   isPOC_EmployeeChecked = true;
+  isReplaceAttachment = false;
 
   selectedGrantCallType = null;
   selectedSponsorType = null;
@@ -27,31 +30,32 @@ export class GrantEditComponent implements OnInit {
   selectedFundingType = null;
   selectedEligibilityCriteria = null;
   selectedEligibilityType = null;
-  attachmentDescription = null;
-  selectedAttachmentType = null;
-  openingDate = null;
-  closingDate = null;
   selectedArea: string;
   selectedKeyword: string;
   clearField;
   removeObjIndex: number;
   removeObjId: number;
+  documentId: number;
+  removeObjDocId: number;
 
   pointOfContactObject: any = {};
   elasticSearchOptions: any = {};
-  warningMsgObj: any = {};
-  modalHideAndShowObj: any = {};
+  replaceAttachmentObj: any = {};
   homeUnits: any = [];
   keywordsList:  any  = [];
   areaList:  any  = [];
   uploadedFile = [];
+  attachmentVersions = [];
+  selectedAttachmentDescription = [];
+  selectedAttachmentType: any[] = [];
 
   constructor(private _grantService: GrantService,
-    private _router: Router,
     private _completerService: CompleterService,
-    public _commonService: CommonService) { }
+    public _commonService: CommonService,
+    private _spinner: NgxSpinnerService) { }
 
   ngOnInit() {
+    this.showDataFlagObj.isAttachmentVersionOpen = [];
     this.elasticSearchOptions.url   = this._commonService.elasticIndexUrl;
     this.elasticSearchOptions.index = 'fibiperson';
     this.elasticSearchOptions.type  = 'person';
@@ -71,21 +75,12 @@ export class GrantEditComponent implements OnInit {
         this.selectedFundingType =  (this.result.grantCall.fundingSourceType != null) ?
                                     this.result.grantCall.fundingSourceType.description : null;
         this.selectedGrantCallType = this.result.grantCall.grantCallType.description;
-        this.openingDate = this.result.grantCall.openingDate === null ? null : new Date(this.result.grantCall.openingDate);
-        this.closingDate = this.result.grantCall.closingDate === null ? null : new Date(this.result.grantCall.closingDate);
+        this.showDataFlagObj.openingDate = this.result.grantCall.openingDate === null ? null : new Date(this.result.grantCall.openingDate);
+        this.showDataFlagObj.closingDate = this.result.grantCall.closingDate === null ? null : new Date(this.result.grantCall.closingDate);
     }
     this.keywordsList = this._completerService.local( this.result.scienceKeywords, 'description', 'description' );
     this.areaList = this._completerService.local( this.result.researchAreas, 'description', 'description' );
     this.homeUnits =  this._completerService.local( this.result.homeUnits, 'unitName', 'unitName' );
-  }
-
-  /** check whether status is draft, if yes show warning else navigate to dashboard */
-  openGoBackModal() {
-    if ( this.result.grantCall.grantStatusCode === 1 && this.showDataFlagObj.isDataChange) { // status == Draft
-        this.modalHideAndShowObj.isShowConfirmGoBack = true;
-    } else {
-        this._router.navigate( ['fibi/dashboard/grantCall'] );
-    }
   }
 
   /** assigns selected grant call to result object */
@@ -104,11 +99,11 @@ export class GrantEditComponent implements OnInit {
 
   /** check for validations in closing and opening dates */
   dateValidation() {
-    if ( this.openingDate == null ) {
+    if ( this.showDataFlagObj.openingDate == null ) {
         this.warningMsgObj.dateWarningText = 'Please select an opening date';
-    } else if ( this.closingDate == null ) {
+    } else if ( this.showDataFlagObj.closingDate == null ) {
         this.warningMsgObj.dateWarningText = 'Please select a closing date';
-    } else if ( new Date(this.openingDate) >= new Date(this.closingDate) ) {
+    } else if ( new Date(this.showDataFlagObj.openingDate) >= new Date(this.showDataFlagObj.closingDate) ) {
         this.warningMsgObj.dateWarningText = 'Please select a closing date after opening date';
     } else {
         this.warningMsgObj.dateWarningText = null;
@@ -147,7 +142,7 @@ export class GrantEditComponent implements OnInit {
         if (keywordObj != null ) {
           keywordObject.scienceKeywordCode = keywordObj.code;
           keywordObject.scienceKeyword = keywordObj;
-          keywordObject.updateTimestamp = new Date().getTime();
+          keywordObject.updateTimeStamp = new Date().getTime();
           keywordObject.updateUser = localStorage.getItem('currentUser');
           this.result.grantCall.grantCallKeywords.push(keywordObject);
           this.warningMsgObj.keyWordWarningMessage = null;
@@ -305,7 +300,7 @@ export class GrantEditComponent implements OnInit {
         const tempObj: any = {};
         tempObj.researchAreaCode = areaObj.researchAreaCode;
         tempObj.researchArea  = areaObj;
-        tempObj.updateTimestamp = new Date().getTime();
+        tempObj.updateTimeStamp = new Date().getTime();
         tempObj.updateUser = localStorage.getItem('currentUser');
         this.result.grantCall.grantCallResearchAreas.push(tempObj);
         this.showDataFlagObj.isDataChange = true;
@@ -336,7 +331,7 @@ export class GrantEditComponent implements OnInit {
         tempObj.grantCallCriteria = this.selectedEligibilityCriteria;
         tempObj.grantEligibilityTypeCode = this.selectedEligibilityType.grantEligibilityTypeCode;
         tempObj.grantCallEligibilityType = this.selectedEligibilityType;
-        tempObj.updateTimestamp = new Date().getTime();
+        tempObj.updateTimeStamp = new Date().getTime();
         tempObj.updateUser = localStorage.getItem('currentUser');
         this.result.grantCall.grantCallEligibilities.push(tempObj);
         this.showDataFlagObj.isDataChange = true;
@@ -350,19 +345,21 @@ export class GrantEditComponent implements OnInit {
    * @param id
    * @param index
    * @param deleteDetailLabel
+   * @param removeDocumentId
    */
-  temprySaveGrantObj(id, index, deleteDetailLabel) {
+  temprySaveGrantObj(id, index, deleteDetailLabel, removeDocumentId) {
     this.removeObjId = id;
     this.removeObjIndex = index;
     this.modalHideAndShowObj.label = deleteDetailLabel;
     if (deleteDetailLabel !== 'KEYWORD') {
       this.modalHideAndShowObj.isShowDeleteModal = true;
+      this.removeObjDocId = removeDocumentId;
     } else {
       this.deleteGrantDetail();
     }
   }
 
-  /** removes POC */
+  /** removes grant details */
   deleteGrantDetail() {
     if (this.modalHideAndShowObj.label !== 'KEYWORD') {
       this.modalHideAndShowObj.isShowDeleteModal = false;
@@ -380,6 +377,7 @@ export class GrantEditComponent implements OnInit {
         this.result.grantCall.grantCallEligibilities.splice(this.removeObjIndex, 1);
       } else if (this.modalHideAndShowObj.label === 'ATTACHMENT') {
         this.result.grantCall.grantCallAttachments.splice(this.removeObjIndex, 1);
+        this.showDataFlagObj.isAttachmentVersionOpen = [];
       }
     } else {
       if (this.modalHideAndShowObj.label === 'KEYWORD') {
@@ -403,24 +401,40 @@ export class GrantEditComponent implements OnInit {
           this.result.grantCall.grantCallEligibilities.splice(this.removeObjIndex, 1);
         });
       } else if (this.modalHideAndShowObj.label === 'ATTACHMENT') {
-        this._grantService.deleteGrantCallAttachment({'grantCallId' : this.result.grantCall.grantCallId,
-          'attachmentId' : this.removeObjId}).subscribe(newEligibilityDetails => {
-          this.result.grantCall.grantCallAttachments.splice(this.removeObjIndex, 1);
+        this._grantService.deleteGrantCallAttachment({'grantCallId' : this.result.grantCall.grantCallId, 'attachmentId': this.removeObjId ,
+        'userFullName': localStorage.getItem('userFullname'), 'documentId': this.removeObjDocId}).subscribe(newEligibilityDetails => {
+          this.result.grantCall.grantCallAttachments = this.result.grantCall.grantCallAttachments.filter(attachmentObject =>
+            attachmentObject.documentId !== this.removeObjDocId );
+         this.showDataFlagObj.isAttachmentVersionOpen = [];
         });
       }
     }
   }
 
-  backToList( e ) {
-    e.preventDefault();
-    this._router.navigate( ['fibi/dashboard/grantCall'] );
+  showAddAttachmentPopUp(event, attachment) {
+    event.preventDefault();
+    this.modalHideAndShowObj.isShowAddAttachment = true;
+    if (this.isReplaceAttachment) {
+      this.replaceAttachmentObj = attachment;
+    }
+  }
+
+  getVersion(index, documentId, isOpen) {
+    this.attachmentVersions = [];
+    this.documentId = documentId;
+    this.showDataFlagObj.isAttachmentVersionOpen = [];
+    if (!isOpen || isOpen == null) {
+      this.showDataFlagObj.isAttachmentVersionOpen[index] = true;
+    }
+    this.attachmentVersions = this.result.grantCall.grantCallAttachments.filter(attachObj =>
+                                    attachObj.documentStatusCode === 2 && attachObj.documentId === documentId );
   }
 
   clearAttachmentDetails() {
     this.warningMsgObj.attachmentWarningMsg = null;
     this.uploadedFile = [];
-    this.attachmentDescription = null;
-    this.selectedAttachmentType = null;
+    this.modalHideAndShowObj.isShowAddAttachment = false;
+    this.isReplaceAttachment = false;
   }
 
   fileDrop(files) {
@@ -431,7 +445,20 @@ export class GrantEditComponent implements OnInit {
         dupCount = dupCount + 1;
         this.warningMsgObj.attachmentWarningMsg = '* ' + dupCount + ' File(s) already added';
       } else {
-        this.uploadedFile.push(files[index]);
+        if (!this.isReplaceAttachment) {
+          this.uploadedFile.push(files[index]);
+          this.selectedAttachmentType[this.uploadedFile.length - 1] = null;
+          this.selectedAttachmentDescription[this.uploadedFile.length - 1] = '';
+        } else if (this.isReplaceAttachment === true) {
+          if (files.length === 1) {
+            this.uploadedFile = [];
+            this.uploadedFile.push(files[index]);
+            this.selectedAttachmentType[this.uploadedFile.length - 1] = this.replaceAttachmentObj.grantCallAttachType.description;
+            this.selectedAttachmentDescription[this.uploadedFile.length - 1] = this.replaceAttachmentObj.description;
+          } else {
+            this.warningMsgObj.attachmentWarningMsg = '* Choose only one document to replace';
+          }
+        }
       }
     }
   }
@@ -441,51 +468,91 @@ export class GrantEditComponent implements OnInit {
     this.warningMsgObj.attachmentWarningMsg = null;
   }
 
+  checkAttachmentSize() {
+    for ( let sizeIndex = 0; sizeIndex < this.uploadedFile.length; sizeIndex++ ) {
+        if (this.uploadedFile[sizeIndex].size > 19591292 || !(this.uploadedFile[sizeIndex].size > 0)) {
+          this.warningMsgObj.attachmentWarningMsg = '* Document size must be greater than 0KB and less than 20MB';
+        }
+    }
+  }
+
   addAttachments() {
+    const tempArrayForAdd = [];
     this.warningMsgObj.attachmentWarningMsg = null;
-    if (this.selectedAttachmentType == null || this.selectedAttachmentType === 'null') {
-      this.warningMsgObj.attachmentWarningMsg = '* Please select an attachment type';
-    } else if (this.uploadedFile.length === 0) {
-      this.warningMsgObj.attachmentWarningMsg = '* Please choose atleast one attachment';
+    for (let uploadIndex = 0; uploadIndex < this.uploadedFile.length; uploadIndex++) {
+      if (this.selectedAttachmentType[uploadIndex] === 'null' || this.selectedAttachmentType[uploadIndex] == null) {
+            this.warningMsgObj.attachmentWarningMsg = '* Please fill all the mandatory fields';
+      }
+    }
+    if (this.uploadedFile.length === 0) {
+      this.warningMsgObj.attachmentWarningMsg = '* Please choose atleast one document';
     } else {
       for (const attachment of this.result.grantCall.grantCallAttachments) {
         if (this.uploadedFile.find(dupFile => dupFile.name === attachment.fileName) != null) {
-          this.warningMsgObj.attachmentWarningMsg = '* File(s) already added in the list';
+          this.warningMsgObj.attachmentWarningMsg = '* Document already added';
           break;
         }
       }
     }
+    this.checkAttachmentSize();
     if (this.warningMsgObj.attachmentWarningMsg == null) {
-      const tempObjectForAdd: any = {};
-      tempObjectForAdd.grantCallAttachType = this.selectedAttachmentType;
-      tempObjectForAdd.grantAttachmentTypeCode = this.selectedAttachmentType.grantAttachmentTypeCode;
-      tempObjectForAdd.description = this.attachmentDescription;
-      tempObjectForAdd.updateTimestamp = new Date().getTime();
-      tempObjectForAdd.updateUser = localStorage.getItem('currentUser');
-      this.result.newAttachment = tempObjectForAdd;
-      const formData = new FormData();
-      formData.delete( 'files' );
-      formData.delete( 'formDataJson' );
-      for (const file of this.uploadedFile) {
-        formData.append( 'files', file );
-      }
-      const addAttachmentReqObject = {
-        grantCall : this.result.grantCall,
-        newAttachment : this.result.newAttachment,
-      };
-      formData.append( 'formDataJson', JSON.stringify( addAttachmentReqObject ) );
-      this._grantService.addGrantCallAttachment( formData ).subscribe( success => {
-        let temporaryAttachmentObject: any = {};
-        temporaryAttachmentObject = success;
-        this.result.grantCall = temporaryAttachmentObject.grantCall;
-      }, error => { },
-      () => {
-        this.showDataFlagObj.isShowAttachmentList = true;
-        this.modalHideAndShowObj.isShowAddAttachment = false;
-        this.clearAttachmentDetails();
-        this.showDataFlagObj.isDataChange = true;
-        $('#addAttachment').modal('hide');
-      });
+      for (let uploadIndex = 0; uploadIndex < this.uploadedFile.length; uploadIndex++) {
+        const tempObjectForAdd: any = {};
+        if (!this.isReplaceAttachment) {
+          const attachTypeObj = this.result.grantCallAttachTypes.find( attachtype =>
+                                attachtype.grantAttachmentTypeCode === parseInt(this.selectedAttachmentType[uploadIndex], 10));
+            tempObjectForAdd.grantCallAttachType = attachTypeObj;
+            tempObjectForAdd.grantAttachmentTypeCode = attachTypeObj.grantAttachmentTypeCode;
+        } else {
+          const attachTypeObj = this.result.grantCallAttachTypes.find( attachtype =>
+                                attachtype.description === this.selectedAttachmentType[uploadIndex]);
+            tempObjectForAdd.grantCallAttachType = attachTypeObj;
+            tempObjectForAdd.grantAttachmentTypeCode = attachTypeObj.grantAttachmentTypeCode;
+            tempObjectForAdd.attachmentId = this.replaceAttachmentObj.attachmentId;
+        }
+        tempObjectForAdd.description = this.selectedAttachmentDescription[uploadIndex];
+        tempObjectForAdd.fileName = this.uploadedFile[uploadIndex].name;
+        tempObjectForAdd.updateTimeStamp = new Date().getTime();
+        tempObjectForAdd.updateUser = localStorage.getItem('userFullname');
+        tempArrayForAdd[uploadIndex] = tempObjectForAdd;
+    }
+    this.result.newAttachments = tempArrayForAdd;
+    this.result.grantCall.updateUser = localStorage.getItem('currentUser');
+
+    this._spinner.show();
+    const formData = new FormData();
+    for (const file of this.uploadedFile) {
+      formData.append( 'files', file );
+    }
+    formData.append( 'formDataJson', JSON.stringify( {'grantCall': this.result.grantCall,
+      'newAttachments': this.result.newAttachments, 'userFullName': localStorage.getItem('userFullname')} ) );
+    this._grantService.addGrantCallAttachment( formData ).subscribe( success => {
+      let temporaryAttachmentObject: any = {};
+      temporaryAttachmentObject = success;
+      this.result.grantCall = temporaryAttachmentObject.grantCall;
+    },
+    error => {
+      console.log( error );
+      this._spinner.hide();
+      this.showDataFlagObj.isShowAttachmentList = true;
+      this.modalHideAndShowObj.isShowAddAttachment = false;
+      this.clearAttachmentDetails();
+      $('#addGrantAttachment').modal('hide');
+      const toastId = document.getElementById('attach-toast-fail');
+       toastId.className = 'show';
+       setTimeout(function () {
+       toastId.className = toastId.className.replace('show', '');
+      }, 2000);
+    },
+    () => {
+      this.showDataFlagObj.isAttachmentVersionOpen = [];
+      this._spinner.hide();
+      this.showDataFlagObj.isShowAttachmentList = true;
+      this.modalHideAndShowObj.isShowAddAttachment = false;
+      this.clearAttachmentDetails();
+      this.showDataFlagObj.isDataChange = true;
+      $('#addGrantAttachment').modal('hide');
+    });
     }
   }
 
@@ -493,11 +560,15 @@ export class GrantEditComponent implements OnInit {
     if (attachment.attachmentId != null) {
       this._grantService.downloadAttachment( attachment.attachmentId )
       .subscribe( data => {
-        const a = document.createElement( 'a' );
-        a.href = URL.createObjectURL( data );
-        a.download = attachment.fileName;
-        document.body.appendChild(a);
-        a.click();
+        if (window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveBlob( new Blob([data], { type: attachment.mimeType }), attachment.fileName );
+        } else {
+          const a = document.createElement( 'a' );
+          a.href = URL.createObjectURL( data );
+          a.download = attachment.fileName;
+          document.body.appendChild(a);
+          a.click();
+        }
       } );
     } else {
       const URL = 'data:' + attachment.mimeType + ';base64,' + attachment.attachment;
@@ -507,77 +578,6 @@ export class GrantEditComponent implements OnInit {
       document.body.appendChild(a);
       a.click();
     }
-  }
-
-  /** saves grant after checking whether all datas are valid */
-  saveGrant() {
-    let saveType = 'SAVE';
-    this.checkGrantMandatoryFilled();
-    if (this.warningMsgObj.isShowWarning === false && this.warningMsgObj.dateWarningText == null) {
-      this.showDataFlagObj.isCurrencyFocusOn = true;
-      this.result.grantCall.createUser = localStorage.getItem('currentUser');
-      this.result.grantCall.createTimestamp = new Date().getTime();
-      this.result.grantCall.updateTimeStamp = new Date().getTime();
-      this.result.grantCall.openingDate = new Date(this.openingDate).getTime();
-      this.result.grantCall.closingDate = new Date(this.closingDate).getTime();
-      this.result.grantCall.updateUser = localStorage.getItem('currentUser');
-      if (this.result.grantCall.grantCallStatus.grantStatusCode === 1 && this.result.grantCall.grantCallId == null) {
-          saveType = 'SAVE';
-      } else {
-          saveType = 'UPDATE';
-      }
-      this._grantService.saveGrantCall({ 'grantCall' : this.result.grantCall, 'updateType' : saveType}).subscribe(response => {
-        let tempSavedGrantObj: any = {};
-        tempSavedGrantObj = response;
-        this.result.grantCall = tempSavedGrantObj.grantCall;
-        this.warningMsgObj = {};
-      },
-      error => {},
-      () => {
-        this.showDataFlagObj.isDataChange = false;
-        document.getElementById('openSaveModal').click();
-      });
-    }
-  }
-
-  /** checks whether all datas are valid and shows publish confrimation modal  */
-  checkGrantCallPublish() {
-    if (this.result.grantCall.grantCallId == null) {
-      this.warningMsgObj.isShowWarning = true;
-    } else {
-      this.checkGrantMandatoryFilled();
-    }
-    if (!this.warningMsgObj.isShowWarning && this.warningMsgObj.dateWarningText == null) {
-      this.modalHideAndShowObj.isShowPublishWarningModal = true;
-    }
-  }
-
-  /** data validation */
-  checkGrantMandatoryFilled() {
-    if (this.result.grantCall.grantCallType == null || this.result.grantCall.grantCallType === 'null' ||
-    this.result.grantCall.grantCallStatus == null || this.result.grantCall.maximumBudget == null ||
-    this.openingDate == null || this.closingDate == null ||
-    this.result.grantCall.grantTheme === null || this.result.grantCall.grantTheme === '' ||
-    this.result.grantCall.grantCallName === null || this.result.grantCall.grantCallName === '' ||
-    this.result.grantCall.description === null || this.result.grantCall.description === '' ||
-    ( this.result.grantCall.grantTypeCode === 2 && (this.result.grantCall.externalUrl == null ||
-      this.result.grantCall.externalUrl === ''))) {
-        this.warningMsgObj.isShowWarning = true;
-    } else {
-      this.warningMsgObj.isShowWarning = false;
-    }
-  }
-
-  /** publish grant */
-  publishGrantCall() {
-    this._grantService.publishGrantCall( {'grantCall': this.result.grantCall} ).subscribe( success => {
-        this.showDataFlagObj.isShowAddPointOfContact = true;
-        this.showDataFlagObj.isShowAreaOfResearch = true;
-        this.showDataFlagObj.isShowEligibility = true;
-        this.result = success;
-        this.warningMsgObj = {};
-        this.showDataFlagObj.mode = 'view';
-    } );
   }
 
 }

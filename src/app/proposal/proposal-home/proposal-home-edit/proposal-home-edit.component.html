@@ -135,8 +135,8 @@
           </tr>
           <tr *ngFor="let budget of result?.proposal?.budgetHeader?.budgetPeriods; let i = index">
             <td>{{ i + 1 }}</td>
-            <td>{{budget?.startDate | date:'MM/dd/yyyy'}}</td>
-            <td>{{budget?.endDate | date:'MM/dd/yyyy'}}</td>
+            <td>{{budget?.startDate | date: 'dd/MM/yyyy'}}</td>
+            <td>{{budget?.endDate | date: 'dd/MM/yyyy'}}</td>
             <td><span *ngIf="budget?.totalCost != null">{{budget?.totalCost|
                 currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalCost == null">$0.00</span></td>
             <td><span *ngIf="budget?.totalDirectCost != null">{{budget?.totalDirectCost|

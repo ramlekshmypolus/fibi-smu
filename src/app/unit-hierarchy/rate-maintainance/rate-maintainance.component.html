@@ -1,7 +1,7 @@
 <div class="push4slideMenu pageMinHeight" id="scrollToTop">
   <div class="container-fluid pushFixedHeaderFooter">
     <div class="headerPush"></div>
-    <button class="btnSkin btnSkinPrimary" id="back-to-unit-btn" (click)="openGoBackUnit()">Back to Unit Hierarchy</button>
+    <button class="btnSkin btnSkinPrimary" id="back-to-unit-btn" (click) ="goBacKToUnit()">Back to Unit Hierarchy</button>
     <div class="borderBox margin-top-20">
       <h4 class="borderBoxHeading">{{unitName}} - {{unitId}}</h4>
       <section class="row">
@@ -32,9 +32,9 @@
               </div>
             </div>
             <div class="col-lg-6 advanced-search text-right">
-              <span *ngIf="!laFlag" aria-hidden="true" (click)=" newRate()" data-toggle="modal" data-target="#modal-save">
+              <span *ngIf="!isLaFlag" aria-hidden="true" (click)=" newRate()" data-toggle="modal" data-target="#modal-save">
                 <i class=" fa fa-plus pr-10" aria-hidden="true"></i>Add New Institute Rate</span>
-              <span *ngIf="laFlag" aria-hidden="true" (click)=" newRate()" data-toggle="modal" data-target="#modal-save">
+              <span *ngIf="isLaFlag" aria-hidden="true" (click)=" newRate()" data-toggle="modal" data-target="#modal-save">
                 <i class=" fa fa-plus pr-10" aria-hidden="true"></i>Add New LA Rate</span>
             </div>
           </div>
@@ -47,11 +47,11 @@
                   <i class="fa fa-long-arrow-up" aria-hidden="true" [ngClass]="{'blrcolor':  ((sortBy == 'rateClass' && !isDesc) || (sortBy != rateClass)) ,'fcscolor': (sortBy == 'rateClass' && isDesc)}"></i>
                   <i class="fa fa-long-arrow-down" aria-hidden="true" [ngClass]="{'blrcolor': ((sortBy == 'rateClass' && isDesc)|| (sortBy != rateClass)),'fcscolor': (sortBy == 'rateClass' && !isDesc)}"></i>
                 </th>
-                <th *ngIf="!laFlag" width =12%; class=" uh-hand-icon" (click)="headerSort('rateType')">Rate Type
+                <th *ngIf="!isLaFlag" width =12%; class=" uh-hand-icon" (click)="headerSort('rateType')">Rate Type
                   <i class="fa fa-long-arrow-up" aria-hidden="true" [ngClass]="{'blrcolor':  ((sortBy == 'rateType' && !isDesc)|| (sortBy != rateType)) ,'fcscolor': (sortBy == 'rateType' && isDesc)}"></i>
                   <i class="fa fa-long-arrow-down" aria-hidden="true" [ngClass]="{'blrcolor': ((sortBy == 'rateType' && isDesc)|| (sortBy != rateType)),'fcscolor': (sortBy == 'rateType' && !isDesc)}"></i>
                 </th>
-                <th *ngIf="!laFlag" class=" uh-hand-icon" (click)="headerSort('activityType')">Activity Type
+                <th *ngIf="!isLaFlag" class=" uh-hand-icon" (click)="headerSort('activityType')">Activity Type
                   <i class="fa fa-long-arrow-up" aria-hidden="true" [ngClass]="{'blrcolor':  ((sortBy == 'activityType' && !isDesc)|| (sortBy != activityType)) ,'fcscolor': (sortBy == 'activityType' && isDesc)}"></i>
                   <i class="fa fa-long-arrow-down" aria-hidden="true" [ngClass]="{'blrcolor': ((sortBy == 'activityType' && isDesc)|| (sortBy != activityType)),'fcscolor': (sortBy == 'activityType' && !isDesc)}"></i> 
                 </th>
@@ -86,8 +86,8 @@
             <tbody>
               <tr *ngFor="let rate of tempRateDetails;let index=index">
                 <td>{{rate?.rateClass?.description}}</td>
-                <td *ngIf="!laFlag"> {{rate.rateType.description}}</td>
-                <td *ngIf="!laFlag">{{rate.activityType.description}}</td>
+                <td *ngIf="!isLaFlag"> {{rate.rateType.description}}</td>
+                <td *ngIf="!isLaFlag">{{rate.activityType.description}}</td>
                 <td>{{rate.fiscalYear}}</td>
                 <td>{{rate.campusFlag}}</td>
                 <td>{{rate.instituteRate}}</td>
@@ -95,7 +95,7 @@
                 <td>{{rate.updateUser}}</td>
                 <td>{{rate.updateTimestamp}}</td>
                 <td class="u-table-icons">
-                  <i class="fa fa-pencil" (click)="editRate(rate)" data-toggle="modal" data-target="#modal-save"
+                  <i class="fa fa-pencil" (click)="editRate(rate,index)" data-toggle="modal" data-target="#modal-save"
                     aria-hidden="true"></i>
                   <i class="fa fa-close" (click)="setIndex(rate,index)" data-toggle="modal" data-target="#modal-delete"
                     aria-hidden="true"></i>
@@ -104,23 +104,22 @@
             </tbody>
           </table>
         </div>
-      </section>
-      
+      </section> 
       <!-- Modal -->
       <div class="modal fade mySkinDialog" id="modal-save" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-labelledby="exampleModalLongTitle"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div *ngIf="!isEdit" class="modal-header p-10">
-              <h5 *ngIf="!laFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Add Institute Rate</h5>
-              <h5 *ngIf="laFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Add LA Rate</h5>
+              <h5 *ngIf="!isLaFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Add Institute Rate</h5>
+              <h5 *ngIf="isLaFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Add LA Rate</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div *ngIf="isEdit" class="modal-header p-10">
-              <h5 *ngIf="!laFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Edit Institute Rate</h5>
-              <h5 *ngIf="laFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Edit LA Rate</h5>
+              <h5 *ngIf="!isLaFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Edit Institute Rate</h5>
+              <h5 *ngIf="isLaFlag" class="modal-title unit-md-head" id="exampleModalLongTitle">Edit LA Rate</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -137,30 +136,29 @@
                     </select>
                   </div>
                 </div>
-                <div *ngIf="!laFlag" class="form-group row">
+                <div *ngIf="!isLaFlag" class="form-group row">
                   <label for="inputPassword" class="col-sm-4 col-form-label add-in-label">  <span class="mandatory">*</span>Rate Type</label>
                   <div class="col-sm-8">
-                    <select [(ngModel)]="rateMaintainance.rateTypeCode" class="committeeBox ng-pristine w-100">
+                    <select [(ngModel)]="rateMaintainance.rateTypeCode" class="committeeBox ng-pristine w-100" (ngModelChange)=" isValueChanged = true ">
                       <option value="">--Select--</option>
                       <option *ngFor="let type of rateList" [value]="type.rateTypeCode">{{type.description}}</option>
 
                     </select>
                   </div>
                 </div>
-                <div *ngIf="!laFlag" class="form-group row">
+                <div *ngIf="!isLaFlag" class="form-group row">
                   <label for="inputPassword" class="col-sm-4 col-form-label add-in-label">  <span class="mandatory">*</span>Activity Type</label>
                   <div class="col-sm-8">
-                    <select [(ngModel)]="rateMaintainance.activityTypeCode" class="committeeBox ng-pristine w-100">
+                    <select [(ngModel)]="rateMaintainance.activityTypeCode" class="committeeBox ng-pristine w-100" (ngModelChange)=" isValueChanged = true ">
                       <option value="">--Select--</option>
                       <option [value]="activity.code" *ngFor="let activity of activityType">{{activity.description}}</option>
-                      ]
                     </select>
                   </div>
                 </div>
                 <div class="form-group row">
                   <label for="inputPassword" class="col-sm-4 col-form-label add-in-label">  <span class="mandatory">*</span>Fiscal Year</label>
                   <div class="col-sm-8">
-                    <input [(ngModel)]="rateMaintainance.fiscalYear" (keypress)="inputRestriction($event)" placeholder="Fiscal year"
+                    <input [(ngModel)]="rateMaintainance.fiscalYear" (keypress)="inputRestriction($event)" placeholder="Fiscal year" (ngModelChange)=" isValueChanged = true "
                       (blur)="checkValidYear(rateMaintainance.fiscalYear)" maxlength="4" class="committeeBox ng-pristine ng-valid ng-touched w-100">
                   </div>
                   <span *ngIf="isYear" class="text-danger text-position">*Please enter a valid project year</span>
@@ -169,7 +167,7 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label add-in-label">  <span class="mandatory">*</span>Start Date</label>
                   <span class="dateField">
-                    <input type="text" id="grant-opng-date" placeholder="mm/dd/yyyy" [(ngModel)]="rateMaintainance.startDate"
+                    <input type="text" id="grant-opng-date" placeholder="mm/dd/yyyy" [(ngModel)]="rateMaintainance.startDate" (ngModelChange)=" isValueChanged = true "
                       (keypress)="inputRestriction($event)" [attr.readonly]=true [owlDateTime]="openingDt" class="committeeBox dateWidth w-100" />
                     <span class="fa fa-calendar fa-large pointer insidePicker" title="open calendar"
                       [owlDateTimeTrigger]="openingDt"></span>
@@ -181,17 +179,17 @@
                   <div class="col-sm-8">
                     <div class="form-check form-check-inline">
                       <input class="form-check-input" [(ngModel)]="campusFlag" type="radio" name="inlineRadioOptions"
-                        id="inlineRadio1" value="ON">
+                        id="inlineRadio1" value="ON" (ngModelChange)=" isValueChanged = true ">
                       <label class="form-check-label">On</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input class="form-check-input" [(ngModel)]="campusFlag" type="radio" name="inlineRadioOptions"
-                        id="inlineRadio1" value="OFF">
+                        id="inlineRadio1" value="OFF" (ngModelChange)=" isValueChanged = true ">
                       <label class="form-check-label">Off</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input class="form-check-input" [(ngModel)]="campusFlag" type="radio" name="inlineRadioOptions"
-                        id="inlineRadio1" value="BOTH">
+                        id="inlineRadio1" value="BOTH" (ngModelChange)=" isValueChanged = true ">
                       <label class="form-check-label">Both</label>
                     </div>
                   </div>
@@ -240,8 +238,8 @@
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
       <div *ngIf ="projectCount > 0 && tempRateDetails?.length != 0" class="text-right pagiSkin">
         <nav class="paginationSkin text-right">
-          <ngb-pagination [boundaryLinks]="true" [maxSize]="4" [collectionSize]="projectCount" [(page)]="requestData.page_number"
-              requestData.page_number=page [pageSize]="requestData.limit" [rotate]="true" (pageChange)="ratePagination(requestData.page_number)">
+          <ngb-pagination [boundaryLinks]="true" [maxSize]="4" [collectionSize]="projectCount" [(page)]="paginatedRateData.page_number"
+          paginatedRateData.page_number=page [pageSize]="paginatedRateData.limit" [rotate]="true" (pageChange)="ratePagination(paginatedRateData.page_number)">
             </ngb-pagination>
         </nav>
       </div>

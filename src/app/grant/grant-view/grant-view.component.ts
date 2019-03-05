@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { GrantService } from '../services/grant.service';
 
@@ -13,38 +12,43 @@ export class GrantViewComponent implements OnInit {
   @Input() result: any = {};
   @Input() showDataFlagObj: any = {};
 
+  documentId: number;
+
   readMoreOrNotObj: any = {};
 
-  constructor( private _router: Router, private _grantService: GrantService ) { }
+  attachmentVersions = [];
 
-  ngOnInit() {}
+  constructor( private _grantService: GrantService ) { }
 
-  /** navigate to dashboard */
-  openGoBackModal() {
-    this._router.navigate( ['fibi/dashboard/grantCall'] );
+  ngOnInit() {
+    this.showDataFlagObj.isAttachmentVersionOpen = [];
   }
 
-  setCurrentProposalTab() {
-    localStorage.setItem('currentTab', 'PROPOSAL_HOME');
+  getVersion(index, documentId, isOpen) {
+    this.attachmentVersions = [];
+    this.documentId = documentId;
+    this.showDataFlagObj.isAttachmentVersionOpen = [];
+    if (!isOpen || isOpen == null) {
+      this.showDataFlagObj.isAttachmentVersionOpen[index] = true;
+    }
+    this.attachmentVersions = this.result.grantCall.grantCallAttachments.filter(attachObj =>
+                                    attachObj.documentStatusCode === 2 && attachObj.documentId === documentId );
   }
 
   downloadAttachments( attachment ) {
     if (attachment.attachmentId != null) {
       this._grantService.downloadAttachment( attachment.attachmentId )
       .subscribe( data => {
-        const a = document.createElement( 'a' );
-        a.href = URL.createObjectURL( data );
-        a.download = attachment.fileName;
-        document.body.appendChild(a);
-        a.click();
+        if (window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveBlob( new Blob([data], { type: attachment.mimeType }), attachment.fileName );
+        } else {
+          const a = document.createElement( 'a' );
+          a.href = URL.createObjectURL( data );
+          a.download = attachment.fileName;
+          document.body.appendChild(a);
+          a.click();
+        }
       } );
-    } else {
-      const URL = 'data:' + attachment.mimeType + ';base64,' + attachment.attachment;
-      const a = document.createElement( 'a' );
-      a.href = URL;
-      a.download = attachment.fileName;
-      document.body.appendChild(a);
-      a.click();
     }
   }
 

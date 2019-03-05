@@ -9,7 +9,7 @@
         </div>
         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3 text-right colorBlack">
           <span style="margin-right: 10px"><label style="margin-right: 10px">Last Updated By: </label><span *ngIf="result?.proposal?.proposalId != null">{{result?.proposal?.updateUser}}
-              on {{result?.proposal?.updateTimeStamp | date: 'MM/dd/yyyy'}}</span></span>
+              on {{result?.proposal?.updateTimeStamp | date: 'dd/MM/yyyy'}}</span></span>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 colorBlack">
           <span><label style="margin-right: 10px">Status: </label>{{result?.proposal?.proposalStatus?.description}}</span>
@@ -47,21 +47,21 @@
           </div>
           <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
             <label>Proposed Start Date:</label><br>
-            <span>{{proposalDataBindObj?.proposalStartDate | date: 'MM/dd/yyyy'}}</span>
+            <span>{{proposalDataBindObj?.proposalStartDate | date: 'dd/MM/yyyy'}}</span>
           </div>
           <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
             <label>Proposed End Date:</label><br>
-            <span>{{proposalDataBindObj?.proposalEndDate | date: 'MM/dd/yyyy'}}</span>
+            <span>{{proposalDataBindObj?.proposalEndDate | date: 'dd/MM/yyyy'}}</span>
           </div>
           <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
             <label>Sponsor Deadline Date:</label><br>
-            <span>{{proposalDataBindObj?.sponsorDeadlineDate | date: 'MM/dd/yyyy'}}</span>
+            <span>{{proposalDataBindObj?.sponsorDeadlineDate | date: 'dd/MM/yyyy'}}</span>
           </div>
         </div>
         <div class="row">
           <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2 subcontract-pr">
             <label>Internal Deadline Date:</label><br>
-            <span>{{proposalDataBindObj?.internalDeadlineDate | date: 'MM/dd/yyyy'}}</span>
+            <span>{{proposalDataBindObj?.internalDeadlineDate | date: 'dd/MM/yyyy'}}</span>
           </div>
           <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-1">
               <label>Subcontract:</label><br>
@@ -145,13 +145,11 @@
     <table class="table tableSkin grid2" *ngIf="showOrHideDataFlagsObj.isAreaOfResearchWidgetOpen">
       <tbody *ngIf="result?.proposal?.proposalResearchAreas?.length > 0">
         <tr>
-          <th width = "10%">Sl No.</th>
           <th width = "10%">Code</th>
           <th>Type</th>
           <th colspan="2">Research Area</th>
         </tr>
         <tr *ngFor="let researchArea of result?.proposal?.proposalResearchAreas; let i = index">
-          <td>{{i+1}}</td>
           <td width = "10%" *ngIf="researchArea.excellenceAreaCode? researchArea.excellenceAreaCode: researchArea.researchAreaCode;let areaCode; ">{{areaCode}}</td>
           <td>{{researchArea.proposalResearchType.description}}</td>
           <td colspan="2" *ngIf="researchArea.proposalExcellenceArea? researchArea.proposalExcellenceArea.description: researchArea.researchArea.description;let description; ">{{description}}</td>
@@ -284,9 +282,9 @@
             <td>{{specialReview?.specialReviewType?.description}}</td>
             <td>{{specialReview?.approvalType?.description}}</td>
             <td>{{specialReview?.protocolNumber}}</td>
-            <td>{{specialReview?.applicationDate| date:'MM/dd/yyyy'}}</td>
-            <td>{{specialReview?.approvalDate| date:'MM/dd/yyyy'}}</td>
-            <td>{{specialReview?.expirationDate| date:'MM/dd/yyyy'}}</td>
+            <td>{{specialReview?.applicationDate | date: 'dd/MM/yyyy'}}</td>
+            <td>{{specialReview?.approvalDate | date: 'dd/MM/yyyy'}}</td>
+            <td>{{specialReview?.expirationDate | date: 'dd/MM/yyyy'}}</td>
             <td title="{{(specialReview?.comments?.length>20)?(specialReview?.comments):''}}">{{(specialReview?.comments?.length
               > 20)?(specialReview?.comments|
               slice:0:20)+'...':(specialReview?.comments)}}</td>
@@ -321,8 +319,8 @@
             </tr>
             <tr *ngFor="let proposalSponsor of result?.proposal?.proposalSponsors;let i = index">
               <td>{{proposalSponsor?.sponsor?.sponsorName}}</td>
-              <td>{{proposalSponsor?.startDate | date:'MM/dd/yyyy'}}</td>
-              <td>{{proposalSponsor?.endDate | date:'MM/dd/yyyy'}}</td>
+              <td>{{proposalSponsor?.startDate  | date: 'dd/MM/yyyy'}}</td>
+              <td>{{proposalSponsor?.endDate  | date: 'dd/MM/yyyy'}}</td>
               <td>{{proposalSponsor?.amount | currency:'USD':true}}</td>
             </tr>
           </tbody>
@@ -352,8 +350,8 @@
               <td>{{protocol?.protocol?.protocolNumber}}</td>
               <td>{{protocol?.protocol?.title}}</td>
               <td>{{protocol?.protocol?.protocolStatus?.description}}</td>
-              <td>{{protocol?.protocol?.approvalDate | date:'MM/dd/yyyy'}}</td>
-              <td>{{protocol?.protocol?.expirationDate | date:'MM/dd/yyyy'}}</td>
+              <td>{{protocol?.protocol?.approvalDate  | date: 'dd/MM/yyyy'}}</td>
+              <td>{{protocol?.protocol?.expirationDate  | date: 'dd/MM/yyyy'}}</td>
             </tr>
           </tbody>
         </table>
@@ -383,8 +381,8 @@
         </tr>
         <tr *ngFor="let budget of result?.proposal?.budgetHeader?.budgetPeriods; let i = index">
           <td>{{ i + 1 }}</td>
-          <td>{{budget?.startDate | date:'MM/dd/yyyy'}}</td>
-          <td>{{budget?.endDate | date:'MM/dd/yyyy'}}</td>
+          <td>{{budget?.startDate  | date: 'dd/MM/yyyy'}}</td>
+          <td>{{budget?.endDate  | date: 'dd/MM/yyyy'}}</td>
           <td><span *ngIf="budget?.totalCost != null">{{budget?.totalCost|
               currency:'USD':'symbol-narrow':'1.2-2'}}</span> <span *ngIf="budget?.totalCost == null">$0.00</span></td>
           <td><span *ngIf="budget?.totalDirectCost != null">{{budget?.totalDirectCost|

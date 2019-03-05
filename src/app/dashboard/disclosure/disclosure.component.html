@@ -112,7 +112,7 @@
         <td>{{DisclosureDetails.disclosureDisposition}}</td>
         <td>{{DisclosureDetails.disclosureStatus}}</td>
         <td>{{DisclosureDetails.moduleItemKey}}</td>
-        <td>{{DisclosureDetails.expirationDate | date: 'MM/dd/yyyy'}}</td>
+        <td>{{DisclosureDetails.expirationDate | date: 'dd/MM/yyyy'}}</td>
         <td>
           <ul class="actionButtonGroup">
             <li><a title="Open {{DisclosureDetails.coiDisclosureNumber}}" id="open-disclosure-btn" [href]="_commonService.outputPath+'/kc-krad/landingPage?viewId=Kc-Header-IframeView&href='+_commonService.outputPath+'%2FcoiDisclosure.do%3FdocId%3D'+DisclosureDetails.documentNumber+'%26docTypeName%3DCoiDisclosureDocument%26methodToCall%3DdocHandler%26command%3DdisplayDocSearchView&__login_user='+disclosureRequestObject.userName+'&kcComp=true'"><i

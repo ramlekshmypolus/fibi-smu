@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UnitHierarchyService } from '../unit-hierarchy.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-
+import { RatePipeService } from './rate-pipe.service';
 
 @Component({
   selector: 'app-rate-maintainance',
@@ -17,6 +17,7 @@ export class RateMaintainanceComponent implements OnInit {
   projectCount: any;
   activityType: any;
   rateTypeList: any;
+  dummyRate: any;
   rateList: any;
   tempRateDetails: any;
   rateType: any;
@@ -28,12 +29,15 @@ export class RateMaintainanceComponent implements OnInit {
   searchType = '';
   searchClass = '';
   campusFlag = 'ON';
+  isViewMode = false;
   isValid = false;
   isDesc = true;
   isYear = false;
-  laFlag = false;
+  isLaFlag = false;
   isMultiple = false;
   isEdit = false;
+  isValueChanged = false;
+  selectedIndex = null;
   rateMaintainance: any = {
     activityTypeCode: '',
     fiscalYear: '',
@@ -44,15 +48,15 @@ export class RateMaintainanceComponent implements OnInit {
     instituteRate: '',
     onOffCampusFlag: true
   };
-  requestData = {
+  paginatedRateData = {
     limit: 20,
     page_number: 1,
   };
-
   constructor(private _router: ActivatedRoute,
     private router: Router,
     private _rateService: UnitHierarchyService,
-    private _spinner: NgxSpinnerService) { }
+    private _spinner: NgxSpinnerService,
+    private _ratePipe: RatePipeService) { }
 
   ngOnInit() {
     this._router.queryParams.subscribe(params => {
@@ -64,66 +68,55 @@ export class RateMaintainanceComponent implements OnInit {
     }
   }
   /**
-  * Rate maintainance or LA rate maintainance choosing
-  * w.r.t user selection for displaying it's respective rates
+  * Rate maintainance or LA rate maintainance choosing w.r.t user selection for displaying it's respective rates
   */
   maintainanceChoose() {
     if (this._router.snapshot.url[0].path === 'LArateMaintainance') {
       this.laRateMaintainanceData();
-      this.laFlag = true;
+      this.isLaFlag = true;
     } else {
       this.rateMaintainanceData();
     }
   }
-  /**
-  * Get Institute rate data for rate maintainance
-  */
   rateMaintainanceData() {
     return new Promise((resolve, reject) => {
-      this._rateService.getRateMaintainanceData(this.unitId).subscribe(
-        (data: any) => {
-          this.rateClass = data.rateClassList;
-          this.unitName = data.unitName;
-          this.rateDetails = data.instituteRatesList;
-          this.rateDetails.forEach(element => {
-            element.updateTimestamp = this.setFormat(element.updateTimestamp, 0);
-            element.startDate = this.setFormat(element.startDate, 0);
-          });
-          this.projectCount = this.rateDetails.length;
-          this.tempRateDetails = this.rateDetails.slice(0, this.requestData.limit);
-          this.rateType = data.rateTypeList;
-          this.activityType = data.activityTypeList;
-          this.copyRateDetails = this.rateDetails;
-          this._spinner.hide();
-          resolve(true);
+      this._rateService.getRateMaintainanceData(this.unitId).subscribe((data: any) => {
+        this.rateClass = data.rateClassList;
+        this.unitName = data.unitName;
+        this.rateDetails = data.instituteRatesList;
+        this.rateDetails.forEach(element => {
+          element.updateTimestamp = this.setFormat(element.updateTimestamp, 0);
+          element.startDate = this.setFormat(element.startDate, 0);
         });
+        this.projectCount = this.rateDetails.length;
+        this.tempRateDetails = this.rateDetails.slice(0, this.paginatedRateData.limit);
+        this.rateType = data.rateTypeList;
+        this.activityType = data.activityTypeList;
+        this.copyRateDetails = this.rateDetails;
+        this._spinner.hide();
+        resolve(true);
+      });
     });
   }
-  /**
-  * Get LA Institute rate data for rate maintainance
-  */
   laRateMaintainanceData() {
     return new Promise((resolve, reject) => {
-      this._rateService.getlaRateMaintainanceData(this.unitId)
-        .subscribe(
-          (data: any) => {
-            this.rateClass = data.rateClassLaList;
-            this.unitName = data.unitName;
-            this.rateDetails = data.instituteLARatesList;
-            this.rateDetails.forEach(element => {
-              element.updateTimestamp = this.setFormat(element.updateTimestamp, 0);
-              element.startDate = this.setFormat(element.startDate, 0);
-            });
-            this.projectCount = this.rateDetails.length;
-            this.tempRateDetails = this.rateDetails.slice(0, this.requestData.limit);
-            this.rateType = data.rateTypeLaList;
-            this.copyRateDetails = this.rateDetails;
-            this._spinner.hide();
-            resolve(true);
-          });
+      this._rateService.getlaRateMaintainanceData(this.unitId).subscribe((data: any) => {
+        this.rateClass = data.rateClassLaList;
+        this.unitName = data.unitName;
+        this.rateDetails = data.instituteLARatesList;
+        this.rateDetails.forEach(element => {
+          element.updateTimestamp = this.setFormat(element.updateTimestamp, 0);
+          element.startDate = this.setFormat(element.startDate, 0);
+        });
+        this.projectCount = this.rateDetails.length;
+        this.tempRateDetails = this.rateDetails.slice(0, this.paginatedRateData.limit);
+        this.rateType = data.rateTypeLaList;
+        this.copyRateDetails = this.rateDetails;
+        this._spinner.hide();
+        resolve(true);
+      });
     });
   }
-
   /**
   * Filtering rate type w.r.t rate class
   */
@@ -142,6 +135,7 @@ export class RateMaintainanceComponent implements OnInit {
   * Filtering add or edit rate type w.r.t rate class
   */
   getModalRateType(rate) {
+    this.isValueChanged = true;
     this.classCode = rate;
     this.rateMaintainance.rateTypeCode = '';
     if (rate !== '') {
@@ -160,31 +154,32 @@ export class RateMaintainanceComponent implements OnInit {
       this.rateDetails = (this.rateDetails.filter((list: any) => list.rateClassCode === this.classCode))
         .filter((list: any) => list.rateTypeCode === type);
       this.projectCount = this.rateDetails.length;
-      this.tempRateDetails = this.rateDetails.slice(0, this.requestData.limit);
+      this.tempRateDetails = this.rateDetails.slice(0, this.paginatedRateData.limit);
     } else {
       this.tempRateDetails = (this.rateDetails.filter((list: any) => list.rateClassCode === this.classCode));
       this.projectCount = this.rateDetails.length;
     }
   }
+ /**
+  * Go Back to unit hierarchy
+  */
+  goBacKToUnit() {
+    this.router.navigate(['fibi/unitHierarchy']);
+  }
   /**
-   * Rate table header sorting funtionality
-   */
+  * Rate table header sorting funtionality
+  */
   headerSort(headerName) {
     this._spinner.show();
     this.isDesc = (this.sortBy === headerName) ? !this.isDesc : false;
     this.direction = this.isDesc ? 1 : -1;
     this.sortBy = headerName;
-    this.rateDetails = this.sortAnArray(this.rateDetails, headerName, this.direction);
-    setTimeout( () => {
-      this.tempRateDetails = this.rateDetails.slice(0, this.requestData.limit);
+    this.rateDetails = this._ratePipe.sortAnArray(this.rateDetails, headerName, this.direction);
+    setTimeout(() => {
+      this.tempRateDetails = this.rateDetails.slice(0, this.paginatedRateData.limit);
+      this.paginatedRateData.page_number = 1;
       this._spinner.hide();
     }, 0);
-  }
-  /**
-  * Go back to unit hierarchy page
-  */
-  openGoBackUnit() {
-    this.router.navigate(['fibi/unitHierarchy']);
   }
   /**
   * Bind rate maintainance object with selected rate value
@@ -202,12 +197,16 @@ export class RateMaintainanceComponent implements OnInit {
     this.rateMaintainance.objectId = rate.objectId;
     this.rateMaintainance.versionNumber = rate.versionNumber;
     this.rateMaintainance.active = rate.active;
+    this.dummyRate = this.rateMaintainance;
   }
   /**
    * @param  {} rate
    * filter the rate list and set flags to default value
    */
-  editRate(rate) {
+  editRate(rate, rateIndex) {
+    this.selectedIndex = rateIndex;
+    this.isMultiple = false;
+    this.isValueChanged = false;
     this.isEdit = true;
     this.rateValueSet(rate);
     this.isYear = false;
@@ -218,7 +217,6 @@ export class RateMaintainanceComponent implements OnInit {
    *Setting dummy objectId and other required data to the object
    */
   newRate() {
-    this.isEdit = false;
     this.rateMaintainance.objectId = 'newRateobjectIdHasBeenGenerated';
     this.rateMaintainance.rateClassCode = this.searchClass;
     this.rateMaintainance.rateTypeCode = this.searchType;
@@ -228,9 +226,11 @@ export class RateMaintainanceComponent implements OnInit {
     this.rateMaintainance.fiscalYear = null;
     this.rateMaintainance.instituteRate = null;
     this.campusFlag = 'ON';
-
     this.isValid = false;
     this.isYear = false;
+    this.isEdit = false;
+    this.isMultiple = false;
+    this.isValueChanged = false;
   }
   setIndex(rate, index) {
     this.rateValueSet(rate);
@@ -240,22 +240,20 @@ export class RateMaintainanceComponent implements OnInit {
    * Delete a specific rate
    */
   delete() {
-    if (!this.laFlag) {
-      this._rateService.deleteRateData(this.rateMaintainance)
-        .subscribe(data => {
-          this.tempRateDetails.splice(this.index, 1);
-        });
+    if (!this.isLaFlag) {
+      this._rateService.deleteRateData(this.rateMaintainance).subscribe(data => {
+        this.tempRateDetails.splice(this.index, 1);
+      });
     } else {
       this.rateMaintainance.unitNumber = this.unitId;
-      this._rateService.deleteLaRateData(this.rateMaintainance)
-        .subscribe(data => {
-          this.tempRateDetails.splice(this.index, 1);
-        });
+      this._rateService.deleteLaRateData(this.rateMaintainance).subscribe(data => {
+        this.tempRateDetails.splice(this.index, 1);
+      });
     }
   }
   /**
    * Date conversion
-   *  @param  {} dateValue
+   * @param  {} dateValue
    */
   setFormat(dateValue, value) {
     const date = new Date(dateValue),
@@ -278,6 +276,7 @@ export class RateMaintainanceComponent implements OnInit {
     }
   }
   limitKeypress(event) {
+    this.isValueChanged = true;
     const pattern = /^(?:[0-9][0-9]{0,2}(?:\.\d{0,2})?|999|999.00|999.99)$/;
     if (!pattern.test(event)) {
       this.rateMaintainance.instituteRate = '';
@@ -297,18 +296,12 @@ export class RateMaintainanceComponent implements OnInit {
   /**
    * Remaining rate maintainance object value setting
    */
-  valueSet() {
+  rateObjectSet() {
     this.rateMaintainance.unitNumber = this.unitId;
     this.rateMaintainance.updateUser = localStorage.getItem('currentUser');
-    if (this.campusFlag === 'ON') {
-      this.rateMaintainance.onOffCampusFlag = true;
-    } else {
-      this.rateMaintainance.onOffCampusFlag = false;
-    }
-    if (this.rateMaintainance.startDate !== null) {
-      this.rateMaintainance.startDate = this.setFormat(this.rateMaintainance.startDate, 1);
-    }
-    if (this.laFlag) {
+    this.campusFlag === 'ON' ? this.rateMaintainance.onOffCampusFlag = true : this.rateMaintainance.onOffCampusFlag = false;
+    this.rateMaintainance.startDate = this.setFormat(this.rateMaintainance.startDate, 1);
+    if (this.isLaFlag) {
       this.rateMaintainance.rateTypeCode = '1';
       delete this.rateMaintainance.activityTypeCode;
       delete this.rateMaintainance.id;
@@ -320,18 +313,18 @@ export class RateMaintainanceComponent implements OnInit {
    */
   rateValidation(value) {
     if (value.rateClassCode === '' || value.rateTypeCode === '' || value.activityTypeCode === ''
-      || value.fiscalYear === null || value.instituteRate === null || value.startDate === null) {
+      || value.fiscalYear === null || value.startDate === null || value.instituteRate === null) {
       this.isValid = true;
     } else {
       this.isValid = false;
     }
   }
-    /**
-   * @param  {} rate
-   * Rate validation by checking multiple entries in datebase with same
-   * unitNumber,rateClasscode,rateTypecode,activityTypeCode,fiscalYear,startDate and onOffCampusFlag
-   */
-  multipleEntryValidation(rate) {
+  /**
+  * @param  {} rate
+  * Rate validation by checking multiple entries in datebase with same
+  * unitNumber,rateClasscode,rateTypecode,activityTypeCode,fiscalYear,startDate and onOffCampusFlag
+  */
+  multipleEntryValidation(rate, selectedIndex) {
     this.isMultiple = false;
     const rateString = rate.rateClassCode.concat(
       rate.rateTypeCode,
@@ -340,16 +333,18 @@ export class RateMaintainanceComponent implements OnInit {
       rate.startDate,
       rate.unitNumber,
       rate.onOffCampusFlag);
-    this.rateDetails.forEach(element => {
-      const rateArray = element.rateClassCode.concat(
-        element.rateTypeCode,
-        element.activityTypeCode,
-        element.fiscalYear,
-        this.setFormat(element.startDate, 1),
-        element.unitNumber,
-        element.onOffCampusFlag);
-      if (rateArray === rateString) {
-        this.isMultiple = true;
+    this.rateDetails.forEach((element, index) => {
+      if (index !== selectedIndex) {
+        const rateArray = element.rateClassCode.concat(
+          element.rateTypeCode,
+          element.activityTypeCode,
+          element.fiscalYear,
+          this.setFormat(element.startDate, 1),
+          element.unitNumber,
+          element.onOffCampusFlag);
+        if (rateArray === rateString) {
+          this.isMultiple = true;
+        }
       }
     });
   }
@@ -358,111 +353,67 @@ export class RateMaintainanceComponent implements OnInit {
    * Slicing data for pagination
    */
   ratePagination(page) {
-    this.tempRateDetails = this.rateDetails.slice(page * this.requestData.limit - this.requestData.limit,
-      page * this.requestData.limit);
+    this.tempRateDetails = this.rateDetails.slice(page * this.paginatedRateData.limit - this.paginatedRateData.limit,
+      page * this.paginatedRateData.limit);
   }
   /**
-   * @param  {} array
-   * @param  {} column
-   * @param  {} direction
-   * rate maintainance table header sort
-   */
-  sortAnArray(array, column, direction) {
-    const sortedArray = array.sort(function (a, b) {
-      if (a[column] === '' || a[column] === null || typeof a[column] === 'undefined') {
-        return 1 * direction;
-      }
-      if (b[column] === '' || b[column] === null || typeof b[column] === 'undefined') {
-        return -1 * direction;
-      }
-      if (column === 'instituteRate' || column === 'fiscalYear') {
-        if ((a[column]) <= (b[column])) {
-          return -1 * direction;
-        }
-        if ((a[column]) > (b[column])) {
-          return 1 * direction;
-        }
-      }
-      if (column === 'startDate' || column === 'updateTimestamp') {
-        if (Number(new Date(a[column])) <= Number(new Date(b[column]))) {
-          return -1 * direction;
-        }
-        if (Number(new Date(a[column])) > Number(new Date(b[column]))) {
-          return 1 * direction;
-        }
-      }
-      if (column === 'updateUser' || column === 'onOffCampusFlag') {
-        if (((a[column]).toString()).toLowerCase() <= ((b[column]).toString()).toLowerCase()) {
-          return -1 * direction;
-        }
-        if (((a[column]).toString()).toLowerCase() > ((b[column]).toString()).toLowerCase()) {
-          return 1 * direction;
-        }
-      }
-      if (((a[column].description).toString()).toLowerCase() <= ((b[column].description).toString()).toLowerCase()) {
-        return -1 * direction;
-      }
-      if (((a[column].description).toString()).toLowerCase() > ((b[column].description).toString()).toLowerCase()) {
-        return 1 * direction;
-      }
-    });
-    return sortedArray;
-  }
-  /**
-   * add or update rates after completing proper validation and
-   * display the result by appling filter
+   * add or update rates after completing proper validation and display the result by appling filter
    */
   saveRate() {
-    this.valueSet();
+    this.rateObjectSet();
     this.rateValidation(this.rateMaintainance);
-    this.multipleEntryValidation(this.rateMaintainance);
-    if (!this.isYear) {
-      if (!this.isMultiple) {
-        if (!this.isValid) {
-          if (this._router.snapshot.url[0].path === 'LArateMaintainance') {
-            this.addLARateMaintainance();
+    if (this.isValueChanged) {
+      this.multipleEntryValidation(this.rateMaintainance, this.selectedIndex);
+      if (!this.isYear && !this.isMultiple && !this.isValid) {
+        if (this.isLaFlag) {
+          if (this.isEdit) {
+            this.dummyRate.rateTypeCode = '1';
+            delete this.dummyRate.activityTypeCode;
+            delete this.dummyRate.id;
+            this._rateService.deleteLaRateData(this.dummyRate).subscribe(data => {
+              this.addLARateMaintainance();
+            });
           } else {
-            this.addRateMaintainance();
+            this.addLARateMaintainance();
           }
+        } else {
+          this.addRateMaintainance();
         }
+      }
+    } else {
+      if (this.isEdit) {
+        document.getElementById('closeModal').click();
       }
     }
   }
   /**
-   * Rate maintainance service call
+   * Rate and LARate maintainance service calls
    */
   addRateMaintainance() {
-    this._rateService.saveInstituteRates(this.rateMaintainance, this.campusFlag)
-      .subscribe(
-        (data: any) => {
-          if (data) {
-            // tslint:disable
-            this.rateMaintainanceData().then(data => {
-              this.searchClass = this.rateMaintainance.rateClassCode;
-              this.getRateType(this.searchClass);
-              this.searchType = this.rateMaintainance.rateTypeCode;
-              this.getRateDetails(this.searchType);
-            });
-          }
-          document.getElementById('closeModal').click();
+    this._rateService.saveInstituteRates(this.rateMaintainance, this.campusFlag).subscribe((data: any) => {
+      if (data) { // tslint:disable
+        this.rateMaintainanceData().then(data => {
+          this.searchClass = this.rateMaintainance.rateClassCode;
+          this.getRateType(this.searchClass);
+          this.searchType = this.rateMaintainance.rateTypeCode;
+          this.getRateDetails(this.searchType);
         });
+      }
+      document.getElementById('closeModal').click();
+    });
   }
-  /**
-  * LA Rate maintainance service call
-  */
   addLARateMaintainance() {
     this._rateService.saveLARates(this.rateMaintainance, this.campusFlag)
-      .subscribe(
-        (data: any) => {
-          if (data) {
-            this.laRateMaintainanceData().then(data => {
-              this.searchClass = this.rateMaintainance.rateClassCode;
-              this.getRateType(this.searchClass);
-              this.searchType = this.rateMaintainance.rateTypeCode;
-              this.getRateDetails(this.searchType);
-            });
-          }
-          document.getElementById('closeModal').click();
-        });
+      .subscribe((data: any) => {
+        if (data) {
+          this.laRateMaintainanceData().then(data => {
+            this.searchClass = this.rateMaintainance.rateClassCode;
+            this.getRateType(this.searchClass);
+            this.searchType = this.rateMaintainance.rateTypeCode;
+            this.getRateDetails(this.searchType);
+          });
+        }
+        document.getElementById('closeModal').click();
+      });
   }
 }

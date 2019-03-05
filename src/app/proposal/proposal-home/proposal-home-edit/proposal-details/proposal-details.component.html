@@ -7,7 +7,7 @@
       </div>
       <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3 text-right colorBlack">
         <span style="margin-right: 10px"><label style="margin-right: 10px">Last Updated By: </label><span *ngIf="result?.proposal?.proposalId != null">{{result?.proposal?.updateUser}}
-            on {{result?.proposal?.updateTimeStamp | date: 'MM/dd/yyyy'}}</span></span>
+            on {{result?.proposal?.updateTimeStamp | date: 'dd/MM/yyyy'}}</span></span>
       </div>
       <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 colorBlack">
         <span><label style="margin-right: 10px">Status: </label>{{result?.proposal?.proposalStatus?.description}}</span>
@@ -72,7 +72,7 @@
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
           <label><span class="mandatory">*</span>Proposed Start Date:</label><br>
-          <span class="dateField"> <input type="text" placeholder="mm/dd/yyyy" id="prop-start-date"
+          <span class="dateField"> <input type="text" placeholder="dd/mm/yyyy" id="prop-start-date"
              style="width: 100% !important" [owlDateTime]="startDate" class="dateWidth committeeBox" 
              [ngClass]="mandatoryObj.field == 'proposalStartDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.proposalStartDate"
              (keypress)="_commonService._keyPress($event, 'date');showOrHideDataFlagsObj.dataChangeFlag = true"/>
@@ -83,17 +83,18 @@
         <div [ngClass]="showOrHideDataFlagsObj.mode == 'view'?'col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2':'col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2'">
           <label><span class="mandatory">*</span>Proposed End Date:</label><br>
           <span class="dateField"> <input type="text" class="dateWidth committeeBox" id="prop-end-date"
-             placeholder="mm/dd/yyyy" [owlDateTime]="endDate"
-             [ngClass]="mandatoryObj.field == 'proposalEndDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.proposalEndDate" (keypress)="_commonService._keyPress($event, 'date');showOrHideDataFlagsObj.dataChangeFlag = true">
+            placeholder="dd/mm/yyyy" [owlDateTime]="endDate"
+             [ngClass]="mandatoryObj.field == 'proposalEndDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.proposalEndDate"
+             (keypress)="_commonService._keyPress($event, 'date');showOrHideDataFlagsObj.dataChangeFlag = true">
             <i id="prop-end-date-icon" class="fa fa-calendar fa-large hand-cursor insidePicker" [owlDateTimeTrigger]="endDate"></i>
             <owl-date-time #endDate [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();showOrHideDataFlagsObj.dataChangeFlag = true"></owl-date-time>
           </span>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2">
             <label><span class="mandatory">*</span>Sponsor Deadline Date:</label><br> <span class="dateField"> <input type="text"
-              placeholder="mm/dd/yyyy" id="prop-sub-date" style="width: 100% !important" [owlDateTime]="subDt" class="committeeBox dateWidth"
+              placeholder="dd/mm/yyyy" id="prop-sub-date" style="width: 100% !important" [owlDateTime]="subDt" class="committeeBox dateWidth"
               [ngClass]="mandatoryObj.field == 'sponsorDeadlineDate' ? 'lineItem-mandatory' : ''" [(ngModel)]="proposalDataBindObj.sponsorDeadlineDate"
-              (keypress)="_commonService._keyPress($event, 'date');showOrHideDataFlagsObj.dataChangeFlag = true" (ngModelChange)="getInternalDeadlineDate(proposalDataBindObj?.sponsorDeadlineDate)" />
+              (keypress)="_commonService._keyPress($event, 'date');showOrHideDataFlagsObj.dataChangeFlag = true" (ngModelChange)="getInternalDeadlineDate(proposalDataBindObj?.sponsorDeadlineDate);" />
              <i id="prop-sub-date-icon" class="fa fa-calendar fa-large insidePicker hand-cursor" [owlDateTimeTrigger]="subDt"></i>
              <owl-date-time #subDt [pickerType]="'calendar'" (afterPickerClosed)="dateValidation();showOrHideDataFlagsObj.dataChangeFlag = true"></owl-date-time>
            </span>
@@ -107,7 +108,7 @@
       <div class="row">
         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-2 subcontract-pr">
           <label>Internal Deadline Date:</label><br>
-          <span>{{proposalDataBindObj?.internalDeadlineDate | date: 'MM/dd/yyyy'}}</span>
+          <span>{{proposalDataBindObj?.internalDeadlineDate | date: 'dd/MM/yyyy'}}</span>
         </div>
         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-1">
             <label>Subcontract:</label><br>

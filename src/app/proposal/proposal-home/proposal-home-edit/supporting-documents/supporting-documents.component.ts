@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ProposalHomeService } from '../../proposal-home.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 declare var $: any;
 @Component({
@@ -19,6 +20,9 @@ export class SupportingDocumentsComponent implements OnInit {
 
   removeObjIndex: number;
   removeObjId: number;
+  documentId: number;
+  removeObjDocId: number;
+  attachmentVersions = [];
 
   replaceAttachmentObj: any = {};
   uploadedFile = [];
@@ -26,9 +30,11 @@ export class SupportingDocumentsComponent implements OnInit {
   selectedAttachmentDescription = [];
   selectedAttachmentType: any[] = [];
 
-  constructor( private _proposalHomeService: ProposalHomeService) { }
+  constructor( private _proposalHomeService: ProposalHomeService, private _spinner: NgxSpinnerService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
+  }
 
   showAddAttachmentPopUp(event, attachment) {
     event.preventDefault();
@@ -75,8 +81,8 @@ export class SupportingDocumentsComponent implements OnInit {
 
   checkAttachmentSize() {
     for ( let sizeIndex = 0; sizeIndex < this.uploadedFile.length; sizeIndex++ ) {
-        if (this.uploadedFile[sizeIndex].size > 19591292) {
-          this.warningMsgObj.attachmentWarningMsg = '* Document size must be  below 20MB';
+        if (this.uploadedFile[sizeIndex].size > 19591292 || !(this.uploadedFile[sizeIndex].size > 0)) {
+          this.warningMsgObj.attachmentWarningMsg = '* Document size must be greater than 0KB and less than 20MB';
         }
     }
   }
@@ -128,20 +134,19 @@ export class SupportingDocumentsComponent implements OnInit {
         tempObjectForAdd.description = this.selectedAttachmentDescription[uploadIndex];
         tempObjectForAdd.fileName = this.uploadedFile[uploadIndex].name;
         tempObjectForAdd.updateTimeStamp = new Date().getTime();
-        tempObjectForAdd.updateUser = localStorage.getItem('currentUser');
+        tempObjectForAdd.updateUser = localStorage.getItem('userFullname');
         tempArrayForAdd[uploadIndex] = tempObjectForAdd;
     }
     this.result.newAttachments = tempArrayForAdd;
     this.result.proposal.updateUser = localStorage.getItem('currentUser');
 
+    this._spinner.show();
     const formData = new FormData();
-    formData.delete( 'files' );
-    formData.delete( 'formDataJson' );
     for (const file of this.uploadedFile) {
       formData.append( 'files', file );
     }
     formData.append( 'formDataJson', JSON.stringify( {'proposal': this.result.proposal,
-      'newAttachments': this.result.newAttachments} ) );
+      'newAttachments': this.result.newAttachments, 'userFullName': localStorage.getItem('userFullname')} ) );
     this._proposalHomeService.addProposalAttachment( formData).subscribe( success => {
     let temporaryObject: any = {};
     temporaryObject = success;
@@ -149,8 +154,18 @@ export class SupportingDocumentsComponent implements OnInit {
     },
     error => {
       console.log( error );
-            },
+      this._spinner.hide();
+      this.clearAttachmentDetails();
+      $('#addAttachment').modal('hide');
+      const toastId = document.getElementById('attach-toast-fail');
+       toastId.className = 'show';
+       setTimeout(function () {
+       toastId.className = toastId.className.replace('show', '');
+      }, 2000);
+    },
     () => {
+      this._spinner.hide();
+      this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
       this.clearAttachmentDetails();
       $('#addAttachment').modal('hide');
       this.showOrHideDataFlagsObj.dataChangeFlag = true;
@@ -158,19 +173,35 @@ export class SupportingDocumentsComponent implements OnInit {
     }
   }
 
-  temprySaveAttachments(removeId, removeIndex) {
+  getVersion(index, documentId, isOpen) {
+    this.attachmentVersions = [];
+    this.documentId = documentId;
+    this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
+    if (!isOpen || isOpen == null) {
+      this.showOrHideDataFlagsObj.isAttachmentVersionOpen[index] = true;
+    }
+    this.attachmentVersions = this.result.proposal.proposalAttachments.filter(attachObj =>
+                                    attachObj.documentStatusCode === 2 && attachObj.documentId === documentId );
+  }
+
+  temprySaveAttachments(removeId, removeIndex, removeDocumentId) {
     this.removeObjId = removeId;
     this.removeObjIndex = removeIndex;
     this.isShowDeleteAttachment = true;
+    this.removeObjDocId = removeDocumentId;
   }
 
   deleteAttachments() {
     if (this.removeObjId == null) {
       this.result.proposal.proposalAttachments.splice(this.removeObjIndex, 1);
+      this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
     } else {
       this._proposalHomeService.deleteProposalAttachment({'proposalId': this.result.proposal.proposalId,
-        'attachmentId': this.removeObjId}).subscribe(data => {
-        this.result.proposal.proposalAttachments.splice(this.removeObjIndex, 1);
+        'attachmentId': this.removeObjId , 'userFullName': localStorage.getItem('userFullname'), 'documentId': this.removeObjDocId})
+        .subscribe(data => {
+          this.result.proposal.proposalAttachments = this.result.proposal.proposalAttachments.filter(attachmentObject =>
+             attachmentObject.documentId !== this.removeObjDocId );
+          this.showOrHideDataFlagsObj.isAttachmentVersionOpen = [];
       });
     }
   }
@@ -179,11 +210,15 @@ export class SupportingDocumentsComponent implements OnInit {
     if (attachment.attachmentId != null) {
       this._proposalHomeService.downloadProposalAttachment( attachment.attachmentId )
       .subscribe( data => {
-        const a = document.createElement( 'a' );
-        a.href = URL.createObjectURL( data );
-        a.download = attachment.fileName;
-        document.body.appendChild(a);
-        a.click();
+        if (window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveBlob( new Blob([data], { type: attachment.mimeType }), attachment.fileName );
+        } else {
+          const a = document.createElement( 'a' );
+          a.href = URL.createObjectURL( data );
+          a.download = attachment.fileName;
+          document.body.appendChild(a);
+          a.click();
+        }
       } );
     } else {
       const URL = 'data:' + attachment.mimeType + ';base64,' + attachment.attachment;
