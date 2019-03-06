@@ -1,7 +1,7 @@
 <div class="borderBox col-12">
   <h4 class="borderBoxHeading">Supporting Documents</h4>
   <button title="add new attachment" id="prop-add-doc-btn" class="addBtn font attachBtn"
-    style="right: 55px" (click)="clearAttachmentDetails();showAddAttachmentPopUp($event); isReplaceAttachment = false;"
+    style="right: 55px" (click)="clearAttachmentDetails();showAddAttachmentPopUp($event, null); isReplaceAttachment = false;"
     *ngIf="showOrHideDataFlagsObj.mode != 'view'" data-toggle="modal"
     data-target="#addAttachment">
     <i class="fa fa-plus"></i>&nbsp;<span>Add Document</span>
@@ -45,7 +45,7 @@
             </span>
             <select *ngIf="showOrHideDataFlagsObj.isAttachmentEditable" id="prop-doc-status" class="committeeBox dateBox"
               [(ngModel)]="attachment.narrativeStatus.description" (ngModelChange)="showOrHideDataFlagsObj.dataChangeFlag = true">
-              <option *ngFor="let attachStatus of this.result.narrativeStatus" (value)="attachStatus.description">{{attachStatus?.description}}</option>
+              <option *ngFor="let attachStatus of this.result.narrativeStatus" [value]="attachStatus.description">{{attachStatus?.description}}</option>
             </select>
           </td>
           <td>

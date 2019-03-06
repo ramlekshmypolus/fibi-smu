@@ -11,7 +11,7 @@
       <td class="text-right"><label>Type:</label></td>
       <td style="width: 15%"> <select class="committeeBox" id="prop-area-of-research-type" [(ngModel)]="proposalDataBindObj.selectedResearchType"
           (change)="researchTypeChange($event.target.value)">
-          <option *ngFor="let type of result?.proposalResearchTypes" (value)="type">{{type.description}}</option>
+          <option *ngFor="let type of result?.proposalResearchTypes" [value]="type.description">{{type.description}}</option>
         </select>
       </td>
       <td class="text-right"><label>{{proposalDataBindObj.selectedAreaType}}:</label></td>

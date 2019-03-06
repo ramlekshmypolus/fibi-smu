@@ -181,7 +181,7 @@
                 <input class="text-center" #isSMUPersonCheck class="checkClass" type="checkbox"
                     checked (change)="personTypeChanged(isSMUPersonCheck.checked)">
             </td>
-            <td>
+            <td id="POC-employee-name">
                 <label class="block-display">Name:</label>
                 <input type="text" id="POC-non-employee" *ngIf="!isPOC_EmployeeChecked" class="committeeBox"
                     placeholder="" [(ngModel)]="pointOfContactObject.fullName">
@@ -190,7 +190,7 @@
                         (selectedResult)="selectedPOC($event)"></app-elastic>
                 </div>
             </td>
-            <td>
+            <td id="POC-employee-designation">
                 <label class="block-display">Designation:</label>
                 <input type="text" id="POC-designation" class="dateBox committeeBox" placeholder=""
                     [(ngModel)]="pointOfContactObject.designation">
@@ -200,7 +200,7 @@
                 <input type="text" id="POC-email" class="dateBox" [ngClass]="{'committeeBoxNotEditable':isSMUPersonCheck.checked , 'committeeBox': !isSMUPersonCheck.checked}" [(ngModel)]="pointOfContactObject.email"
                     [disabled]="isSMUPersonCheck.checked">
             </td>
-            <td>
+            <td id="POC-employee-phone">
                 <label class="block-display">Phone:</label>
                 <div class="row">
                     <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
@@ -350,7 +350,7 @@
 </div>
 <div class="borderBox col-12">
     <h4 class="borderBoxHeading">Supporting Documents</h4>
-    <button title="add new attachment" class="addBtn font attachBtn" style="right:55px" id="add-attachment-btn" (click)="clearAttachmentDetails();showAddAttachmentPopUp($event);isReplaceAttachment = false;
+    <button title="add new attachment" class="addBtn font attachBtn" style="right:55px" id="add-attachment-btn" (click)="clearAttachmentDetails();showAddAttachmentPopUp($event, null);isReplaceAttachment = false;
     modalHideAndShowObj.isShowAddAttachment = true;" data-toggle="modal" data-target="#addGrantAttachment">
         <i class="fa fa-plus"></i>&nbsp;<span>Add Attachment</span>
     </button>

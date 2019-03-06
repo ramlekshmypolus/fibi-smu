@@ -35,6 +35,10 @@ export class ProposalService {
       } );
   }
 
+  withdrawProposal(params) {
+    return this._http.post( this._commonService.baseUrl + '/withdrawProposal', params );
+  }
+
   createProposalPreReview( params ) {
     return this._http.post( this._commonService.baseUrl + '/createProposalPreReview', params );
   }
