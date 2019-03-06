@@ -1783,5 +1783,12 @@ select::-ms-expand {
   /* end of toast-styles */  
   svg > g > g:last-child {
 	pointer-events: none !important;
-	}
- 
+  }
+
+  /* for IE specific styles*/
+  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	#login_username, #login_password {height: 30px !important;}
+	#POC-employee-name, #POC-employee-phone {width: 24% !important;}
+	#POC-employee-designation {width: 20% !important;}
+	#addEligibilityRow > td {width: 35% !important;}
+  }

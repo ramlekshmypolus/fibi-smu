@@ -29,13 +29,13 @@
             </div>
             <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7 btn-margin">
               <div class="text-right">
-                <button title="Save Proposal" type="button" id="prop-save-btn" class="btnSkin btnPublish" *ngIf="result?.proposal?.statusCode!= 11" (click)="saveProposal('fullSave')">Save</button>
+                <button title="Save Proposal" type="button" id="prop-save-btn" class="btnSkin btnPublish" *ngIf="result?.proposal?.statusCode!= 11 && result?.proposal?.statusCode!= 12" (click)="saveProposal('fullSave')">Save</button>
                 <button title="Submit Proposal" type="button" class="btnSkin btnSkinPrimary" id="prop-submit-btn" *ngIf="(result.proposal.statusCode == 1 || result.proposal.statusCode == 3) && result?.proposal?.proposalId" (click)="checkSubmitProposalValidation()">Submit</button>
                 <button title="Disapprove Proposal" type="button" id="prop-disapprove-btn" class="btnSkin btn-secondary" data-toggle="modal" data-target="#approveDisapproveModal"
-                  *ngIf="( showOrHideDataFlagsObj.mode =='view' && (result?.isApprover === true && result?.isApproved == false) ) || (showOrHideDataFlagsObj.mode =='view' && superUser == 'true' && result?.proposal?.statusCode !== 11 ) "
+                  *ngIf="( showOrHideDataFlagsObj.mode =='view' && (result?.isApprover === true && result?.isApproved == false) ) || (showOrHideDataFlagsObj.mode =='view' && superUser == 'true' && result?.proposal?.statusCode !== 11  && result?.proposal?.statusCode!= 12) "
                   (click)="disapproveProposal()">Disapprove</button>
                 <button title="Approve Proposal" type="button" id="prop-approve-btn" class="btnSkin btnPublish" data-toggle="modal" data-target="#approveDisapproveModal"
-                  *ngIf="( showOrHideDataFlagsObj.mode =='view' && (result?.isApprover === true && result?.isApproved == false) ) ||  (showOrHideDataFlagsObj.mode =='view' && superUser == 'true' && result?.proposal?.statusCode !== 11 ) "
+                  *ngIf="( showOrHideDataFlagsObj.mode =='view' && (result?.isApprover === true && result?.isApproved == false) ) ||  (showOrHideDataFlagsObj.mode =='view' && superUser == 'true' && result?.proposal?.statusCode !== 11  && result?.proposal?.statusCode!= 12) "
                   (click)="approveProposal()">Approve</button>
 
                 <span #moreOptionsBtn>
@@ -43,9 +43,11 @@
                   <ul class="more-options-box" *ngIf="isShowMoreOptions">
                     <li title="View routelog"><a class="dropdown-item" href="" id="prop-routelog-btn" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11 || result?.proposal?.proposalStatus?.statusCode == 3" data-toggle="modal" data-target="#routeLogModal"
                         (click)="isShowMoreOptions = !isShowMoreOptions;openRouteLog();"><i class="fa fa-history" aria-hidden="true" ></i>Route Log</a></li>
-                    <li title="Pre-review"><a class="dropdown-item" href="" id="prop-prereview-btn" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
+                    <li title="Pre-review"><a class="dropdown-item" href="" id="prop-prereview-btn" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11 && result?.proposal?.statusCode!= 12" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
                     <li title="Complete Pre-review"><a class="dropdown-item" href="" id="prop-complete-prereview-btn" (click)="isShowMoreOptions = !isShowMoreOptions;updatePreReviewAttachmentSelectbox();" data-target="#completePreReviewModal" data-toggle="modal" *ngIf="result.proposal?.isPreReviewer == true"><i class="fa fa-check" aria-hidden="true"></i>Complete Pre-review</a></li>
                     <li title="Copy Proposal"><a class="dropdown-item" href="" id="prop-copy-proposal-btn" (click)="copyProposal($event);isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId"><i class="fa fa-copy" aria-hidden="true"></i>Copy Proposal</a></li>
+                    <li title="Withdraw Proposal"><a class="dropdown-item" href="" id="prop-withdraw-proposal-btn" data-toggle="modal" data-target="#warning-modal"
+                      (click)="showOrHideDataFlagsObj.isShowWithdrawConfirmation = true;isShowMoreOptions = !isShowMoreOptions" *ngIf="result?.proposal?.proposalId && (result?.proposal?.statusCode === 2 || result?.proposal?.statusCode === 3)"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i>Withdraw Proposal</a></li>
 					          <li title="Print Proposal"><a class="dropdown-item" href="" *ngIf="result?.proposal?.proposalId" (click)="printPage($event, 'PROPOSAL');isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-print" aria-hidden="true"></i>Print Proposal</a></li>
                     <li title="View Rates"><a class="dropdown-item" href="" (click)="showOrHideDataFlagsObj.isShowRatesModal = true; selectedRateClassType = result?.rateClassTypes[0];isShowMoreOptions = !isShowMoreOptions" *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET'" data-toggle="modal" data-target="#showRatesModal"><i class="fa fa-percent" aria-hidden="true"></i>Rates</a></li>
                     <li title="Calculate Budget"><a class="dropdown-item" href="" *ngIf="showOrHideDataFlagsObj.currentTab == 'BUDGET' && result?.proposal?.budgetHeader?.isAutoCalc" (click)="isShowMoreOptions = !isShowMoreOptions; applyRates($event, false)"><i class="fa fa-calculator" aria-hidden="true"></i>Calculate</a></li>
@@ -77,6 +79,7 @@ aria-hidden="true">
        <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal">Warning</h5>
        <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowSubmitWarningModal">Submit Proposal</h5>
        <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowNotifyApprover">Notify Approver</h5>
+       <h5 class="modal-title" *ngIf="showOrHideDataFlagsObj.isShowWithdrawConfirmation">Withdraw Proposal</h5>
        <h5 class="modal-title" *ngIf="warningMsgObj.errorMsg != null">Error</h5>
        <button type="button" class="close" data-dismiss="modal"
            aria-label="Close" id="prop-warning-dismiss-btn" (click)="closeWarningModal()">
@@ -94,6 +97,9 @@ aria-hidden="true">
       <div class="modal-body" *ngIf="showOrHideDataFlagsObj.isShowNotifyApprover">
         <p>All attached documents are completed. Do you want to notify approver?</p>
       </div>
+      <div class="modal-body" *ngIf="showOrHideDataFlagsObj.isShowWithdrawConfirmation">
+        <p>Are you sure you want to withdraw this proposal?</p>
+      </div>
       <div class="modal-footer" *ngIf="showOrHideDataFlagsObj.isShowSaveWarningModal">
         <button type="button" id="prop-warning-close-btn" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="closeWarningModal()">Close</button>
       </div>
@@ -105,6 +111,10 @@ aria-hidden="true">
     <div class="modal-footer" *ngIf="showOrHideDataFlagsObj.isShowNotifyApprover">
       <button type="button" id="prop-notifyApprover-cancel-btn" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeWarningModal()">Cancel</button>
       <button type="button" id="prop-notifyApprover-notify-btn" class="btnSkin btnSkinPrimary" (click)="notifyApprover()">Notify</button>
+    </div>
+    <div class="modal-footer" *ngIf="showOrHideDataFlagsObj.isShowWithdrawConfirmation">
+      <button type="button" id="prop-withdraw-cancel-btn" class="btnSkin btn-secondary" data-dismiss="modal" (click)="closeWarningModal()">Cancel</button>
+      <button type="button" id="prop-withdraw-notify-btn" class="btnSkin btnSkinPrimary" data-dismiss="modal" (click)="withdrawProposal($event)">Yes</button>
     </div>
    </div>
  </div>
@@ -570,7 +580,7 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6">
               <label>Version</label>
               <select id="prop-routelog-version-btn"  class="committeeBox font" id="searchField" [(ngModel)]="versionHistorySelected" (change)="routeLogVersionChange()">
-                <option *ngFor="let version of result.workflowList" (value)="version.workflowSequence">{{version.workflowSequence}}</option>
+                <option *ngFor="let version of result.workflowList" [value]="version.workflowSequence">{{version.workflowSequence}}</option>
               </select>
             </div>
           </div>

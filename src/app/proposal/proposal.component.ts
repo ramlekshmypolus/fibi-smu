@@ -108,7 +108,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     if (this._route.snapshot.queryParamMap.get('proposalId') == null) {
       this.showOrHideDataFlagsObj.mode = 'create';
     } else {
-        if (this.result.proposal.statusCode === 2 || this.result.proposal.statusCode === 11) {
+        if (this.result.proposal.statusCode === 2 || this.result.proposal.statusCode === 11 || this.result.proposal.statusCode === 12) {
             this.showOrHideDataFlagsObj.mode = 'view';
         } else {
             this.showOrHideDataFlagsObj.mode = 'edit';
@@ -183,7 +183,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this.result.proposal.grantCallType = this.result.proposal.grantCall.grantCallType;
       this.result.proposal.grantTypeCode = this.result.proposal.grantCall.grantCallType.grantTypeCode;
     } else if (this.result.proposal.grantCall == null) { }
-    if (this.result.proposal.proposalStatus.statusCode !== 11) {
+    if (this.result.proposal.proposalStatus.statusCode !== 11 && this.result.proposal.proposalStatus.statusCode !== 12) {
         this.showOrHideDataFlagsObj.isAttachmentEditable = (this.result.isProposalPerson === true ||
           localStorage.getItem('currentUser') === this.result.proposal.createUser ||
           localStorage.getItem('isAdmin') === 'true' ) ? true : false;
@@ -347,6 +347,7 @@ export class ProposalComponent implements OnInit, OnDestroy {
     this.showOrHideDataFlagsObj.isShowSaveBeforeExitWarning = false;
     this.showOrHideDataFlagsObj.isShowNotifyApprover = false;
     this.showOrHideDataFlagsObj.isSaveOnTabSwitch = false;
+    this.showOrHideDataFlagsObj.isShowWithdrawConfirmation = false;
     this.warningMsgObj.submitConfirmation = null;
     this.warningMsgObj.submitWarningMsg = null;
     this.warningMsgObj.errorMsg = null;
@@ -372,6 +373,28 @@ export class ProposalComponent implements OnInit, OnDestroy {
       this._router.navigate(['/fibi/proposal'], { queryParams: { 'proposalId': temryProposalObj.proposal.proposalId }});
       window.location.reload();
     });
+  }
+
+  withdrawProposal(event) {
+    event.preventDefault();
+    this._proposalService.withdrawProposal(this.result).subscribe((data: any) => {
+      this.result.proposal = data.proposal;
+    },
+    err => {
+      $('#warning-modal').modal('hide');
+      this.warningMsgObj.errorMsg = 'Error in proposal withdrawal';
+      document.getElementById('openSucessModal').click();
+    },
+    () => {
+      $('#warning-modal').modal('hide');
+      this.showOrHideDataFlagsObj.isShowSuccessModal = true;
+      this.proposalDataBindObj.successModalHeader = 'Withdraw Proposal';
+      this.proposalDataBindObj.successMessage = 'Proposal has been withdrawn successfully';
+      document.getElementById('openSucessModal').click();
+      this.showOrHideDataFlagsObj.mode = 'view';
+      this.showOrHideDataFlagsObj.isAttachmentEditable = false;
+    });
+
   }
 
   checkMandatoryFilled() {

@@ -10,7 +10,7 @@
         <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
           <label class="col-xl-5 col-lg-2 col-md-12 col-sm-12 col-2">Member Type:</label>
           <select id="prop-project-member-type" class="col-xl-6 col-lg-2 col-md-12 col-sm-12 col-2 committeeBox" [(ngModel)]="memberTypeSelected" (change)="memberTypeChanged()">
-            <option *ngFor="let type of memberTypes" (value)="type">{{type.value}}</option>
+            <option *ngFor="let type of memberTypes" [value]="type.value">{{type.value}}</option>
           </select>
         </div>
         <div class="col-xl-3 col-lg-2 col-md-12 col-sm-12 col-2">
