@@ -23,7 +23,6 @@ export class ViewQuestionnaireComponent implements OnInit {
   result: any = {};
   showHelpMsg = [];
   helpMsg     = [];
-  QuestionnaireCompletionFlag = 'N';
 
   constructor(private _questionnaireService: QuestionnaireService) { }
 
@@ -64,7 +63,8 @@ export class ViewQuestionnaireComponent implements OnInit {
       this.conditions.forEach(condition => {
          this.findChildQuestion(currentQuestion, condition);
       });
-    }
+    }/** added to display Complete/Incomplete in header */
+    this.checkQuestionaireCompletion();
   }
   /**
    * @param  {} currentQuestion
@@ -172,7 +172,7 @@ export class ViewQuestionnaireComponent implements OnInit {
     let result = false;
     _.forEach(question.ANSWERS, function(answer, key) {
       if (question.ANSWER_TYPE === 'Checkbox' ) {
-        if (answer === true && condition.CONDITION_VALUE === key ) {
+        if ((answer === true || answer === 'true' ) && condition.CONDITION_VALUE === key ) {
           result = true;
           return false;
         }
@@ -274,16 +274,15 @@ export class ViewQuestionnaireComponent implements OnInit {
     if (file) {
       this.tempFiles = [];
       this.tempFiles.push({ attachment : file[0],
-                            questionId : this.questionnaire.questions[6].QUESTION_ID,
+                            questionId : this.questionnaire.questions[this.attachmentIndex].QUESTION_ID,
                             fileName   : file[0].name,
                             type       : file[0].type});
     }
   }
 
   saveQuestionnaire() {
-    this.QuestionnaireCompletionFlag = 'Y';
     this.checkQuestionaireCompletion();
-    this.result.questionnaire_complete_flag = this.QuestionnaireCompletionFlag;
+    this.result.questionnaire_complete_flag = this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG;
     const toastId = document.getElementById('prop-save-questionnaire-success');
     this._questionnaireService.saveQuestionnaire(this.result, this.filesArray).subscribe(
       data => {
@@ -292,7 +291,6 @@ export class ViewQuestionnaireComponent implements OnInit {
         if (this.result.hasOwnProperty('questionnaire_answer_header_id') && this.result.questionnaire_answer_header_id != null) {
           this.requestObject.questionnaire_answer_header_id = this.result.questionnaire_answer_header_id;
           this.questionnaireData.QUESTIONNAIRE_ANS_HEADER_ID = this.result.questionnaire_answer_header_id;
-          this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG = this.QuestionnaireCompletionFlag;
         }
         this.showToast(toastId);
     });
@@ -339,28 +337,40 @@ export class ViewQuestionnaireComponent implements OnInit {
       });
   }
 
-  saveOnComplete() {
-    let timeOut = 0;
-    this.QuestionnaireCompletionFlag = 'Y';
-    this.checkQuestionaireCompletion();
-    if (this.QuestionnaireCompletionFlag === 'Y') {
-      timeOut = 5000;
-      setTimeout(() => {
-        this.saveQuestionnaire();
-      }, timeOut);
-     }
-  }
+  // saveOnComplete() {
+  //   this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG = 'Y';
+  //   this.checkQuestionaireCompletion();
+  //   if (this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG === 'Y') {
+  //       this.saveQuestionnaire();
+  //    }
+  // }
 
   /**checks whether the questionnaire is complete and sets the flag */
   checkQuestionaireCompletion() {
-    this.questionnaire.questions.forEach(question => {
-      // '' and null checked bcz new questionnaire returns ''
-      if ((question.ANSWERS[1] === '' || question.ANSWERS[1] == null) && question.SHOW_QUESTION === true) {
-        this.QuestionnaireCompletionFlag = 'N';
-        this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG = this.QuestionnaireCompletionFlag;
-        this.result.questionnaire_complete_flag = 'N';
-      }
-    });
-  }
+    this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG  = 'Y';
+    _.forEach(this.questionnaire.questions, (question) => {
+     if (this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG  === 'N') {
+      return false;
+     }
+      if (question.SHOW_QUESTION === true) {
+        if (question.ANSWER_TYPE === 'Checkbox') {
+          let flag = 'N';
+          _.forEach(question.ANSWERS, (answer, key) => {
+            if (question.ANSWERS[key] !== '' || question.ANSWERS[key] !== null && key !== '1')  {
+              flag = 'Y';
+            }
+          });
+          this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG = flag;
+        } else {
+          _.forEach(question.ANSWERS, (answer, key) => {
+            if (question.ANSWERS[key] === '' || question.ANSWERS[key] == null)  {
+              this.questionnaireData.QUESTIONNAIRE_COMPLETED_FLAG  = 'N';
+              return false;
+            }
+          });
+        }
+    }
+  });
+}
 
 }

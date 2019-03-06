@@ -40,7 +40,7 @@
 
                 <span #moreOptionsBtn>
                   <button *ngIf="result?.proposal?.proposalId" title="More Actions" class="btn more-btn" (click)="isShowMoreOptions = !isShowMoreOptions"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
-                  <ul class="more-options-box" *ngIf="isShowMoreOptions">
+                  <ul id="moreOptions-list" id="moreOptions-list" class="more-options-box" *ngIf="isShowMoreOptions">
                     <li title="View routelog"><a class="dropdown-item" href="" id="prop-routelog-btn" *ngIf="result?.proposal?.proposalStatus?.statusCode == 2 || result?.proposal?.proposalStatus?.statusCode == 11 || result?.proposal?.proposalStatus?.statusCode == 3" data-toggle="modal" data-target="#routeLogModal"
                         (click)="isShowMoreOptions = !isShowMoreOptions;openRouteLog();"><i class="fa fa-history" aria-hidden="true" ></i>Route Log</a></li>
                     <li title="Pre-review"><a class="dropdown-item" href="" id="prop-prereview-btn" *ngIf="result?.proposal?.proposalId && result.proposal?.statusCode !== 11 && result?.proposal?.statusCode!= 12" (click)="getPreReview();isShowMoreOptions = !isShowMoreOptions" data-toggle="modal" data-target="#preReviewModal"><i class="fa fa-file-text" aria-hidden="true"></i>Pre-review</a></li>
@@ -320,7 +320,7 @@ tabindex="-1" role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden=
                            </div>
                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
                              <ul class="actionButtonGroup" *ngIf="comments?.proposalPreReviewAttachments?.length > 0">
-                               <li><a (click)="downloadReviewAttachment($event, selectedReviewAttachment[reviewIndex][i], comments?.proposalPreReviewAttachments)"><i
+                               <li><a (click)="downloadAttachments($event, selectedReviewAttachment[reviewIndex][i], comments?.proposalPreReviewAttachments, 'PRE-REVIEW')"><i
                                      title="download this document" class="fa fa-download" aria-hidden="true"></i></a></li>
                              </ul>
                            </div>
@@ -393,8 +393,8 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
        </table>
        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="add-review">
          <div class="row">
-           <button title="Add Documents" class="addBtn font attachBtn" id="prop-completeReview-dosuments-btn"
-           style="top:0; left:0px" (click)="uploadedFile = [];isShowPreReviewModalOptions = !isShowPreReviewModalOptions;">
+           <button title="Add Documents" class="addBtn font attachBtn" id="prop-completeReview-documents-bt"
+           style="top:0; left:0px;text-align:left" (click)="uploadedFile = [];isShowPreReviewModalOptions = !isShowPreReviewModalOptions;">
              <i [ngClass]="isShowPreReviewModalOptions?'fa fa-minus':'fa fa-plus'"></i>&nbsp;<span>Add Documents</span>
            </button>
          </div>
@@ -442,7 +442,7 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
              </div>
              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
                <ul class="actionButtonGroup" *ngIf="comments?.proposalPreReviewAttachments?.length > 0">
-                 <li><a (click)="downloadReviewAttachment($event, selectedReviewAttachment[i], comments.proposalPreReviewAttachments)"><i
+                 <li><a (click)="downloadAttachments($event, selectedReviewAttachment[i], comments.proposalPreReviewAttachments, 'PRE-REVIEW')"><i
                        title="download this document" class="fa fa-download" aria-hidden="true"></i></a></li>
                </ul>
              </div>
@@ -624,7 +624,7 @@ role="dialog" aria-labelledby="skippedSchedulesTitle" aria-hidden="true">
                       </select></td>
                     <td *ngIf="workflow.approvalStopNumber">
                       <ul class="actionButtonGroup" *ngIf="workflow?.workflowAttachments?.length > 0">
-                        <li><a href="#" (click)="downloadRouteAttachment($event, selectedAttachmentStop[index][i], workflow.workflowAttachments)"><i
+                        <li><a href="#" (click)="downloadAttachments($event, selectedAttachmentStop[index][i], workflow.workflowAttachments, 'ROUTE-LOG')"><i
                               title="download this document" class="fa fa-download" aria-hidden="true"></i></a></li>
                       </ul>
                     </td>

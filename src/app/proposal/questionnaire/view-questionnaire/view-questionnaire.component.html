@@ -15,7 +15,7 @@
             </span>
           </p>
           <div *ngFor="let number of getArray(question.NO_OF_ANSWERS); let i = index">
-            <input type="text" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[i+1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();" name="name" />
+            <input type="text" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[i+1]" (ngModelChange)="showChildQuestions(question);" name="name" />
           </div>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
               <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
@@ -42,7 +42,7 @@
           </p>
           <div *ngFor=" let option of questionnaire.options" class="answer-options">
             <span *ngIf="question.QUESTION_ID == option.QUESTION_ID">
-              <input type="radio" [disabled]="showOrHideDataFlagsObj.mode=='view'" name="{{option.QUESTION_ID}}" [value]="option.OPTION_LABEL" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();"
+              <input type="radio" [disabled]="showOrHideDataFlagsObj.mode=='view'" name="{{option.QUESTION_ID}}" [value]="option.OPTION_LABEL" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question)"
                 required/> {{option.OPTION_LABEL}}
             </span>
           </div>
@@ -73,7 +73,7 @@
           </p>
           <div class="answer-options" *ngFor=" let option of questionnaire.options">
             <span *ngIf="question.QUESTION_ID == option.QUESTION_ID">
-              <input type="checkbox" [disabled]="showOrHideDataFlagsObj.mode=='view'" required [(ngModel)]="question.ANSWERS[option.OPTION_LABEL]" (change)="showChildQuestions(question);saveOnComplete();"
+              <input type="checkbox" [disabled]="showOrHideDataFlagsObj.mode=='view'" required [(ngModel)]="question.ANSWERS[option.OPTION_LABEL]" (change)="showChildQuestions(question)"
               /> {{option.OPTION_LABEL}}
             </span>
           </div>
@@ -137,7 +137,7 @@
               <i (click)="getHelpLink(question.DESCRIPTION, indexQuestion)" class="fa fa-info-circle" aria-hidden="true"></i>
             </span>
           </p>
-          <textarea name="name" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question);saveOnComplete();"> </textarea>
+          <textarea name="name" [disabled]="showOrHideDataFlagsObj.mode=='view'" class="qst-input-width" [(ngModel)]="question.ANSWERS[1]" (ngModelChange)="showChildQuestions(question)"> </textarea>
           <div class="row qst-category-margin" *ngIf="showHelpMsg[indexQuestion] == true">
               <div class="col-12 col-sm-12 col-md-12 qst-helpCard">
                 <button class="qst-closeResultCard qst-help-close-btn" (click)="getHelpLink(question.DESCRIPTION, indexQuestion)">
@@ -166,7 +166,7 @@
           <div>
             <div class="qst-date-dv">
               <input [owlDateTimeTrigger]="dt3" [(ngModel)]="question.ANSWERS[1]" [attr.readonly]=true placeholder="{{question.ANSWERS[1]}}"
-                (ngModelChange)="showChildQuestions(question);saveOnComplete();" [owlDateTime]="dt3">
+                (ngModelChange)="showChildQuestions(question)" [owlDateTime]="dt3">
                 <span class="trigger qst-date-i" [owlDateTimeTrigger]="dt3" [disabled]="showOrHideDataFlagsObj.mode=='view'">
                     <i class="fas fa-calendar-alt"></i>
                 </span>
@@ -199,11 +199,11 @@
 </div>
 
 <!-- attachment modal -->
-<div class="modal fade" id="AttachmentModal{{questionnaireData.QUESTIONNAIRE_ID}}" tabindex="-1" role="dialog" aria-labelledby="'AttachmentModal'+ questionnaireData.QUESTIONNAIRE_ID" aria-hidden="true">
+<div class="modal fade" id="AttachmentModal{{questionnaireData.QUESTIONNAIRE_ID}}" tabindex="-1" role="dialog" aria-labelledby="AttachmentModal" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="AttachmentModal{{questionnaireData.QUESTIONNAIRE_ID}}Title">Add Attachment</h5>
+        <h5 class="modal-title" id="AttachmentModalTitle">Add Attachment</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

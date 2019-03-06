@@ -504,29 +504,13 @@ export class ProposalComponent implements OnInit, OnDestroy {
       if (window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveBlob( new Blob([data], { type: 'application/pdf' }), this.result.proposal.title + '.pdf' );
       } else {
-        const printBudgetElement = document.createElement( 'a' );
-        document.body.appendChild(printBudgetElement);
-        printBudgetElement.href = URL.createObjectURL( tempData );
-        printBudgetElement.download = this.result.proposal.title;
-        printBudgetElement.click();
+        const printElement = document.createElement( 'a' );
+        document.body.appendChild(printElement);
+        printElement.href = URL.createObjectURL( tempData );
+        printElement.download = this.result.proposal.title;
+        printElement.click();
       }
   }
-
-  printProposal(event) {
-    event.preventDefault();
-      this._proposalService.printProposal(this.result.proposal.proposalId).subscribe(
-        data => {
-          const tempData: any = data || {};
-          if (window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveBlob( new Blob([data], { type: 'application/pdf' }), this.result.proposal.title + '.pdf' );
-          } else {
-            const printProposalDataElement = document.createElement('a');
-            printProposalDataElement.href = URL.createObjectURL(tempData);
-            printProposalDataElement.download = this.result.proposal.title;
-            printProposalDataElement.click();
-          }
-        });
-    }
 
   getPreReview() {
     this.addPreReviewerObj = {};
@@ -613,24 +597,33 @@ export class ProposalComponent implements OnInit, OnDestroy {
      }
   }
 
-  downloadReviewAttachment( event, selectedFileName, selectedAttachArray: any[] ) {
+  downloadAttachments( event, selectedFileName, selectedAttachArray: any[], downloadType ) {
     event.preventDefault();
-      for ( const ATTACHMENT of selectedAttachArray ) {
-        if ( ATTACHMENT.fileName === selectedFileName ) {
-          this._proposalService.downloadPreReviewAttachment( ATTACHMENT.preReviewAttachmentId )
-          .subscribe(
-            data => {
-              if (window.navigator.msSaveOrOpenBlob) {
-                window.navigator.msSaveBlob( new Blob([data], { type: ATTACHMENT.mimeType }), ATTACHMENT.fileName );
-              } else {
-                  const a = document.createElement( 'a' );
-                  a.href = URL.createObjectURL( data );
-                  a.download = ATTACHMENT.fileName;
-                  a.click();
-              }
-            } );
-        }
+    const attachment = selectedAttachArray.find(attachmentDetail => attachmentDetail.fileName === selectedFileName);
+    if ( attachment != null) {
+      if (downloadType === 'ROUTE-LOG') {
+        this._commonService.downloadRoutelogAttachment( attachment.attachmentId ).subscribe(
+          data => {
+            this.parseDownloadResult(data, attachment);
+          });
+      } else {
+        this._proposalService.downloadPreReviewAttachment( attachment.preReviewAttachmentId ).subscribe(
+          data => {
+            this.parseDownloadResult(data, attachment);
+        });
       }
+    }
+  }
+
+  parseDownloadResult(data, attachment) {
+    if (window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveBlob( new Blob([data], { type: attachment.mimeType }), attachment.fileName );
+    } else {
+        const a = document.createElement( 'a' );
+        a.href = URL.createObjectURL( data );
+        a.download = attachment.fileName;
+        a.click();
+    }
   }
 
   updatePreReviewAttachmentSelectbox() {
@@ -849,24 +842,6 @@ export class ProposalComponent implements OnInit, OnDestroy {
           }
       });
     });
-  }
-
-  downloadRouteAttachment( event, selectedFileName, selectedAttachArray: any[] ) {
-    event.preventDefault();
-    const attachment = selectedAttachArray.find(attachmentDetail => attachmentDetail.fileName === selectedFileName);
-    if ( attachment != null) {
-      this._commonService.downloadRoutelogAttachment( attachment.attachmentId ).subscribe(
-        data => {
-          if (window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveBlob( new Blob([data], { type: attachment.mimeType }), attachment.fileName );
-          } else {
-              const a = document.createElement( 'a' );
-              a.href = URL.createObjectURL( data );
-              a.download = attachment.fileName;
-              a.click();
-          }
-        } );
-    }
   }
 
   /* closes approve-disapprove modal */

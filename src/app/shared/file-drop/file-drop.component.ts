@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-file-drop',
@@ -9,16 +9,20 @@ export class FileDropComponent implements OnInit {
 
   @Input() multiple;
   @Output() filesDropEvent: EventEmitter<any> = new EventEmitter();
+  @ViewChild('dragdropfile')
+  public fileSelector: ElementRef;
   constructor() { }
 
   ngOnInit() {
     if (this.multiple) {
-      (<HTMLInputElement>document.getElementById('drag-drop-file')).multiple = true;
+      (this.fileSelector.nativeElement as HTMLInputElement).multiple = true;
     }
   }
   onFileDrop(files) {
     this.filesDropEvent.emit(files);
-    // (<HTMLInputElement>document.getElementById('selectedFile')).value = '';
+    (this.fileSelector.nativeElement as HTMLInputElement).value = '';
   }
-
+  triggerClickEvent() {
+  (this.fileSelector.nativeElement as HTMLInputElement).click();
+ }
 }

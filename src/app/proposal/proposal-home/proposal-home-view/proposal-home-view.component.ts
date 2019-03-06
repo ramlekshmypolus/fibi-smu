@@ -2,11 +2,11 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ProposalComponent } from '../../proposal.component';
 
 @Component({
-  selector: 'app-proposal-view',
-  templateUrl: './proposal-view.component.html',
-  styleUrls: ['./proposal-view.component.css']
+  selector: 'app-proposal-home-view',
+  templateUrl: './proposal-home-view.component.html',
+  styleUrls: ['./proposal-home-view.component.css']
 })
-export class ProposalViewComponent implements OnInit {
+export class ProposalHomeViewComponent implements OnInit {
 
   @Input() result: any = {};
   @Input() showOrHideDataFlagsObj: any = {};

@@ -45,8 +45,10 @@
         <th id="sortby-grant-id" (click)="sortResult('grantCallId')" class="hand-cursor" title="Click to sort by Grant Id">Id<span
             [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'grantCallId')}"></span>
         </th>
-        <th id="sortby-grant-title">Title</th>
-        <th id="sortby-grant-sponsor">Sponsor</th>
+        <th id="sortby-grant-title" (click)="sortResult('grantCallName')" class="hand-cursor" title="Click to sort by Grant Title">Title<span
+            [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'grantCallName')}"></span></th>
+        <th id="sortby-grant-sponsor" (click)="sortResult('sponsorName')" class="hand-cursor" title="Click to sort by Grant Sponsor">Sponsor<span
+            [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'sponsorName')}"></span></th>
         <th id="sortby-grant-type" (click)="sortResult('grantCallType.description')" class="hand-cursor" title="Click to sort by Type">Type<span
             [ngClass]="{reverse:isReverse, sortorder: (grantCallRequestObject.sortBy == 'grantCallType.description')}"></span>
         </th>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProposalViewComponent } from './proposal-view.component';
+import { ProposalHomeViewComponent } from './proposal-home-view.component';
 
-describe('ProposalViewComponent', () => {
-  let component: ProposalViewComponent;
-  let fixture: ComponentFixture<ProposalViewComponent>;
+describe('ProposalHomeViewComponent', () => {
+  let component: ProposalHomeViewComponent;
+  let fixture: ComponentFixture<ProposalHomeViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProposalViewComponent ]
+      declarations: [ ProposalHomeViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProposalViewComponent);
+    fixture = TestBed.createComponent(ProposalHomeViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -9,7 +9,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { ProposalComponent } from './proposal.component';
 import { ProposalHomeComponent } from './proposal-home/proposal-home.component';
 import { ProposalHomeEditComponent } from './proposal-home/proposal-home-edit/proposal-home-edit.component';
-import { ProposalViewComponent } from './proposal-home/proposal-view/proposal-view.component';
+import { ProposalHomeViewComponent } from './proposal-home/proposal-home-view/proposal-home-view.component';
 import { ProposalBudgetComponent } from './proposal-budget/proposal-budget.component';
 import { BudgetOverviewComponent } from './proposal-budget/budget-overview/budget-overview.component';
 import { BudgetPeriodsComponent } from './proposal-budget/budget-periods/budget-periods.component';
@@ -40,7 +40,7 @@ import { ViewQuestionnaireComponent } from './questionnaire/view-questionnaire/v
   ],
   declarations: [
     ProposalComponent,
-    ProposalViewComponent,
+    ProposalHomeViewComponent,
     ProposalHomeComponent,
     ProposalOverviewComponent,
     ProposalBudgetComponent,

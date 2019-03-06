@@ -150,7 +150,8 @@
         <th id="sortby-proposal-id" (click)="sortResult('proposalId')" class="hand-cursor" title="Click to sort by Proposal Id">Id<span
             [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'proposalId')}"></span>
         </th>
-        <th style="width: 24%">Title
+        <th style="width: 24%" (click)="sortResult('title')" class="hand-cursor" title="Click to sort by Proposal Title">Title<span
+            [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'title')}"></span>
         </th>
         <th id="sortby-proposal-PI" (click)="sortResult('proposalPersons.fullName')" class="hand-cursor" title="Click to sort by PI">PI<span
           [ngClass]="{reverse:isReverse, sortorder: (proposalRequestObject.sortBy == 'proposalPersons.fullName')}"></span>

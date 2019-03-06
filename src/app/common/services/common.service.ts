@@ -10,8 +10,6 @@ export class CommonService {
   // baseUrl = 'https://polus.fibiweb.com/fibi4';
 
   elasticIndexUrl = 'http://192.168.1.76:9200/';
-  // elasticIndexUrl = 'http://52.20.110.7:9200/';
-  // elasticIndexUrl = 'https://demo.fibiweb.com:4445/';
   // elasticIndexUrl = 'https://polus.fibiweb.com/elastic/';
   // elasticIndexUrl = 'https://demo.fibiweb.com/elastic/';
 
